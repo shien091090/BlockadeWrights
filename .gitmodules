@@ -1,0 +1,3 @@
+[submodule "Assets/IntergrationScripts"]
+	path = Assets/IntergrationScripts
+	url = https://github.com/shien091090/IntegrationScriptsForUnity.git
