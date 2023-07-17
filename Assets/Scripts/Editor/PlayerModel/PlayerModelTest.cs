@@ -33,6 +33,7 @@ namespace GameCore.Tests.Player
             GivenMoveAxis(0.6f, 0);
             Vector2 moveVector = playerModel.UpdateMove(1, 1);
             ShouldMoveRight(moveVector);
+            FaceDirectionShouldBe(FaceDirection.Right);
         }
 
         [Test]
@@ -61,7 +62,7 @@ namespace GameCore.Tests.Player
 
         private void FaceDirectionShouldBe(FaceDirection expectedFaceDir)
         {
-            Assert.AreEqual(expectedFaceDir, playerModel.FaceDirection);
+            Assert.AreEqual(expectedFaceDir, playerModel.PlayerFaceDir);
         }
 
         private void ShouldMoveLeftAndDown(Vector2 moveVector)

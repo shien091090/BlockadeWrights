@@ -3,8 +3,12 @@ namespace GameCore
     public enum FaceDirection
     {
         Up,
-        Down,
+        UpAndRight,
         Right,
-        Left
+        RightAndDown,
+        Down,
+        DownAndLeft,
+        Left,
+        LeftAndUp
     }
 }
