@@ -4,9 +4,16 @@ namespace GameCore
 {
     public class PlayerModel
     {
-        public Vector2 UpdateMove(Vector2 dir, float speed, float deltaTime)
+        private readonly IInputAxisController inputAxisController;
+
+        public PlayerModel(IInputAxisController inputAxisController)
         {
-            return dir * speed * deltaTime;
+            this.inputAxisController = inputAxisController;
+        }
+
+        public Vector2 UpdateMove(float speed, float deltaTime)
+        {
+            return new Vector2(inputAxisController.GetHorizontalAxis(), inputAxisController.GetVerticalAxis()) * speed * deltaTime;
         }
     }
 }
