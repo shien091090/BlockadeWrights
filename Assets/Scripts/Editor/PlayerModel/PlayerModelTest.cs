@@ -159,6 +159,78 @@ namespace GameCore.Tests.Player
             playerModel.UpdateMove(1, 1);
             FaceDirectionShouldBe(FaceDirection.DownAndRight);
         }
+        
+        [Test]
+        //角色面向左上時往右移動
+        public void move_right_and_face_up_right_when_face_up_left()
+        {
+            GivenMoveAxis(-0.7f, 0.5f);
+            playerModel.UpdateMove(1, 1);
+
+            GivenMoveAxis(0.7f, 0);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.UpAndRight);
+        }
+        
+        [Test]
+        //角色面向左上時往下移動
+        public void move_down_and_face_down_left_when_face_up_left()
+        {
+            GivenMoveAxis(-0.7f, 0.5f);
+            playerModel.UpdateMove(1, 1);
+
+            GivenMoveAxis(0, -0.7f);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.DownAndLeft);
+        }
+        
+        [Test]
+        //角色面向右下時往左移動
+        public void move_left_and_face_down_left_when_face_down_right()
+        {
+            GivenMoveAxis(0.7f, -0.5f);
+            playerModel.UpdateMove(1, 1);
+
+            GivenMoveAxis(-0.7f, 0);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.DownAndLeft);
+        }
+        
+        [Test]
+        //角色面向右下時往上移動
+        public void move_up_and_face_up_right_when_face_down_right()
+        {
+            GivenMoveAxis(0.7f, -0.5f);
+            playerModel.UpdateMove(1, 1);
+
+            GivenMoveAxis(0, 0.7f);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.UpAndRight);
+        }
+        
+        [Test]
+        //角色面向左下時往右移動
+        public void move_right_and_face_down_right_when_face_down_left()
+        {
+            GivenMoveAxis(-0.7f, -0.5f);
+            playerModel.UpdateMove(1, 1);
+
+            GivenMoveAxis(0.7f, 0);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.DownAndRight);
+        }
+        
+        [Test]
+        //角色面向左下時往上移動
+        public void move_up_and_face_up_left_when_face_down_left()
+        {
+            GivenMoveAxis(-0.7f, -0.5f);
+            playerModel.UpdateMove(1, 1);
+
+            GivenMoveAxis(0, 0.7f);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.UpAndLeft);
+        }
 
         private void GivenMoveAxis(float horizontalAxis, float verticalAxis)
         {
