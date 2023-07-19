@@ -16,7 +16,16 @@ namespace GameCore
         public Vector2 UpdateMove(float speed, float deltaTime)
         {
             Vector2 moveVector = new Vector2(inputAxisController.GetHorizontalAxis(), inputAxisController.GetVerticalAxis()) * speed * deltaTime;
+            PlayerFaceDir = GetFaceDirection(moveVector);
             return moveVector;
+        }
+
+        private FaceDirection GetFaceDirection(Vector2 moveVector)
+        {
+            if (moveVector.x > 0 && moveVector.y > 0)
+                return FaceDirection.UpAndRight;
+
+            return FaceDirection.DownAndRight;
         }
     }
 }

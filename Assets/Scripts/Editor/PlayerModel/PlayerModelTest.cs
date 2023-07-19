@@ -58,6 +58,15 @@ namespace GameCore.Tests.Player
         {
             FaceDirectionShouldBe(FaceDirection.DownAndRight);
         }
+        
+        [Test]
+        //角色斜角移動時面向行走方向
+        public void face_direction_when_move()
+        {
+            GivenMoveAxis(0.7f, 0.7f);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.UpAndRight);
+        }
 
         private void GivenMoveAxis(float horizontalAxis, float verticalAxis)
         {
