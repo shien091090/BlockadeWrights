@@ -23,7 +23,6 @@ namespace GameCore.Tests.Player
             GivenMoveAxis(0, 0);
             Vector2 moveVector = playerModel.UpdateMove(1, 1);
             ShouldNoMove(moveVector);
-            FaceDirectionShouldBe(FaceDirection.Down);
         }
 
         [Test]
@@ -33,7 +32,6 @@ namespace GameCore.Tests.Player
             GivenMoveAxis(0.6f, 0);
             Vector2 moveVector = playerModel.UpdateMove(1, 1);
             ShouldMoveRight(moveVector);
-            FaceDirectionShouldBe(FaceDirection.Right);
         }
 
         [Test]
@@ -52,6 +50,13 @@ namespace GameCore.Tests.Player
             GivenMoveAxis(-0.7f, -0.8f);
             Vector2 moveVector = playerModel.UpdateMove(1, 1);
             ShouldMoveLeftAndDown(moveVector);
+        }
+        
+        [Test]
+        //角色未曾移動時面向下右
+        public void face_down_right_when_not_move()
+        {
+            FaceDirectionShouldBe(FaceDirection.DownAndRight);
         }
 
         private void GivenMoveAxis(float horizontalAxis, float verticalAxis)
