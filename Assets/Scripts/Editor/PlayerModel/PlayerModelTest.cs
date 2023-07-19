@@ -71,6 +71,22 @@ namespace GameCore.Tests.Player
             playerModel.UpdateMove(1, 1);
             FaceDirectionShouldBe(expectedFaceDir);
         }
+        
+        [Test]
+        //角色面向右上時往右移動或往上移動方向保持不變
+        public void move_right_or_up_and_keep_face_direction_when_face_up_right()
+        {
+            GivenMoveAxis(0.7f, 0.5f);
+            playerModel.UpdateMove(1, 1);
+            
+            GivenMoveAxis(0.7f, 0);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.UpAndRight);
+            
+            GivenMoveAxis(0, 0.7f);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.UpAndRight);
+        }
 
         private void GivenMoveAxis(float horizontalAxis, float verticalAxis)
         {

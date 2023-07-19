@@ -22,6 +22,9 @@ namespace GameCore
 
         private FaceDirection GetFaceDirection(Vector2 moveVector)
         {
+            if (PlayerFaceDir == FaceDirection.UpAndRight && moveVector.x >= 0 && moveVector.y >= 0)
+                return FaceDirection.UpAndRight;
+            
             if (moveVector.x > 0 && moveVector.y > 0)
                 return FaceDirection.UpAndRight;
             else if (moveVector.x < 0 && moveVector.y > 0)
