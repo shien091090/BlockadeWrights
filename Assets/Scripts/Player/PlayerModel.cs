@@ -26,6 +26,8 @@ namespace GameCore
                 return FaceDirection.UpAndRight;
             else if (moveVector.x < 0 && moveVector.y > 0)
                 return FaceDirection.UpAndLeft;
+            else if(moveVector.x > 0 && moveVector.y < 0)
+                return FaceDirection.DownAndRight;
 
             return FaceDirection.DownAndRight;
         }
