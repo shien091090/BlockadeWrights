@@ -240,7 +240,7 @@ namespace GameCore.Tests.Player
 
         private void FaceDirectionShouldBe(FaceDirection expectedFaceDir)
         {
-            Assert.AreEqual(expectedFaceDir, playerModel.PlayerFaceDir);
+            Assert.AreEqual(expectedFaceDir, playerModel.CurrentFaceDirection);
         }
 
         private void ShouldMoveLeftAndDown(Vector2 moveVector)
