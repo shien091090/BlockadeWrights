@@ -22,28 +22,37 @@ namespace GameCore
 
         private FaceDirection GetFaceDirection(Vector2 moveVector)
         {
-            if (PlayerFaceDir == FaceDirection.UpAndRight && moveVector.x >= 0 && moveVector.y >= 0)
-                return FaceDirection.UpAndRight;
-            
-            if(PlayerFaceDir == FaceDirection.UpAndLeft && moveVector.x <= 0 && moveVector.y >= 0)
-                return FaceDirection.UpAndLeft;
-            
-            if(PlayerFaceDir == FaceDirection.DownAndRight && moveVector.x >= 0 && moveVector.y <= 0)
-                return FaceDirection.DownAndRight;
-            
-            if(PlayerFaceDir == FaceDirection.DownAndLeft && moveVector.x <= 0 && moveVector.y <= 0)
-                return FaceDirection.DownAndLeft;
-            
-            if (moveVector.x > 0 && moveVector.y > 0)
-                return FaceDirection.UpAndRight;
-            else if (moveVector.x < 0 && moveVector.y > 0)
-                return FaceDirection.UpAndLeft;
-            else if(moveVector.x > 0 && moveVector.y < 0)
-                return FaceDirection.DownAndRight;
-            else if(moveVector.x < 0 && moveVector.y < 0)
-                return FaceDirection.DownAndLeft;
+            Vector2 currentFaceVector = PlayerFaceDir switch
+            {
+                FaceDirection.UpAndRight => new Vector2(1, 1),
+                FaceDirection.UpAndLeft => new Vector2(-1, 1),
+                FaceDirection.DownAndRight => new Vector2(1, -1),
+                FaceDirection.DownAndLeft => new Vector2(-1, -1),
+                _ => Vector2.zero
+            };
 
-            return FaceDirection.UpAndLeft;
+            float xAxisReverse = 1;
+            if(( moveVector.x > 0 && currentFaceVector.x < 0 ) || ( moveVector.x < 0 && currentFaceVector.x > 0 ))
+                xAxisReverse = -1;
+            
+            float yAxisReverse = 1;
+            if((moveVector.y > 0 && currentFaceVector.y < 0) || (moveVector.y < 0 && currentFaceVector.y > 0))
+                yAxisReverse = -1;
+
+            Vector2 reverseVector = new Vector2(xAxisReverse, yAxisReverse);
+
+            currentFaceVector *= reverseVector;
+            if(currentFaceVector.x == 1 && currentFaceVector.y == 1)
+                return FaceDirection.UpAndRight;
+            else if(currentFaceVector.x == 1 && currentFaceVector.y == -1)
+                return FaceDirection.DownAndRight;
+            else if(currentFaceVector.x == -1 && currentFaceVector.y == 1)
+                return FaceDirection.UpAndLeft;
+            else if(currentFaceVector.x == -1 && currentFaceVector.y == -1)
+                return FaceDirection.DownAndLeft;
+            else
+                return FaceDirection.DownAndRight;
+            
         }
     }
 }

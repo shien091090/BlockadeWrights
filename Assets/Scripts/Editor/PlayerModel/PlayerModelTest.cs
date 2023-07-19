@@ -51,14 +51,14 @@ namespace GameCore.Tests.Player
             Vector2 moveVector = playerModel.UpdateMove(1, 1);
             ShouldMoveLeftAndDown(moveVector);
         }
-        
+
         [Test]
         //角色未曾移動時面向下右
         public void face_down_right_when_not_move()
         {
             FaceDirectionShouldBe(FaceDirection.DownAndRight);
         }
-        
+
         [Test]
         [TestCase(0.7f, 0.7f, FaceDirection.UpAndRight)]
         [TestCase(-0.7f, 0.7f, FaceDirection.UpAndLeft)]
@@ -71,69 +71,93 @@ namespace GameCore.Tests.Player
             playerModel.UpdateMove(1, 1);
             FaceDirectionShouldBe(expectedFaceDir);
         }
-        
+
         [Test]
         //角色面向右上時往右移動或往上移動方向保持不變
         public void move_right_or_up_and_keep_face_direction_when_face_up_right()
         {
             GivenMoveAxis(0.7f, 0.5f);
             playerModel.UpdateMove(1, 1);
-            
+
             GivenMoveAxis(0.7f, 0);
             playerModel.UpdateMove(1, 1);
             FaceDirectionShouldBe(FaceDirection.UpAndRight);
-            
+
             GivenMoveAxis(0, 0.7f);
             playerModel.UpdateMove(1, 1);
             FaceDirectionShouldBe(FaceDirection.UpAndRight);
         }
-        
+
         [Test]
         //角色面向左上時往左移動或往上移動方向保持不變
         public void move_left_or_up_and_keep_face_direction_when_face_up_left()
         {
             GivenMoveAxis(-0.7f, 0.5f);
             playerModel.UpdateMove(1, 1);
-            
+
             GivenMoveAxis(-0.7f, 0);
             playerModel.UpdateMove(1, 1);
             FaceDirectionShouldBe(FaceDirection.UpAndLeft);
-            
+
             GivenMoveAxis(0, 0.7f);
             playerModel.UpdateMove(1, 1);
             FaceDirectionShouldBe(FaceDirection.UpAndLeft);
         }
-        
+
         [Test]
         //角色面向右下時往右移動或往下移動方向保持不變
         public void move_right_or_down_and_keep_face_direction_when_face_down_right()
         {
             GivenMoveAxis(0.7f, -0.5f);
             playerModel.UpdateMove(1, 1);
-            
+
             GivenMoveAxis(0.7f, 0);
             playerModel.UpdateMove(1, 1);
             FaceDirectionShouldBe(FaceDirection.DownAndRight);
-            
+
             GivenMoveAxis(0, -0.7f);
             playerModel.UpdateMove(1, 1);
             FaceDirectionShouldBe(FaceDirection.DownAndRight);
         }
-        
+
         [Test]
         //角色面向左下時往左移動或往下移動方向保持不變
         public void move_left_or_down_and_keep_face_direction_when_face_down_left()
         {
             GivenMoveAxis(-0.7f, -0.5f);
             playerModel.UpdateMove(1, 1);
-            
+
             GivenMoveAxis(-0.7f, 0);
             playerModel.UpdateMove(1, 1);
             FaceDirectionShouldBe(FaceDirection.DownAndLeft);
-            
+
             GivenMoveAxis(0, -0.7f);
             playerModel.UpdateMove(1, 1);
             FaceDirectionShouldBe(FaceDirection.DownAndLeft);
+        }
+
+        [Test]
+        //角色面向右上時往左移動
+        public void move_left_and_face_up_left_when_face_up_right()
+        {
+            GivenMoveAxis(0.7f, 0.5f);
+            playerModel.UpdateMove(1, 1);
+
+            GivenMoveAxis(-0.7f, 0);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.UpAndLeft);
+        }
+
+        [Test]
+        //角色面向右上時往下移動
+        public void move_down_and_face_down_right_when_face_up_right()
+        {
+            GivenMoveAxis(0.7f, 0.5f);
+            playerModel.UpdateMove(1, 1);
+
+            GivenMoveAxis(0, -0.7f);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.DownAndRight);
         }
 
         private void GivenMoveAxis(float horizontalAxis, float verticalAxis)
