@@ -103,6 +103,38 @@ namespace GameCore.Tests.Player
             playerModel.UpdateMove(1, 1);
             FaceDirectionShouldBe(FaceDirection.UpAndLeft);
         }
+        
+        [Test]
+        //角色面向右下時往右移動或往下移動方向保持不變
+        public void move_right_or_down_and_keep_face_direction_when_face_down_right()
+        {
+            GivenMoveAxis(0.7f, -0.5f);
+            playerModel.UpdateMove(1, 1);
+            
+            GivenMoveAxis(0.7f, 0);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.DownAndRight);
+            
+            GivenMoveAxis(0, -0.7f);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.DownAndRight);
+        }
+        
+        [Test]
+        //角色面向左下時往左移動或往下移動方向保持不變
+        public void move_left_or_down_and_keep_face_direction_when_face_down_left()
+        {
+            GivenMoveAxis(-0.7f, -0.5f);
+            playerModel.UpdateMove(1, 1);
+            
+            GivenMoveAxis(-0.7f, 0);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.DownAndLeft);
+            
+            GivenMoveAxis(0, -0.7f);
+            playerModel.UpdateMove(1, 1);
+            FaceDirectionShouldBe(FaceDirection.DownAndLeft);
+        }
 
         private void GivenMoveAxis(float horizontalAxis, float verticalAxis)
         {

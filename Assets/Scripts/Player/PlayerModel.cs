@@ -28,6 +28,12 @@ namespace GameCore
             if(PlayerFaceDir == FaceDirection.UpAndLeft && moveVector.x <= 0 && moveVector.y >= 0)
                 return FaceDirection.UpAndLeft;
             
+            if(PlayerFaceDir == FaceDirection.DownAndRight && moveVector.x >= 0 && moveVector.y <= 0)
+                return FaceDirection.DownAndRight;
+            
+            if(PlayerFaceDir == FaceDirection.DownAndLeft && moveVector.x <= 0 && moveVector.y <= 0)
+                return FaceDirection.DownAndLeft;
+            
             if (moveVector.x > 0 && moveVector.y > 0)
                 return FaceDirection.UpAndRight;
             else if (moveVector.x < 0 && moveVector.y > 0)
@@ -37,7 +43,7 @@ namespace GameCore
             else if(moveVector.x < 0 && moveVector.y < 0)
                 return FaceDirection.DownAndLeft;
 
-            return FaceDirection.DownAndRight;
+            return FaceDirection.UpAndLeft;
         }
     }
 }
