@@ -61,6 +61,7 @@ namespace GameCore.Tests.Player
         
         [Test]
         [TestCase(0.7f, 0.7f, FaceDirection.UpAndRight)]
+        [TestCase(-0.7f, 0.7f, FaceDirection.UpAndLeft)]
         //角色斜角移動時面向行走方向
         public void face_direction_when_move(float vectorX, float vectorY, FaceDirection expectedFaceDir)
         {
