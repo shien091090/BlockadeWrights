@@ -14,8 +14,8 @@ namespace GameCore
 
         private void Start()
         {
-            playerModel.OnFaceDirectionChanged -= ChangeFaceDirection;
-            playerModel.OnFaceDirectionChanged += ChangeFaceDirection;
+            playerModel.FaceDirection.OnFaceDirectionChanged -= ChangeFaceDirection;
+            playerModel.FaceDirection.OnFaceDirectionChanged += ChangeFaceDirection;
         }
 
         private void Update()
