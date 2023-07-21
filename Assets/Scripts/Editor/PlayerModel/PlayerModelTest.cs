@@ -56,16 +56,16 @@ namespace GameCore.Tests.Player
         //角色未曾移動時面向下右
         public void face_down_right_when_not_move()
         {
-            FaceDirectionShouldBe(FaceDirection.DownAndRight);
+            FaceDirectionShouldBe(FaceDirectionState.DownAndRight);
         }
 
         [Test]
-        [TestCase(0.7f, 0.7f, FaceDirection.UpAndRight)]
-        [TestCase(-0.7f, 0.7f, FaceDirection.UpAndLeft)]
-        [TestCase(0.7f, -0.7f, FaceDirection.DownAndRight)]
-        [TestCase(-0.7f, -0.7f, FaceDirection.DownAndLeft)]
+        [TestCase(0.7f, 0.7f, FaceDirectionState.UpAndRight)]
+        [TestCase(-0.7f, 0.7f, FaceDirectionState.UpAndLeft)]
+        [TestCase(0.7f, -0.7f, FaceDirectionState.DownAndRight)]
+        [TestCase(-0.7f, -0.7f, FaceDirectionState.DownAndLeft)]
         //角色斜角移動時面向行走方向
-        public void face_direction_when_move(float vectorX, float vectorY, FaceDirection expectedFaceDir)
+        public void face_direction_when_move(float vectorX, float vectorY, FaceDirectionState expectedFaceDir)
         {
             GivenMoveAxis(vectorX, vectorY);
             playerModel.UpdateMove(1, 1);
@@ -81,11 +81,11 @@ namespace GameCore.Tests.Player
 
             GivenMoveAxis(0.7f, 0);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.UpAndRight);
+            FaceDirectionShouldBe(FaceDirectionState.UpAndRight);
 
             GivenMoveAxis(0, 0.7f);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.UpAndRight);
+            FaceDirectionShouldBe(FaceDirectionState.UpAndRight);
         }
 
         [Test]
@@ -97,11 +97,11 @@ namespace GameCore.Tests.Player
 
             GivenMoveAxis(-0.7f, 0);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.UpAndLeft);
+            FaceDirectionShouldBe(FaceDirectionState.UpAndLeft);
 
             GivenMoveAxis(0, 0.7f);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.UpAndLeft);
+            FaceDirectionShouldBe(FaceDirectionState.UpAndLeft);
         }
 
         [Test]
@@ -113,11 +113,11 @@ namespace GameCore.Tests.Player
 
             GivenMoveAxis(0.7f, 0);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.DownAndRight);
+            FaceDirectionShouldBe(FaceDirectionState.DownAndRight);
 
             GivenMoveAxis(0, -0.7f);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.DownAndRight);
+            FaceDirectionShouldBe(FaceDirectionState.DownAndRight);
         }
 
         [Test]
@@ -129,11 +129,11 @@ namespace GameCore.Tests.Player
 
             GivenMoveAxis(-0.7f, 0);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.DownAndLeft);
+            FaceDirectionShouldBe(FaceDirectionState.DownAndLeft);
 
             GivenMoveAxis(0, -0.7f);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.DownAndLeft);
+            FaceDirectionShouldBe(FaceDirectionState.DownAndLeft);
         }
 
         [Test]
@@ -145,7 +145,7 @@ namespace GameCore.Tests.Player
 
             GivenMoveAxis(-0.7f, 0);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.UpAndLeft);
+            FaceDirectionShouldBe(FaceDirectionState.UpAndLeft);
         }
 
         [Test]
@@ -157,7 +157,7 @@ namespace GameCore.Tests.Player
 
             GivenMoveAxis(0, -0.7f);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.DownAndRight);
+            FaceDirectionShouldBe(FaceDirectionState.DownAndRight);
         }
         
         [Test]
@@ -169,7 +169,7 @@ namespace GameCore.Tests.Player
 
             GivenMoveAxis(0.7f, 0);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.UpAndRight);
+            FaceDirectionShouldBe(FaceDirectionState.UpAndRight);
         }
         
         [Test]
@@ -181,7 +181,7 @@ namespace GameCore.Tests.Player
 
             GivenMoveAxis(0, -0.7f);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.DownAndLeft);
+            FaceDirectionShouldBe(FaceDirectionState.DownAndLeft);
         }
         
         [Test]
@@ -193,7 +193,7 @@ namespace GameCore.Tests.Player
 
             GivenMoveAxis(-0.7f, 0);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.DownAndLeft);
+            FaceDirectionShouldBe(FaceDirectionState.DownAndLeft);
         }
         
         [Test]
@@ -205,7 +205,7 @@ namespace GameCore.Tests.Player
 
             GivenMoveAxis(0, 0.7f);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.UpAndRight);
+            FaceDirectionShouldBe(FaceDirectionState.UpAndRight);
         }
         
         [Test]
@@ -217,7 +217,7 @@ namespace GameCore.Tests.Player
 
             GivenMoveAxis(0.7f, 0);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.DownAndRight);
+            FaceDirectionShouldBe(FaceDirectionState.DownAndRight);
         }
         
         [Test]
@@ -229,7 +229,7 @@ namespace GameCore.Tests.Player
 
             GivenMoveAxis(0, 0.7f);
             playerModel.UpdateMove(1, 1);
-            FaceDirectionShouldBe(FaceDirection.UpAndLeft);
+            FaceDirectionShouldBe(FaceDirectionState.UpAndLeft);
         }
 
         private void GivenMoveAxis(float horizontalAxis, float verticalAxis)
@@ -238,9 +238,9 @@ namespace GameCore.Tests.Player
             inputAxisController.GetVerticalAxis().Returns(verticalAxis);
         }
 
-        private void FaceDirectionShouldBe(FaceDirection expectedFaceDir)
+        private void FaceDirectionShouldBe(FaceDirectionState expectedFaceDir)
         {
-            Assert.AreEqual(expectedFaceDir, playerModel.CurrentFaceDirection);
+            Assert.AreEqual(expectedFaceDir, playerModel.CurrentFaceDirectionState);
         }
 
         private void ShouldMoveLeftAndDown(Vector2 moveVector)

@@ -23,29 +23,29 @@ namespace GameCore
             transform.Translate(playerModel.UpdateMove(moveSpeed, Time.deltaTime));
         }
 
-        private void ChangeFaceDirection(FaceDirection faceDirection)
+        private void ChangeFaceDirection(FaceDirectionState faceDirectionState)
         {
-            switch (faceDirection)
+            switch (faceDirectionState)
             {
-                case FaceDirection.UpAndRight:
+                case FaceDirectionState.UpAndRight:
                     sp_backSide.flipX = false;
                     sp_frontSide.gameObject.SetActive(false);
                     sp_backSide.gameObject.SetActive(true);
                     break;
 
-                case FaceDirection.UpAndLeft:
+                case FaceDirectionState.UpAndLeft:
                     sp_backSide.flipX = true;
                     sp_frontSide.gameObject.SetActive(false);
                     sp_backSide.gameObject.SetActive(true);
                     break;
 
-                case FaceDirection.DownAndRight:
+                case FaceDirectionState.DownAndRight:
                     sp_frontSide.flipX = false;
                     sp_frontSide.gameObject.SetActive(true);
                     sp_backSide.gameObject.SetActive(false);
                     break;
 
-                case FaceDirection.DownAndLeft:
+                case FaceDirectionState.DownAndLeft:
                     sp_frontSide.flipX = true;
                     sp_frontSide.gameObject.SetActive(true);
                     sp_backSide.gameObject.SetActive(false);

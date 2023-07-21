@@ -6,13 +6,13 @@ namespace GameCore
     public class PlayerModel
     {
         private readonly IInputAxisController inputAxisController;
-        public event Action<FaceDirection> OnFaceDirectionChanged;
-        public FaceDirection CurrentFaceDirection { get; private set; }
+        public event Action<FaceDirectionState> OnFaceDirectionChanged;
+        public FaceDirectionState CurrentFaceDirectionState { get; private set; }
 
         public PlayerModel(IInputAxisController inputAxisController)
         {
             this.inputAxisController = inputAxisController;
-            CurrentFaceDirection = FaceDirection.DownAndRight;
+            CurrentFaceDirectionState = FaceDirectionState.DownAndRight;
         }
 
         public Vector2 UpdateMove(float speed, float deltaTime)
@@ -23,14 +23,14 @@ namespace GameCore
             return moveVector;
         }
 
-        private FaceDirection GetFaceDirection(FaceDirection originFaceDirection, Vector2 moveVector)
+        private FaceDirectionState GetFaceDirection(FaceDirectionState originFaceDirectionState, Vector2 moveVector)
         {
-            Vector2 currentFaceVector = originFaceDirection switch
+            Vector2 currentFaceVector = originFaceDirectionState switch
             {
-                FaceDirection.UpAndRight => new Vector2(1, 1),
-                FaceDirection.UpAndLeft => new Vector2(-1, 1),
-                FaceDirection.DownAndRight => new Vector2(1, -1),
-                FaceDirection.DownAndLeft => new Vector2(-1, -1),
+                FaceDirectionState.UpAndRight => new Vector2(1, 1),
+                FaceDirectionState.UpAndLeft => new Vector2(-1, 1),
+                FaceDirectionState.DownAndRight => new Vector2(1, -1),
+                FaceDirectionState.DownAndLeft => new Vector2(-1, -1),
                 _ => Vector2.zero
             };
 
@@ -46,25 +46,25 @@ namespace GameCore
 
             currentFaceVector *= reverseVector;
             if (currentFaceVector.x == 1 && currentFaceVector.y == 1)
-                return FaceDirection.UpAndRight;
+                return FaceDirectionState.UpAndRight;
             else if (currentFaceVector.x == 1 && currentFaceVector.y == -1)
-                return FaceDirection.DownAndRight;
+                return FaceDirectionState.DownAndRight;
             else if (currentFaceVector.x == -1 && currentFaceVector.y == 1)
-                return FaceDirection.UpAndLeft;
+                return FaceDirectionState.UpAndLeft;
             else if (currentFaceVector.x == -1 && currentFaceVector.y == -1)
-                return FaceDirection.DownAndLeft;
+                return FaceDirectionState.DownAndLeft;
             else
-                return FaceDirection.DownAndRight;
+                return FaceDirectionState.DownAndRight;
         }
 
         private void CheckChangeFaceDirection(Vector2 moveVector)
         {
-            FaceDirection afterFaceDirection = GetFaceDirection(CurrentFaceDirection, moveVector);
-            if (afterFaceDirection == CurrentFaceDirection)
+            FaceDirectionState afterFaceDirectionState = GetFaceDirection(CurrentFaceDirectionState, moveVector);
+            if (afterFaceDirectionState == CurrentFaceDirectionState)
                 return;
 
-            CurrentFaceDirection = afterFaceDirection;
-            OnFaceDirectionChanged?.Invoke(CurrentFaceDirection);
+            CurrentFaceDirectionState = afterFaceDirectionState;
+            OnFaceDirectionChanged?.Invoke(CurrentFaceDirectionState);
         }
     }
 }

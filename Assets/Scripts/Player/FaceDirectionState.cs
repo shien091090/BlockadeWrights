@@ -1,6 +1,6 @@
 namespace GameCore
 {
-    public enum FaceDirection
+    public enum FaceDirectionState
     {
         UpAndRight,
         UpAndLeft,
