@@ -8,12 +8,12 @@ namespace GameCore
         public event Action<FaceDirectionState> OnFaceDirectionChanged;
         public FaceDirectionState CurrentFaceDirectionState { get; private set; }
 
-        public FaceDirection()
+        public FaceDirection(FaceDirectionState startFaceDir = FaceDirectionState.None)
         {
-            CurrentFaceDirectionState = FaceDirectionState.DownAndRight;
+            CurrentFaceDirectionState = startFaceDir;
         }
 
-        public void CheckChangeFaceDirection(Vector2 moveVector)
+        public void MoveToChangeFaceDirection(Vector2 moveVector)
         {
             FaceDirectionState afterFaceDirectionState = GetFaceDirection(CurrentFaceDirectionState, moveVector);
             if (afterFaceDirectionState == CurrentFaceDirectionState)
@@ -25,6 +25,9 @@ namespace GameCore
 
         private FaceDirectionState GetFaceDirection(FaceDirectionState originFaceDirectionState, Vector2 moveVector)
         {
+            if (originFaceDirectionState == FaceDirectionState.None)
+                return GetFaceDirByQuadrant(ConvertQuadrantVector(moveVector));
+
             Vector2 currentFaceVector = originFaceDirectionState switch
             {
                 FaceDirectionState.UpAndRight => new Vector2(1, 1),
@@ -45,16 +48,37 @@ namespace GameCore
             Vector2 reverseVector = new Vector2(xAxisReverse, yAxisReverse);
 
             currentFaceVector *= reverseVector;
-            if (currentFaceVector.x == 1 && currentFaceVector.y == 1)
+            return GetFaceDirByQuadrant(currentFaceVector);
+        }
+
+        private FaceDirectionState GetFaceDirByQuadrant(Vector2 quadrantVector)
+        {
+            if (quadrantVector.x == 1 && quadrantVector.y == 1)
                 return FaceDirectionState.UpAndRight;
-            else if (currentFaceVector.x == 1 && currentFaceVector.y == -1)
+            else if (quadrantVector.x == 1 && quadrantVector.y == -1)
                 return FaceDirectionState.DownAndRight;
-            else if (currentFaceVector.x == -1 && currentFaceVector.y == 1)
+            else if (quadrantVector.x == -1 && quadrantVector.y == 1)
                 return FaceDirectionState.UpAndLeft;
-            else if (currentFaceVector.x == -1 && currentFaceVector.y == -1)
+            else if (quadrantVector.x == -1 && quadrantVector.y == -1)
                 return FaceDirectionState.DownAndLeft;
             else
                 return FaceDirectionState.DownAndRight;
+        }
+
+        private Vector2 ConvertQuadrantVector(Vector2 moveVector)
+        {
+            Vector2 quadrantVector = Vector2.zero;
+            if (moveVector.x >= 0)
+                quadrantVector.x = 1;
+            else if (moveVector.x < 0)
+                quadrantVector.x = -1;
+
+            if (moveVector.y > 0)
+                quadrantVector.y = 1;
+            else if (moveVector.y <= 0)
+                quadrantVector.y = -1;
+
+            return quadrantVector;
         }
     }
 }

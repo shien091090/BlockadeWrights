@@ -10,13 +10,13 @@ namespace GameCore
         public PlayerModel(IInputAxisController inputAxisController)
         {
             this.inputAxisController = inputAxisController;
-            FaceDirection = new FaceDirection();
+            FaceDirection = new FaceDirection(FaceDirectionState.DownAndRight);
         }
 
         public Vector2 UpdateMove(float speed, float deltaTime)
         {
             Vector2 moveVector = new Vector2(inputAxisController.GetHorizontalAxis(), inputAxisController.GetVerticalAxis()) * speed * deltaTime;
-            FaceDirection.CheckChangeFaceDirection(moveVector);
+            FaceDirection.MoveToChangeFaceDirection(moveVector);
 
             return moveVector;
         }
