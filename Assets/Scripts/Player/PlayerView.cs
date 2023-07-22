@@ -8,8 +8,8 @@ namespace GameCore
     {
         [SerializeField] private float moveSpeed;
         [SerializeField] private Transform faceDirRoot;
-        [SerializeField] private SpriteRenderer sp_frontSide;
-        [SerializeField] private SpriteRenderer sp_backSide;
+        [SerializeField] private SpriteRenderer sr_frontSide;
+        [SerializeField] private SpriteRenderer sr_backSide;
 
         [Inject] private PlayerModel playerModel;
 
@@ -32,8 +32,8 @@ namespace GameCore
 
         private void ChangeVerticalDirection(FaceDirectionState faceDirectionState)
         {
-            sp_frontSide.gameObject.SetActive(faceDirectionState == FaceDirectionState.DownAndLeft || faceDirectionState == FaceDirectionState.DownAndRight);
-            sp_backSide.gameObject.SetActive(faceDirectionState == FaceDirectionState.UpAndLeft || faceDirectionState == FaceDirectionState.UpAndRight);
+            sr_frontSide.gameObject.SetActive(faceDirectionState == FaceDirectionState.DownAndLeft || faceDirectionState == FaceDirectionState.DownAndRight);
+            sr_backSide.gameObject.SetActive(faceDirectionState == FaceDirectionState.UpAndLeft || faceDirectionState == FaceDirectionState.UpAndRight);
         }
 
         private void ChangeHorizontalDirection(FaceDirectionState faceDirectionState)

@@ -464,8 +464,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   faceDirRoot: {fileID: 1346634007}
-  sp_frontSide: {fileID: 739460460}
-  sp_backSide: {fileID: 504187420}
+  sr_frontSide: {fileID: 739460460}
+  sr_backSide: {fileID: 504187420}
 --- !u!4 &1265970351
 Transform:
   m_ObjectHideFlags: 0
