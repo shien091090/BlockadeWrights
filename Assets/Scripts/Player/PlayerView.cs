@@ -7,6 +7,7 @@ namespace GameCore
     public class PlayerView : MonoBehaviour
     {
         [SerializeField] private float moveSpeed;
+        [SerializeField] private Transform faceDirRoot;
         [SerializeField] private SpriteRenderer sp_frontSide;
         [SerializeField] private SpriteRenderer sp_backSide;
 
@@ -25,30 +26,28 @@ namespace GameCore
 
         private void ChangeFaceDirection(FaceDirectionState faceDirectionState)
         {
+            ChangeHorizontalDirection(faceDirectionState);
+            ChangeVerticalDirection(faceDirectionState);
+        }
+
+        private void ChangeVerticalDirection(FaceDirectionState faceDirectionState)
+        {
+            sp_frontSide.gameObject.SetActive(faceDirectionState == FaceDirectionState.DownAndLeft || faceDirectionState == FaceDirectionState.DownAndRight);
+            sp_backSide.gameObject.SetActive(faceDirectionState == FaceDirectionState.UpAndLeft || faceDirectionState == FaceDirectionState.UpAndRight);
+        }
+
+        private void ChangeHorizontalDirection(FaceDirectionState faceDirectionState)
+        {
             switch (faceDirectionState)
             {
                 case FaceDirectionState.UpAndRight:
-                    sp_backSide.flipX = false;
-                    sp_frontSide.gameObject.SetActive(false);
-                    sp_backSide.gameObject.SetActive(true);
+                case FaceDirectionState.DownAndRight:
+                    faceDirRoot.localScale = new Vector3(1, 1, 1);
                     break;
 
                 case FaceDirectionState.UpAndLeft:
-                    sp_backSide.flipX = true;
-                    sp_frontSide.gameObject.SetActive(false);
-                    sp_backSide.gameObject.SetActive(true);
-                    break;
-
-                case FaceDirectionState.DownAndRight:
-                    sp_frontSide.flipX = false;
-                    sp_frontSide.gameObject.SetActive(true);
-                    sp_backSide.gameObject.SetActive(false);
-                    break;
-
                 case FaceDirectionState.DownAndLeft:
-                    sp_frontSide.flipX = true;
-                    sp_frontSide.gameObject.SetActive(true);
-                    sp_backSide.gameObject.SetActive(false);
+                    faceDirRoot.localScale = new Vector3(-1, 1, 1);
                     break;
             }
         }
