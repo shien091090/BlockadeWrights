@@ -14,8 +14,26 @@ namespace GameCore.Tests.Map
             Assert.IsTrue(cell.IsEmpty);
         }
         
-        //未定義地圖
-        //在地圖外
+        [Test]
         //在地圖內
+        public void inside_map()
+        {
+            InGameMapModel mapModel = new InGameMapModel(new Vector2(10, 10));
+            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(3, 3));
+            Assert.IsFalse(cell.IsEmpty);
+            Assert.AreEqual(1, cell.GridPosition.x);
+            Assert.AreEqual(1, cell.GridPosition.y);
+        }
+        
+        // [Test]
+        // //在地圖外
+        // public void outside_map()
+        // {
+        //     InGameMapModel mapModel = new InGameMapModel(new Vector2(10, 10));
+        //     InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(100, 100));
+        //     Assert.IsTrue(cell.IsEmpty);
+        // }
+        
+        //未定義地圖
     }
 }
