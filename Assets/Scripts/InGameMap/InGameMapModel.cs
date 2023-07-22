@@ -21,7 +21,9 @@ namespace GameCore
             if (CellUnitSize.x == 0 || CellUnitSize.y == 0)
                 return InGameMapCell.GetEmptyCell();
 
-            return new InGameMapCell(0, 0);
+            int gridX = Mathf.FloorToInt(worldPos.x / CellUnitSize.x);
+            int gridY = Mathf.FloorToInt(worldPos.y / CellUnitSize.y);
+            return new InGameMapCell(gridX, gridY);
         }
     }
 }

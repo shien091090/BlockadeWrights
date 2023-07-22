@@ -33,6 +33,17 @@ namespace GameCore.Tests.Map
             InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(5, 5));
             Assert.IsTrue(cell.IsEmpty);
         }
+        
+        [Test]
+        //在地圖內(格子尺寸為整數)
+        public void inside_map_cell_size_is_integer()
+        {
+            InGameMapModel mapModel = new InGameMapModel(new Vector2(10, 10), new Vector2(1, 1));
+            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(2.5f, 2.5f));
+            Assert.IsFalse(cell.IsEmpty);
+            Assert.AreEqual(2, cell.GridPosition.x);
+            Assert.AreEqual(2, cell.GridPosition.y);
+        }
 
         // [Test]
         // //在地圖外
