@@ -3,11 +3,11 @@ using NSubstitute;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace GameCore.Tests.FaceDirection
+namespace GameCore.Tests.Player
 {
     public class FaceDirectionTest
     {
-        private GameCore.FaceDirection faceDirection;
+        private FaceDirection faceDirection;
         private Action<FaceDirectionState> faceDirectionChanged;
 
         [SetUp]
