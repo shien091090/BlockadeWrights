@@ -16,7 +16,7 @@ namespace GameCore
             if(MapSize.x == 0 || MapSize.y == 0)
                 return new InGameMapCell(-1, -1);
             
-            return new InGameMapCell(1, 1);
+            return new InGameMapCell(0, 0);
         }
     }
 }
