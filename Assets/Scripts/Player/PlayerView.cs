@@ -10,11 +10,15 @@ namespace GameCore
         [SerializeField] private Transform faceDirRoot;
         [SerializeField] private SpriteRenderer sr_frontSide;
         [SerializeField] private SpriteRenderer sr_backSide;
+        [SerializeField] private Transform cellHint;
 
         [Inject] private PlayerModel playerModel;
 
+        private InGameMapModel inGameMapModel;
+
         private void Start()
         {
+            inGameMapModel = new InGameMapModel(new Vector2(18, 10), new Vector2(1, 1));
             playerModel.FaceDirection.OnFaceDirectionChanged -= ChangeFaceDirection;
             playerModel.FaceDirection.OnFaceDirectionChanged += ChangeFaceDirection;
         }
@@ -22,6 +26,14 @@ namespace GameCore
         private void Update()
         {
             transform.Translate(playerModel.UpdateMove(moveSpeed, Time.deltaTime));
+            UpdateCellHintPos();
+        }
+
+        private void UpdateCellHintPos()
+        {
+            InGameMapCell cell = inGameMapModel.GetCellByPosition(transform.position);
+            if (cell.IsEmpty == false)
+                cellHint.position = cell.CenterPosition;
         }
 
         private void ChangeFaceDirection(FaceDirectionState faceDirectionState)
