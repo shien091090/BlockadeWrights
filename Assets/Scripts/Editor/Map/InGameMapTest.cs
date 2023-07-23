@@ -65,6 +65,7 @@ namespace GameCore.Tests.Map
 
         [Test]
         [TestCase(0.6f, 0.1f, 1, 0)]
+        [TestCase(9.9f, 9.2f, 19, 18)]
         //在地圖內(格子尺寸為小數)
         public void inside_map_cell_size_is_float(float posX, float posY, int expectedGridX, int expectedGridY)
         {
