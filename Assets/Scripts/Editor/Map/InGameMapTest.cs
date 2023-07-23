@@ -106,6 +106,21 @@ namespace GameCore.Tests.Map
             CellShouldBeEmpty(cell, true);
         }
 
+        [Test]
+        [TestCase(0.1f, 0.1f, 1.25f, 1.25f)]
+        [TestCase(9.9f, 2.4f, 8.75f, 1.25f)]
+        [TestCase(5, 7.5f, 6.25f, 8.75f)]
+        //取得指定地圖格的中間位置
+        public void get_cell_center_position(float posX, float posY, float centerX, float centerY)
+        {
+            GivenMapModel(new Vector2(10, 10), new Vector2(2.5f, 2.5f));
+
+            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(posX, posY));
+
+            Assert.AreEqual(centerX, cell.CenterPosition.x);
+            Assert.AreEqual(centerY, cell.CenterPosition.y);
+        }
+
         private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
         {
             mapModel = new InGameMapModel(mapSize, cellSize);

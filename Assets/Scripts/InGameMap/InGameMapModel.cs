@@ -26,7 +26,7 @@ namespace GameCore
 
             int gridX = Mathf.FloorToInt(pos.x / CellUnitSize.x);
             int gridY = Mathf.FloorToInt(pos.y / CellUnitSize.y);
-            return new InGameMapCell(gridX, gridY);
+            return new InGameMapCell(gridX, gridY, CellUnitSize);
         }
     }
 }
