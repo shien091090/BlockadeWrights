@@ -75,7 +75,7 @@ namespace GameCore.Tests.Map
 
             CellPositionShouldBe(cell, expectedGridX, expectedGridY);
         }
-        
+
         [Test]
         [TestCase(0, 0, 0, 0)]
         [TestCase(0, 4, 0, 4)]
@@ -89,7 +89,7 @@ namespace GameCore.Tests.Map
 
             CellPositionShouldBe(cell, expectedGridX, expectedGridY);
         }
-        
+
         private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
         {
             mapModel = new InGameMapModel(mapSize, cellSize);
@@ -105,16 +105,5 @@ namespace GameCore.Tests.Map
         {
             Assert.AreEqual(expectedIsEmpty, cell.IsEmpty);
         }
-
-        // [Test]
-        // //在地圖外
-        // public void outside_map()
-        // {
-        //     InGameMapModel mapModel = new InGameMapModel(new Vector2(10, 10));
-        //     InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(100, 100));
-        //     Assert.IsTrue(cell.IsEmpty);
-        // }
-
-        //未定義地圖
     }
 }
