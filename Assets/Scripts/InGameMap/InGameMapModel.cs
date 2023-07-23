@@ -13,7 +13,7 @@ namespace GameCore
             CellUnitSize = cellSize;
         }
 
-        public InGameMapCell GetCellByPosition(Vector3 worldPos)
+        public InGameMapCell GetCellByPosition(Vector3 pos)
         {
             if (FullMapSize.x == 0 || FullMapSize.y == 0)
                 return InGameMapCell.GetEmptyCell();
@@ -21,8 +21,8 @@ namespace GameCore
             if (CellUnitSize.x == 0 || CellUnitSize.y == 0)
                 return InGameMapCell.GetEmptyCell();
 
-            int gridX = Mathf.FloorToInt(worldPos.x / CellUnitSize.x);
-            int gridY = Mathf.FloorToInt(worldPos.y / CellUnitSize.y);
+            int gridX = Mathf.FloorToInt(pos.x / CellUnitSize.x);
+            int gridY = Mathf.FloorToInt(pos.y / CellUnitSize.y);
             return new InGameMapCell(gridX, gridY);
         }
     }

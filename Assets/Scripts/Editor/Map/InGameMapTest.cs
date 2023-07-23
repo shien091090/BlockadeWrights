@@ -75,7 +75,21 @@ namespace GameCore.Tests.Map
 
             CellPositionShouldBe(cell, expectedGridX, expectedGridY);
         }
+        
+        [Test]
+        [TestCase(0, 0, 0, 0)]
+        [TestCase(0, 4, 0, 4)]
+        [TestCase(9, 3, 9, 3)]
+        //在地圖內(定位點在邊界上)
+        public void position_is_on_the_edge(float posX, float posY, int expectedGridX, int expectedGridY)
+        {
+            GivenMapModel(new Vector2(10, 10), new Vector2(1, 1));
 
+            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(posX, posY));
+
+            CellPositionShouldBe(cell, expectedGridX, expectedGridY);
+        }
+        
         private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
         {
             mapModel = new InGameMapModel(mapSize, cellSize);
