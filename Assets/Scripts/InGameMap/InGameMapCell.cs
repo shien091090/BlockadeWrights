@@ -9,7 +9,6 @@ namespace GameCore
         }
 
         public bool IsEmpty { get; }
-
         public IntVector2 GridPosition { get; }
 
         public static InGameMapCell GetEmptyCell()

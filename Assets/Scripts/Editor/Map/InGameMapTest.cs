@@ -90,6 +90,22 @@ namespace GameCore.Tests.Map
             CellPositionShouldBe(cell, expectedGridX, expectedGridY);
         }
 
+        [Test]
+        [TestCase(100, 100)]
+        [TestCase(10, 10)]
+        [TestCase(6, 10)]
+        [TestCase(-0.1f, 3)]
+        [TestCase(11, -1)]
+        //在地圖外
+        public void outside_map(float posX, float posY)
+        {
+            GivenMapModel(new Vector2(10, 10), new Vector2(1, 1));
+
+            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(posX, posY));
+
+            CellShouldBeEmpty(cell, true);
+        }
+
         private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
         {
             mapModel = new InGameMapModel(mapSize, cellSize);
