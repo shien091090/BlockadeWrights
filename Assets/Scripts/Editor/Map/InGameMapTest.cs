@@ -62,16 +62,17 @@ namespace GameCore.Tests.Map
             CellShouldBeEmpty(cell, false);
             CellPositionShouldBe(cell, expectedGridX, expectedGridY);
         }
-        
+
         [Test]
+        [TestCase(0.6f, 0.1f, 1, 0)]
         //在地圖內(格子尺寸為小數)
-        public void inside_map_cell_size_is_float()
+        public void inside_map_cell_size_is_float(float posX, float posY, int expectedGridX, int expectedGridY)
         {
             GivenMapModel(new Vector2(10, 10), new Vector2(0.5f, 0.5f));
 
-            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(0.6f, 0.1f));
+            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(posX, posY));
 
-            CellPositionShouldBe(cell, 1, 0);
+            CellPositionShouldBe(cell, expectedGridX, expectedGridY);
         }
 
         private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
