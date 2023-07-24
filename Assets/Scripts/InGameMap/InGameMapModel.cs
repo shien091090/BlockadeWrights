@@ -13,7 +13,7 @@ namespace GameCore
             CellUnitSize = cellSize;
         }
 
-        public InGameMapCell GetCellByPosition(Vector3 pos)
+        public InGameMapCell GetCellInfo(Vector3 pos)
         {
             if (FullMapSize.x == 0 || FullMapSize.y == 0)
                 return InGameMapCell.GetEmptyCell();

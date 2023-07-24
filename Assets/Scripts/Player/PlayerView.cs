@@ -31,7 +31,7 @@ namespace GameCore
 
         private void UpdateCellHintPos()
         {
-            InGameMapCell cell = inGameMapModel.GetCellByPosition(transform.position);
+            InGameMapCell cell = inGameMapModel.GetCellInfo(transform.position);
             if (cell.IsEmpty == false)
                 cellHint.position = cell.CenterPosition;
         }

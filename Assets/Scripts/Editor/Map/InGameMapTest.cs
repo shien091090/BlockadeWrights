@@ -19,7 +19,7 @@ namespace GameCore.Tests.Map
         {
             GivenMapModel(new Vector2(0, 0), new Vector2(0, 0));
 
-            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(100, 100));
+            InGameMapCell cell = mapModel.GetCellInfo(new Vector2(100, 100));
 
             CellShouldBeEmpty(cell, true);
         }
@@ -30,7 +30,7 @@ namespace GameCore.Tests.Map
         {
             GivenMapModel(new Vector2(9, 9), new Vector2(1, 1));
 
-            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(0, 0));
+            InGameMapCell cell = mapModel.GetCellInfo(new Vector2(0, 0));
 
             CellShouldBeEmpty(cell, false);
             GridPositionShouldBe(cell, 4, 4);
@@ -42,7 +42,7 @@ namespace GameCore.Tests.Map
         {
             GivenMapModel(new Vector2(10, 10), new Vector2(0, 0));
 
-            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(5, 5));
+            InGameMapCell cell = mapModel.GetCellInfo(new Vector2(5, 5));
 
             CellShouldBeEmpty(cell, true);
         }
@@ -58,7 +58,7 @@ namespace GameCore.Tests.Map
         {
             GivenMapModel(new Vector2(10, 10), new Vector2(1, 1));
 
-            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(posX, posY));
+            InGameMapCell cell = mapModel.GetCellInfo(new Vector2(posX, posY));
 
             CellShouldBeEmpty(cell, false);
             GridPositionShouldBe(cell, expectedGridX, expectedGridY);
@@ -73,7 +73,7 @@ namespace GameCore.Tests.Map
         {
             GivenMapModel(new Vector2(10, 10), new Vector2(0.5f, 0.5f));
 
-            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(posX, posY));
+            InGameMapCell cell = mapModel.GetCellInfo(new Vector2(posX, posY));
 
             GridPositionShouldBe(cell, expectedGridX, expectedGridY);
         }
@@ -87,7 +87,7 @@ namespace GameCore.Tests.Map
         {
             GivenMapModel(new Vector2(10, 10), new Vector2(1, 1));
 
-            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(posX, posY));
+            InGameMapCell cell = mapModel.GetCellInfo(new Vector2(posX, posY));
 
             GridPositionShouldBe(cell, expectedGridX, expectedGridY);
         }
@@ -103,7 +103,7 @@ namespace GameCore.Tests.Map
         {
             GivenMapModel(new Vector2(10, 10), new Vector2(1, 1));
 
-            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(posX, posY));
+            InGameMapCell cell = mapModel.GetCellInfo(new Vector2(posX, posY));
 
             CellShouldBeEmpty(cell, true);
         }
@@ -117,7 +117,7 @@ namespace GameCore.Tests.Map
         {
             GivenMapModel(new Vector2(10, 10), new Vector2(2.5f, 2.5f));
 
-            InGameMapCell cell = mapModel.GetCellByPosition(new Vector2(posX, posY));
+            InGameMapCell cell = mapModel.GetCellInfo(new Vector2(posX, posY));
 
             Assert.AreEqual(centerX, cell.CenterPosition.x);
             Assert.AreEqual(centerY, cell.CenterPosition.y);
