@@ -136,9 +136,9 @@ namespace GameCore.Tests.Map
             InGameMapCell centerCell = mapModel.GetCellInfo(pos);
             GridPositionShouldBe(centerCell, 5, 0);
 
-            InGameMapCell upCell = mapModel.GetCellInfo(pos, faceDir);
-            CellShouldBeEmpty(upCell, false);
-            GridPositionShouldBe(upCell, expectedGridX, expectedGridY);
+            InGameMapCell specificDirCell = mapModel.GetCellInfo(pos, faceDir);
+            CellShouldBeEmpty(specificDirCell, false);
+            GridPositionShouldBe(specificDirCell, expectedGridX, expectedGridY);
         }
         
         [Test]
@@ -154,8 +154,8 @@ namespace GameCore.Tests.Map
             InGameMapCell centerCell = mapModel.GetCellInfo(pos);
             GridPositionShouldBe(centerCell, 0, 0);
 
-            InGameMapCell upCell = mapModel.GetCellInfo(pos, faceDir);
-            CellShouldBeEmpty(upCell, true);
+            InGameMapCell specificDirCell = mapModel.GetCellInfo(pos, faceDir);
+            CellShouldBeEmpty(specificDirCell, true);
         }
 
         private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
