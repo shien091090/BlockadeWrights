@@ -123,6 +123,23 @@ namespace GameCore.Tests.Map
             Assert.AreEqual(centerY, cell.CenterPosition.y);
         }
 
+        [Test]
+        [TestCase(FaceDirectionState.Up, 5, 1)]
+        [TestCase(FaceDirectionState.UpAndRight, 6, 1)]
+        [TestCase(FaceDirectionState.Left, 4, 0)]
+        //取得所在位置為基準點的指定面向的有效格子
+        public void get_valid_cell_by_direction(FaceDirectionState faceDir, int expectedGridX, int expectedGridY)
+        {
+            GivenMapModel(new Vector2(10, 10), new Vector2(1, 1));
+
+            Vector2 pos = new Vector2(0.1f, -4.99f);
+            InGameMapCell centerCell = mapModel.GetCellInfo(pos);
+            GridPositionShouldBe(centerCell, 5, 0);
+
+            InGameMapCell upCell = mapModel.GetCellInfo(pos, faceDir);
+            CellShouldBeEmpty(upCell, false);
+            GridPositionShouldBe(upCell, expectedGridX, expectedGridY);
+        }
         private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
         {
             mapModel = new InGameMapModel(mapSize, cellSize);

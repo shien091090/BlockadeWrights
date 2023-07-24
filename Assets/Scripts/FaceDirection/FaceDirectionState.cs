@@ -7,5 +7,9 @@ namespace GameCore
         UpAndLeft,
         DownAndRight,
         DownAndLeft,
+        Up,
+        Right,
+        Left,
+        Down
     }
 }
