@@ -140,6 +140,24 @@ namespace GameCore.Tests.Map
             CellShouldBeEmpty(upCell, false);
             GridPositionShouldBe(upCell, expectedGridX, expectedGridY);
         }
+        
+        [Test]
+        [TestCase(FaceDirectionState.Down)]
+        [TestCase(FaceDirectionState.DownAndRight)]
+        [TestCase(FaceDirectionState.Left)]
+        //取得所在位置為基準點的指定面向的無效格子
+        public void get_invalid_cell_by_direction(FaceDirectionState faceDir)
+        {
+            GivenMapModel(new Vector2(10, 10), new Vector2(1, 1));
+
+            Vector2 pos = new Vector2(-4.01f, -4.99f);
+            InGameMapCell centerCell = mapModel.GetCellInfo(pos);
+            GridPositionShouldBe(centerCell, 0, 0);
+
+            InGameMapCell upCell = mapModel.GetCellInfo(pos, faceDir);
+            CellShouldBeEmpty(upCell, true);
+        }
+
         private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
         {
             mapModel = new InGameMapModel(mapSize, cellSize);
