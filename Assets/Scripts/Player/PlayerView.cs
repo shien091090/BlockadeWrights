@@ -7,6 +7,7 @@ namespace GameCore
     public class PlayerView : MonoBehaviour
     {
         [SerializeField] private float moveSpeed;
+        [SerializeField] private Vector2 touchRange;
         [SerializeField] private Transform faceDirRoot;
         [SerializeField] private SpriteRenderer sr_frontSide;
         [SerializeField] private SpriteRenderer sr_backSide;
@@ -31,7 +32,7 @@ namespace GameCore
 
         private void RefreshCellHintPos(FaceDirectionState faceDir)
         {
-            InGameMapCell cell = inGameMapModel.GetCellInfo(transform.position, faceDir);
+            InGameMapCell cell = inGameMapModel.GetCellInfo(transform.position, faceDir, touchRange);
 
             cellHint.gameObject.SetActive(cell.IsEmpty == false);
 
