@@ -179,6 +179,23 @@ namespace GameCore.Tests.Map
             CellShouldBeEmpty(specificDirCell, true);
         }
 
+        [Test]
+        [TestCase(FaceDirectionState.UpAndLeft)]
+        [TestCase(FaceDirectionState.Left)]
+        [TestCase(FaceDirectionState.DownAndLeft)]
+        //取得所在位置為基準點的指定面向的無效格子(伸手範圍小於一格)
+        public void get_invalid_cell_by_direction_and_touch_range_smaller_then_one_cell(FaceDirectionState faceDir)
+        {
+            GivenMapModel(new Vector2(10, 10), new Vector2(1, 1), new Vector2(0.5f, 0.5f));
+
+            Vector2 pos = new Vector2(-4.99f, 4.1f);
+            InGameMapCell centerCell = mapModel.GetCellInfo(pos);
+            GridPositionShouldBe(centerCell, 0, 9);
+
+            InGameMapCell specificDirCell = mapModel.GetCellInfo(pos, faceDir);
+            CellShouldBeEmpty(specificDirCell, true);
+        }
+
         private void GivenMapModel(Vector2 mapSize, Vector2 cellSize, Vector2 touchRange = default)
         {
             mapModel = touchRange == default ?
