@@ -3,11 +3,11 @@ using NSubstitute;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace GameCore.Tests.Player
+namespace GameCore.Tests.Player.FaceDirection
 {
-    public class FaceDirectionTest
+    public class QuadrantFaceDirectionTest
     {
-        private FaceDirection faceDirection;
+        private GameCore.FaceDirection faceDirection;
         private Action<FaceDirectionState> faceDirectionChanged;
 
         [SetUp]
@@ -23,7 +23,7 @@ namespace GameCore.Tests.Player
         //驗證初始面向
         public void face_down_right_when_init(FaceDirectionState startFaceDir)
         {
-            faceDirection = new GameCore.FaceDirection(startFaceDir);
+            faceDirection = new GameCore.FaceDirection(new QuadrantDirectionStrategy(), startFaceDir);
             faceDirection.OnFaceDirectionChanged += faceDirectionChanged;
 
             FaceDirectionShouldBe(startFaceDir);
@@ -38,7 +38,7 @@ namespace GameCore.Tests.Player
         //角色斜角移動時面向行走方向
         public void face_direction_when_move(float vectorX, float vectorY, FaceDirectionState expectedFaceDir)
         {
-            faceDirection = new GameCore.FaceDirection();
+            faceDirection = new GameCore.FaceDirection(new QuadrantDirectionStrategy());
             faceDirection.OnFaceDirectionChanged += faceDirectionChanged;
 
             faceDirection.MoveToChangeFaceDirection(new Vector2(vectorX, vectorY));
@@ -63,7 +63,7 @@ namespace GameCore.Tests.Player
         //行走方向和面向一致或部分一致
         public void face_direction_is_no_change_when_move_direction_is_same_or_partially_same(float moveVectorX, float moveVectorY, FaceDirectionState expectedFaceDir)
         {
-            faceDirection = new GameCore.FaceDirection(expectedFaceDir);
+            faceDirection = new GameCore.FaceDirection(new QuadrantDirectionStrategy(), expectedFaceDir);
             faceDirection.OnFaceDirectionChanged += faceDirectionChanged;
 
             faceDirection.MoveToChangeFaceDirection(new Vector2(moveVectorX, moveVectorY));
@@ -85,7 +85,7 @@ namespace GameCore.Tests.Player
         public void face_direction_is_change_when_move_direction_is_different(FaceDirectionState startFaceDir, float moveVectorX, float moveVectorY,
             FaceDirectionState expectedFaceDir)
         {
-            faceDirection = new GameCore.FaceDirection(startFaceDir);
+            faceDirection = new GameCore.FaceDirection(new QuadrantDirectionStrategy(), startFaceDir);
             faceDirection.OnFaceDirectionChanged += faceDirectionChanged;
 
             faceDirection.MoveToChangeFaceDirection(new Vector2(moveVectorX, moveVectorY));

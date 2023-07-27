@@ -10,7 +10,7 @@ namespace GameCore
         public PlayerModel(IInputAxisController inputAxisController)
         {
             this.inputAxisController = inputAxisController;
-            FaceDirection = new FaceDirection(FaceDirectionState.DownAndRight);
+            FaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
         }
 
         public Vector2 UpdateMove(float speed, float deltaTime)
