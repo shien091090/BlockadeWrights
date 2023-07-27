@@ -196,6 +196,27 @@ namespace GameCore.Tests.Map
             CellShouldBeEmpty(specificDirCell, true);
         }
 
+        [Test]
+        //取得所在位置的格子(標註為阻擋格)
+        public void get_cell_by_position_and_mark_as_blocked()
+        {
+            GivenMapModel(new Vector2(10, 10), new Vector2(1, 1));
+
+            Vector2 pos = new Vector2(-2.5f, 0.3f);
+            InGameMapCell targetCell = mapModel.GetCellInfo(pos);
+            GridPositionShouldBe(targetCell, 2, 5);
+
+            GivenBlockedCell(2, 5);
+
+            targetCell = mapModel.GetCellInfo(pos);
+            CellShouldBeEmpty(targetCell, true);
+        }
+
+        private void GivenBlockedCell(int gridX, int gridY)
+        {
+            mapModel.SetCellBlocked(gridX, gridY);
+        }
+
         private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
         {
             mapModel = new InGameMapModel(mapSize, cellSize);
