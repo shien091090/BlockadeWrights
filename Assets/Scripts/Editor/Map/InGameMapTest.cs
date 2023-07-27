@@ -212,6 +212,17 @@ namespace GameCore.Tests.Map
             CellShouldBeEmpty(targetCell, true);
         }
 
+        [Test]
+        //指定同一格為阻擋格兩次
+        public void mark_same_cell_as_blocked_twice()
+        {
+            GivenMapModel(new Vector2(10, 10), new Vector2(1, 1));
+            GivenBlockedCell(2, 5);
+            GivenBlockedCell(2, 5);
+
+            BlockedCellCountShouldBe(1);
+        }
+
         private void GivenBlockedCell(int gridX, int gridY)
         {
             mapModel.SetCellBlocked(gridX, gridY);
@@ -220,6 +231,11 @@ namespace GameCore.Tests.Map
         private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
         {
             mapModel = new InGameMapModel(mapSize, cellSize);
+        }
+
+        private void BlockedCellCountShouldBe(int expectedBlockedCellCount)
+        {
+            Assert.AreEqual(expectedBlockedCellCount, mapModel.GetBlockedCellCount);
         }
 
         private void GridPositionShouldBe(InGameMapCell cell, int expectedPosX, int expectedPosY)

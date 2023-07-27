@@ -6,6 +6,7 @@ namespace GameCore
     public class InGameMapModel
     {
         private readonly List<IntVector2> blockedCellList;
+        public int GetBlockedCellCount => blockedCellList.Count;
         private Vector2 CellUnitSize { get; }
         private Vector2 FullMapSize { get; }
         private bool IsMapValid => FullMapSize.x == 0 || FullMapSize.y == 0;
@@ -63,7 +64,10 @@ namespace GameCore
 
         public void SetCellBlocked(int gridX, int gridY)
         {
-            blockedCellList.Add(new IntVector2(gridX, gridY));
+            IntVector2 pos = new IntVector2(gridX, gridY);
+
+            if (blockedCellList.Contains(pos) == false)
+                blockedCellList.Add(pos);
         }
 
         private bool IsInBlockedCell(IntVector2 pos)
