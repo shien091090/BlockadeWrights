@@ -5,17 +5,13 @@ namespace GameCore
 {
     public class InGameMapModel
     {
-        private Vector2 TouchRange { get; }
         private Vector2 CellUnitSize { get; }
         private Vector2 FullMapSize { get; }
 
-        public InGameMapModel(Vector2 mapSize, Vector2 cellSize, Vector2 touchRange = default)
+        public InGameMapModel(Vector2 mapSize, Vector2 cellSize)
         {
             FullMapSize = mapSize;
             CellUnitSize = cellSize;
-            TouchRange = touchRange == default ?
-                CellUnitSize :
-                touchRange;
         }
 
         public InGameMapCell GetCellInfo(Vector3 pos)
@@ -34,7 +30,7 @@ namespace GameCore
             return new InGameMapCell(gridX, gridY, CellUnitSize, FullMapSize);
         }
 
-        public InGameMapCell GetCellInfo(Vector2 pos, FaceDirectionState faceDir)
+        public InGameMapCell GetCellInfo(Vector2 pos, FaceDirectionState faceDir, Vector2 touchRange = default)
         {
             Vector2 offsetBase = faceDir switch
             {
@@ -49,7 +45,11 @@ namespace GameCore
                 _ => Vector2.zero
             };
 
-            Vector2 offset = new Vector2(offsetBase.x * TouchRange.x, offsetBase.y * TouchRange.y);
+            Vector2 range = touchRange == default ?
+                CellUnitSize :
+                touchRange;
+
+            Vector2 offset = new Vector2(offsetBase.x * range.x, offsetBase.y * range.y);
             return GetCellInfo(pos + offset);
         }
     }

@@ -150,13 +150,13 @@ namespace GameCore.Tests.Map
         //取得所在位置為基準點的指定面向的有效格子(伸手範圍小於一格)
         public void get_valid_cell_by_direction_and_touch_range_smaller_then_one_cell(FaceDirectionState faceDir, int expectedGridX, int expectedGridY)
         {
-            GivenMapModel(new Vector2(10, 10), new Vector2(1, 1), new Vector2(0.5f, 0.5f));
+            GivenMapModel(new Vector2(10, 10), new Vector2(1, 1));
 
             Vector2 pos = new Vector2(-4.99f, 4.1f);
             InGameMapCell centerCell = mapModel.GetCellInfo(pos);
             GridPositionShouldBe(centerCell, 0, 9);
 
-            InGameMapCell specificDirCell = mapModel.GetCellInfo(pos, faceDir);
+            InGameMapCell specificDirCell = mapModel.GetCellInfo(pos, faceDir, new Vector2(0.5f, 0.5f));
             CellShouldBeEmpty(specificDirCell, false);
             GridPositionShouldBe(specificDirCell, expectedGridX, expectedGridY);
         }
@@ -186,21 +186,19 @@ namespace GameCore.Tests.Map
         //取得所在位置為基準點的指定面向的無效格子(伸手範圍小於一格)
         public void get_invalid_cell_by_direction_and_touch_range_smaller_then_one_cell(FaceDirectionState faceDir)
         {
-            GivenMapModel(new Vector2(10, 10), new Vector2(1, 1), new Vector2(0.5f, 0.5f));
+            GivenMapModel(new Vector2(10, 10), new Vector2(1, 1));
 
             Vector2 pos = new Vector2(-4.99f, 4.1f);
             InGameMapCell centerCell = mapModel.GetCellInfo(pos);
             GridPositionShouldBe(centerCell, 0, 9);
 
-            InGameMapCell specificDirCell = mapModel.GetCellInfo(pos, faceDir);
+            InGameMapCell specificDirCell = mapModel.GetCellInfo(pos, faceDir, new Vector2(0.5f, 0.5f));
             CellShouldBeEmpty(specificDirCell, true);
         }
 
-        private void GivenMapModel(Vector2 mapSize, Vector2 cellSize, Vector2 touchRange = default)
+        private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
         {
-            mapModel = touchRange == default ?
-                new InGameMapModel(mapSize, cellSize) :
-                new InGameMapModel(mapSize, cellSize, touchRange);
+            mapModel = new InGameMapModel(mapSize, cellSize);
         }
 
         private void GridPositionShouldBe(InGameMapCell cell, int expectedPosX, int expectedPosY)
