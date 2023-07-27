@@ -5,18 +5,21 @@ namespace GameCore
     public class PlayerModel
     {
         private readonly IInputAxisController inputAxisController;
-        public FaceDirection FaceDirection { get; }
+        public FaceDirection LookFaceDirection { get; }
+        public FaceDirection GridFaceDirection { get; }
 
         public PlayerModel(IInputAxisController inputAxisController)
         {
             this.inputAxisController = inputAxisController;
-            FaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
+            LookFaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
+            GridFaceDirection = new FaceDirection(new OctagonalDirectionStrategy(), FaceDirectionState.Right);
         }
 
         public Vector2 UpdateMove(float speed, float deltaTime)
         {
             Vector2 moveVector = new Vector2(inputAxisController.GetHorizontalAxis(), inputAxisController.GetVerticalAxis()) * speed * deltaTime;
-            FaceDirection.MoveToChangeFaceDirection(moveVector);
+            LookFaceDirection.MoveToChangeFaceDirection(moveVector);
+            GridFaceDirection.MoveToChangeFaceDirection(moveVector);
 
             return moveVector;
         }

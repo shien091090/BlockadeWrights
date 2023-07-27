@@ -19,27 +19,36 @@ namespace GameCore
         private void Start()
         {
             inGameMapModel = new InGameMapModel(new Vector2(18, 10), new Vector2(1, 1));
-            playerModel.FaceDirection.OnFaceDirectionChanged -= ChangeFaceDirection;
-            playerModel.FaceDirection.OnFaceDirectionChanged += ChangeFaceDirection;
+
+            RegisterEvent();
         }
 
         private void Update()
         {
             transform.Translate(playerModel.UpdateMove(moveSpeed, Time.deltaTime));
-            UpdateCellHintPos();
+            RefreshCellHintPos(playerModel.GridFaceDirection.CurrentFaceDirectionState);
         }
 
-        private void UpdateCellHintPos()
+        private void RefreshCellHintPos(FaceDirectionState faceDir)
         {
-            InGameMapCell cell = inGameMapModel.GetCellInfo(transform.position);
+            InGameMapCell cell = inGameMapModel.GetCellInfo(transform.position, faceDir);
+
+            cellHint.gameObject.SetActive(cell.IsEmpty == false);
+
             if (cell.IsEmpty == false)
                 cellHint.position = cell.CenterPosition;
         }
 
-        private void ChangeFaceDirection(FaceDirectionState faceDirectionState)
+        private void RefreshFaceDirection(FaceDirectionState faceDirectionState)
         {
             ChangeHorizontalDirection(faceDirectionState);
             ChangeVerticalDirection(faceDirectionState);
+        }
+
+        private void RegisterEvent()
+        {
+            playerModel.LookFaceDirection.OnFaceDirectionChanged -= RefreshFaceDirection;
+            playerModel.LookFaceDirection.OnFaceDirectionChanged += RefreshFaceDirection;
         }
 
         private void ChangeVerticalDirection(FaceDirectionState faceDirectionState)

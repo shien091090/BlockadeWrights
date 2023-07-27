@@ -126,7 +126,8 @@ namespace GameCore.Tests.Map
         [Test]
         [TestCase(FaceDirectionState.Up, 5, 1)]
         [TestCase(FaceDirectionState.UpAndRight, 6, 1)]
-        [TestCase(FaceDirectionState.Left, 4, 0)]
+        [TestCase(FaceDirectionState.UpAndLeft, 4, 1)]
+        [TestCase(FaceDirectionState.Right, 6, 0)]
         //取得所在位置為基準點的指定面向的有效格子
         public void get_valid_cell_by_direction(FaceDirectionState faceDir, int expectedGridX, int expectedGridY)
         {
@@ -140,10 +141,30 @@ namespace GameCore.Tests.Map
             CellShouldBeEmpty(specificDirCell, false);
             GridPositionShouldBe(specificDirCell, expectedGridX, expectedGridY);
         }
-        
+
+        [Test]
+        [TestCase(FaceDirectionState.Up, 0, 9)]
+        [TestCase(FaceDirectionState.UpAndRight, 0, 9)]
+        [TestCase(FaceDirectionState.DownAndRight, 0, 8)]
+        [TestCase(FaceDirectionState.Down, 0, 8)]
+        //取得所在位置為基準點的指定面向的有效格子(伸手範圍小於一格)
+        public void get_valid_cell_by_direction_and_touch_range_smaller_then_one_cell(FaceDirectionState faceDir, int expectedGridX, int expectedGridY)
+        {
+            GivenMapModel(new Vector2(10, 10), new Vector2(1, 1), new Vector2(0.5f, 0.5f));
+
+            Vector2 pos = new Vector2(-4.99f, 4.1f);
+            InGameMapCell centerCell = mapModel.GetCellInfo(pos);
+            GridPositionShouldBe(centerCell, 0, 9);
+
+            InGameMapCell specificDirCell = mapModel.GetCellInfo(pos, faceDir);
+            CellShouldBeEmpty(specificDirCell, false);
+            GridPositionShouldBe(specificDirCell, expectedGridX, expectedGridY);
+        }
+
         [Test]
         [TestCase(FaceDirectionState.Down)]
         [TestCase(FaceDirectionState.DownAndRight)]
+        [TestCase(FaceDirectionState.DownAndLeft)]
         [TestCase(FaceDirectionState.Left)]
         //取得所在位置為基準點的指定面向的無效格子
         public void get_invalid_cell_by_direction(FaceDirectionState faceDir)
@@ -158,9 +179,11 @@ namespace GameCore.Tests.Map
             CellShouldBeEmpty(specificDirCell, true);
         }
 
-        private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
+        private void GivenMapModel(Vector2 mapSize, Vector2 cellSize, Vector2 touchRange = default)
         {
-            mapModel = new InGameMapModel(mapSize, cellSize);
+            mapModel = touchRange == default ?
+                new InGameMapModel(mapSize, cellSize) :
+                new InGameMapModel(mapSize, cellSize, touchRange);
         }
 
         private void GridPositionShouldBe(InGameMapCell cell, int expectedPosX, int expectedPosY)

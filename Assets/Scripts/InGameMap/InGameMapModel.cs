@@ -5,13 +5,17 @@ namespace GameCore
 {
     public class InGameMapModel
     {
+        private Vector2 TouchRange { get; }
         private Vector2 CellUnitSize { get; }
         private Vector2 FullMapSize { get; }
 
-        public InGameMapModel(Vector2 mapSize, Vector2 cellSize)
+        public InGameMapModel(Vector2 mapSize, Vector2 cellSize, Vector2 touchRange = default)
         {
             FullMapSize = mapSize;
             CellUnitSize = cellSize;
+            TouchRange = touchRange == default ?
+                CellUnitSize :
+                touchRange;
         }
 
         public InGameMapCell GetCellInfo(Vector3 pos)
@@ -35,7 +39,7 @@ namespace GameCore
             Vector2 offsetBase = faceDir switch
             {
                 FaceDirectionState.UpAndRight => new Vector2(1, 1),
-                FaceDirectionState.UpAndLeft => new Vector2(1, -1),
+                FaceDirectionState.UpAndLeft => new Vector2(-1, 1),
                 FaceDirectionState.DownAndRight => new Vector2(1, -1),
                 FaceDirectionState.DownAndLeft => new Vector2(-1, -1),
                 FaceDirectionState.Up => new Vector2(0, 1),
@@ -45,7 +49,7 @@ namespace GameCore
                 _ => Vector2.zero
             };
 
-            Vector2 offset = new Vector2(offsetBase.x * CellUnitSize.x, offsetBase.y * CellUnitSize.y);
+            Vector2 offset = new Vector2(offsetBase.x * TouchRange.x, offsetBase.y * TouchRange.y);
             return GetCellInfo(pos + offset);
         }
     }
