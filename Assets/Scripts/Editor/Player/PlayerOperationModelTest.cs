@@ -1,3 +1,4 @@
+using System;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -7,12 +8,16 @@ namespace GameCore.Tests.Player
     {
         private PlayerOperationModel playerOperationModel;
         private IInGameMapCell targetMapCell;
+        private Action<IInGameMapCell> onCreateBuilding;
 
         [SetUp]
         public void Setup()
         {
             playerOperationModel = new PlayerOperationModel();
             targetMapCell = Substitute.For<IInGameMapCell>();
+
+            onCreateBuilding = Substitute.For<Action<IInGameMapCell>>();
+            playerOperationModel.OnCreateBuilding += onCreateBuilding;
         }
 
         [Test]
@@ -22,6 +27,7 @@ namespace GameCore.Tests.Player
             GivenCellIsEmpty(true);
 
             ShouldAbleCreateBuilding(false);
+            ShouldTriggerCreateBuildingEvent(0);
         }
 
         [Test]
@@ -31,11 +37,20 @@ namespace GameCore.Tests.Player
             GivenCellIsEmpty(false);
 
             ShouldAbleCreateBuilding(true);
+            ShouldTriggerCreateBuildingEvent(1);
         }
 
         private void GivenCellIsEmpty(bool isEmpty)
         {
             targetMapCell.IsEmpty.Returns(isEmpty);
+        }
+
+        private void ShouldTriggerCreateBuildingEvent(int triggerTimes)
+        {
+            if (triggerTimes == 0)
+                onCreateBuilding.DidNotReceive().Invoke(Arg.Any<IInGameMapCell>());
+            else
+                onCreateBuilding.Received(triggerTimes).Invoke(Arg.Any<IInGameMapCell>());
         }
 
         private void ShouldAbleCreateBuilding(bool expectedAbleCreate)
