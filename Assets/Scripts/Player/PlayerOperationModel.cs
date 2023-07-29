@@ -2,7 +2,7 @@ namespace GameCore.Tests.Player
 {
     public class PlayerOperationModel
     {
-        public bool CreateBuilding(int gridX, int gridY)
+        public bool CreateBuilding(InGameMapCell targetMapCell)
         {
             return false;
         }

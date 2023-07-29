@@ -9,7 +9,9 @@ namespace GameCore.Tests.Player
         public void build_on_invalid_cell()
         {
             PlayerOperationModel playerOperationModel = new PlayerOperationModel();
-            bool isCreateSuccess = playerOperationModel.CreateBuilding(5, 5);
+            
+            InGameMapCell emptyCell = InGameMapCell.GetEmptyCell();
+            bool isCreateSuccess = playerOperationModel.CreateBuilding(emptyCell);
 
             Assert.AreEqual(false, isCreateSuccess);
         }
