@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public struct InGameMapCell
+    public struct InGameMapCell : IInGameMapCell
     {
         public InGameMapCell(int gridX, int gridY, Vector2 cellSize, Vector2 fullMapSize)
         {

@@ -2,9 +2,9 @@ namespace GameCore.Tests.Player
 {
     public class PlayerOperationModel
     {
-        public bool CreateBuilding(InGameMapCell targetMapCell)
+        public bool CreateBuilding(IInGameMapCell targetMapCell)
         {
-            return false;
+            return targetMapCell.IsEmpty == false;
         }
     }
 }
