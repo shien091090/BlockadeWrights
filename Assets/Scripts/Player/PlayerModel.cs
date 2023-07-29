@@ -1,3 +1,4 @@
+using GameCore.Tests.Player;
 using UnityEngine;
 
 namespace GameCore
@@ -5,14 +6,19 @@ namespace GameCore
     public class PlayerModel
     {
         private readonly IInputAxisController inputAxisController;
+        private readonly IInputKeyController inputKeyController;
         private readonly IInGameMapModel inGameMapModel;
+        private readonly IPlayerOperationModel playerOperationModel;
         public FaceDirection LookFaceDirection { get; }
         public FaceDirection GridFaceDirection { get; }
 
-        public PlayerModel(IInputAxisController inputAxisController, IInGameMapModel inGameMapModel)
+        public PlayerModel(IInputAxisController inputAxisController, IInputKeyController inputKeyController, IInGameMapModel inGameMapModel,
+            IPlayerOperationModel playerOperationModel)
         {
             this.inputAxisController = inputAxisController;
             this.inGameMapModel = inGameMapModel;
+            this.playerOperationModel = playerOperationModel;
+            this.inputKeyController = inputKeyController;
 
             LookFaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
             GridFaceDirection = new FaceDirection(new OctagonalDirectionStrategy(), FaceDirectionState.Right);
@@ -27,10 +33,20 @@ namespace GameCore
             return moveVector;
         }
 
+        public bool UpdateCheckClickBuildButton()
+        {
+            return inputKeyController.GetBuildKeyDown();
+        }
+
         public InGameMapCell GetCurrentFaceCell(Vector3 pos, Vector2 touchRange)
         {
             InGameMapCell cell = inGameMapModel.GetCellInfo(pos, GridFaceDirection.CurrentFaceDirectionState, touchRange);
             return cell;
+        }
+
+        public void BuildBuilding(IInGameMapCell targetMapCell)
+        {
+            playerOperationModel.CreateBuilding(targetMapCell);
         }
     }
 }

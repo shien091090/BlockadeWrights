@@ -2,7 +2,7 @@ using System;
 
 namespace GameCore.Tests.Player
 {
-    public class PlayerOperationModel
+    public class PlayerOperationModel : IPlayerOperationModel
     {
         public event Action<IInGameMapCell> OnCreateBuilding;
 

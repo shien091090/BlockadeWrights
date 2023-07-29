@@ -8,14 +8,19 @@ namespace GameCore.Tests.Player
     {
         private PlayerModel playerModel;
         private IInputAxisController inputAxisController;
+        private IInputKeyController inputKeyController;
         private IInGameMapModel inGameMapModel;
+        private IPlayerOperationModel playerOperationModel;
 
         [SetUp]
         public void Setup()
         {
             inputAxisController = Substitute.For<IInputAxisController>();
+            inputKeyController = Substitute.For<IInputKeyController>();
             inGameMapModel = Substitute.For<IInGameMapModel>();
-            playerModel = new PlayerModel(inputAxisController, inGameMapModel);
+            playerOperationModel = Substitute.For<IPlayerOperationModel>();
+
+            playerModel = new PlayerModel(inputAxisController, inputKeyController, inGameMapModel, playerOperationModel);
         }
 
         [Test]

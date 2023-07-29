@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GameCore.Tests.Player;
 using UnityEngine;
 
 namespace GameCore
@@ -6,17 +7,22 @@ namespace GameCore
     public class InGameMapModel : IInGameMapModel
     {
         private readonly List<IntVector2> blockedCellList;
+        private IPlayerOperationModel playerOperationModel;
         public int GetBlockedCellCount => blockedCellList.Count;
         private Vector2 CellUnitSize { get; }
         private Vector2 FullMapSize { get; }
         private bool IsMapValid => FullMapSize.x == 0 || FullMapSize.y == 0;
         private bool IsCellUnitValid => CellUnitSize.x == 0 || CellUnitSize.y == 0;
 
-        public InGameMapModel(IInGameMapSetting mapSetting)
+        public InGameMapModel(IInGameMapSetting mapSetting, IPlayerOperationModel playerOperationModel)
         {
+            this.playerOperationModel = playerOperationModel;
+
             blockedCellList = new List<IntVector2>();
             FullMapSize = mapSetting.MapSize;
             CellUnitSize = mapSetting.CellSize;
+
+            RegisterEvent();
         }
 
         public InGameMapCell GetCellInfo(Vector2 pos, FaceDirectionState faceDir, Vector2 touchRange = default)
@@ -62,12 +68,10 @@ namespace GameCore
             return new InGameMapCell(gridX, gridY, CellUnitSize, FullMapSize);
         }
 
-        public void SetCellBlocked(int gridX, int gridY)
+        public void SetCellBlocked(IntVector2 gridPos)
         {
-            IntVector2 pos = new IntVector2(gridX, gridY);
-
-            if (blockedCellList.Contains(pos) == false)
-                blockedCellList.Add(pos);
+            if (blockedCellList.Contains(gridPos) == false)
+                blockedCellList.Add(gridPos);
         }
 
         private bool IsInBlockedCell(IntVector2 pos)
@@ -78,6 +82,17 @@ namespace GameCore
         private bool IsOutOfMap(Vector3 pos)
         {
             return pos.x >= FullMapSize.x / 2 || pos.y >= FullMapSize.y / 2 || pos.x < -FullMapSize.x / 2 || pos.y < -FullMapSize.y / 2;
+        }
+
+        private void AddBlockedCell(IInGameMapCell targetMapCell)
+        {
+            SetCellBlocked(targetMapCell.GridPosition);
+        }
+
+        private void RegisterEvent()
+        {
+            playerOperationModel.OnCreateBuilding -= AddBlockedCell;
+            playerOperationModel.OnCreateBuilding += AddBlockedCell;
         }
     }
 }

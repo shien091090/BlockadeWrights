@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using GameCore.Tests.Player;
 using UnityEngine;
+using Zenject;
 
 namespace GameCore
 {
@@ -10,11 +12,14 @@ namespace GameCore
 
         [SerializeField] private BuildingView buildingPrefab;
         [SerializeField] private Transform holderRoot;
-        
+
+        [Inject] private IPlayerOperationModel playerOperationModel;
+
         private readonly List<BuildingView> buildingList = new List<BuildingView>();
 
         private void Start()
         {
+            RegisterEvent();
             InitBuildingPool();
         }
 
@@ -23,11 +28,11 @@ namespace GameCore
             for (int i = 0; i < PRE_SPAWN_COUNT; i++)
             {
                 BuildingView newEmptyBuilding = CreateNewBuilding();
-                newEmptyBuilding.gameObject.SetActive(false);
+                newEmptyBuilding.Hide();
             }
         }
 
-        public void CreateBuilding(Vector2 pos)
+        private void CreateBuilding(Vector2 pos)
         {
             BuildingView hidingBuilding = buildingList.FirstOrDefault(x => x.gameObject.activeSelf == false);
             BuildingView buildingView = hidingBuilding;
@@ -35,6 +40,13 @@ namespace GameCore
                 buildingView = CreateNewBuilding();
 
             buildingView.transform.position = pos;
+            buildingView.Show();
+        }
+
+        private void RegisterEvent()
+        {
+            playerOperationModel.OnCreateBuilding -= OnBuildNewBuilding;
+            playerOperationModel.OnCreateBuilding += OnBuildNewBuilding;
         }
 
         private BuildingView CreateNewBuilding()
@@ -42,6 +54,11 @@ namespace GameCore
             BuildingView newBuilding = Instantiate(buildingPrefab, holderRoot);
             buildingList.Add(newBuilding);
             return newBuilding;
+        }
+
+        private void OnBuildNewBuilding(IInGameMapCell targetMapCell)
+        {
+            CreateBuilding(targetMapCell.CenterPosition);
         }
     }
 }

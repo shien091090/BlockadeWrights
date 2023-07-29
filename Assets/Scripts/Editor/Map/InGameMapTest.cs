@@ -1,3 +1,4 @@
+using GameCore.Tests.Player;
 using NSubstitute;
 using NUnit.Framework;
 using UnityEngine;
@@ -8,10 +9,12 @@ namespace GameCore.Tests.Map
     {
         private InGameMapModel mapModel;
         private IInGameMapSetting inGameMapSetting;
+        private IPlayerOperationModel playerOperationModel;
 
         [SetUp]
         public void Setup()
         {
+            playerOperationModel = Substitute.For<IPlayerOperationModel>();
             inGameMapSetting = Substitute.For<IInGameMapSetting>();
             mapModel = null;
         }
@@ -228,7 +231,7 @@ namespace GameCore.Tests.Map
 
         private void GivenBlockedCell(int gridX, int gridY)
         {
-            mapModel.SetCellBlocked(gridX, gridY);
+            mapModel.SetCellBlocked(new IntVector2(gridX, gridY));
         }
 
         private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
@@ -236,7 +239,7 @@ namespace GameCore.Tests.Map
             inGameMapSetting.MapSize.Returns(mapSize);
             inGameMapSetting.CellSize.Returns(cellSize);
 
-            mapModel = new InGameMapModel(inGameMapSetting);
+            mapModel = new InGameMapModel(inGameMapSetting, playerOperationModel);
         }
 
         private void BlockedCellCountShouldBe(int expectedBlockedCellCount)

@@ -1,4 +1,5 @@
 using System;
+using GameCore.Tests.Player;
 using UnityEngine;
 using Zenject;
 
@@ -15,7 +16,6 @@ namespace GameCore
 
         [Inject] private PlayerModel playerModel;
 
-
         private void Start()
         {
             RegisterEvent();
@@ -24,14 +24,16 @@ namespace GameCore
         private void Update()
         {
             transform.Translate(playerModel.UpdateMove(moveSpeed, Time.deltaTime));
-            RefreshCellHintPos();
+
+            InGameMapCell cell = playerModel.GetCurrentFaceCell(transform.position, touchRange);
+            if (playerModel.UpdateCheckClickBuildButton())
+                playerModel.BuildBuilding(cell);
+
+            RefreshCellHintPos(cell);
         }
 
-
-        private void RefreshCellHintPos()
+        private void RefreshCellHintPos(InGameMapCell cell)
         {
-            InGameMapCell cell = playerModel.GetCurrentFaceCell(transform.position, touchRange);
-
             cellHint.gameObject.SetActive(cell.IsEmpty == false);
 
             if (cell.IsEmpty == false)
