@@ -15,24 +15,22 @@ namespace GameCore
 
         [Inject] private PlayerModel playerModel;
 
-        private InGameMapModel inGameMapModel;
 
         private void Start()
         {
-            inGameMapModel = new InGameMapModel(new Vector2(18, 10), new Vector2(1, 1));
-
             RegisterEvent();
         }
 
         private void Update()
         {
             transform.Translate(playerModel.UpdateMove(moveSpeed, Time.deltaTime));
-            RefreshCellHintPos(playerModel.GridFaceDirection.CurrentFaceDirectionState);
+            RefreshCellHintPos();
         }
 
-        private void RefreshCellHintPos(FaceDirectionState faceDir)
+
+        private void RefreshCellHintPos()
         {
-            InGameMapCell cell = inGameMapModel.GetCellInfo(transform.position, faceDir, touchRange);
+            InGameMapCell cell = playerModel.GetCurrentFaceCell(transform.position, touchRange);
 
             cellHint.gameObject.SetActive(cell.IsEmpty == false);
 

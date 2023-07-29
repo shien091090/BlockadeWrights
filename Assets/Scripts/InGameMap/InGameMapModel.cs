@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public class InGameMapModel
+    public class InGameMapModel : IInGameMapModel
     {
         private readonly List<IntVector2> blockedCellList;
         public int GetBlockedCellCount => blockedCellList.Count;
@@ -12,31 +12,11 @@ namespace GameCore
         private bool IsMapValid => FullMapSize.x == 0 || FullMapSize.y == 0;
         private bool IsCellUnitValid => CellUnitSize.x == 0 || CellUnitSize.y == 0;
 
-        public InGameMapModel(Vector2 mapSize, Vector2 cellSize)
+        public InGameMapModel(IInGameMapSetting mapSetting)
         {
             blockedCellList = new List<IntVector2>();
-            FullMapSize = mapSize;
-            CellUnitSize = cellSize;
-        }
-
-        public InGameMapCell GetCellInfo(Vector3 pos)
-        {
-            if (IsMapValid)
-                return InGameMapCell.GetEmptyCell();
-
-            if (IsCellUnitValid)
-                return InGameMapCell.GetEmptyCell();
-
-            if (IsOutOfMap(pos))
-                return InGameMapCell.GetEmptyCell();
-
-            int gridX = Mathf.FloorToInt((pos.x + FullMapSize.x / 2) / CellUnitSize.x);
-            int gridY = Mathf.FloorToInt((pos.y + FullMapSize.y / 2) / CellUnitSize.y);
-
-            if (IsInBlockedCell(new IntVector2(gridX, gridY)))
-                return InGameMapCell.GetEmptyCell();
-
-            return new InGameMapCell(gridX, gridY, CellUnitSize, FullMapSize);
+            FullMapSize = mapSetting.MapSize;
+            CellUnitSize = mapSetting.CellSize;
         }
 
         public InGameMapCell GetCellInfo(Vector2 pos, FaceDirectionState faceDir, Vector2 touchRange = default)
@@ -60,6 +40,26 @@ namespace GameCore
 
             Vector2 offset = new Vector2(offsetBase.x * range.x, offsetBase.y * range.y);
             return GetCellInfo(pos + offset);
+        }
+
+        public InGameMapCell GetCellInfo(Vector3 pos)
+        {
+            if (IsMapValid)
+                return InGameMapCell.GetEmptyCell();
+
+            if (IsCellUnitValid)
+                return InGameMapCell.GetEmptyCell();
+
+            if (IsOutOfMap(pos))
+                return InGameMapCell.GetEmptyCell();
+
+            int gridX = Mathf.FloorToInt((pos.x + FullMapSize.x / 2) / CellUnitSize.x);
+            int gridY = Mathf.FloorToInt((pos.y + FullMapSize.y / 2) / CellUnitSize.y);
+
+            if (IsInBlockedCell(new IntVector2(gridX, gridY)))
+                return InGameMapCell.GetEmptyCell();
+
+            return new InGameMapCell(gridX, gridY, CellUnitSize, FullMapSize);
         }
 
         public void SetCellBlocked(int gridX, int gridY)

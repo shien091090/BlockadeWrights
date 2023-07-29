@@ -7,6 +7,7 @@ namespace GameCore
         public override void InstallBindings()
         {
             Container.Bind<IInputAxisController>().To<InputAxisController>().AsSingle();
+            Container.Bind<IInGameMapModel>().To<InGameMapModel>().AsSingle();
             Container.Bind<PlayerModel>().AsSingle();
         }
     }

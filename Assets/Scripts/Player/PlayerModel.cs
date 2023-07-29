@@ -5,12 +5,15 @@ namespace GameCore
     public class PlayerModel
     {
         private readonly IInputAxisController inputAxisController;
+        private readonly IInGameMapModel inGameMapModel;
         public FaceDirection LookFaceDirection { get; }
         public FaceDirection GridFaceDirection { get; }
 
-        public PlayerModel(IInputAxisController inputAxisController)
+        public PlayerModel(IInputAxisController inputAxisController, IInGameMapModel inGameMapModel)
         {
             this.inputAxisController = inputAxisController;
+            this.inGameMapModel = inGameMapModel;
+
             LookFaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
             GridFaceDirection = new FaceDirection(new OctagonalDirectionStrategy(), FaceDirectionState.Right);
         }
@@ -22,6 +25,12 @@ namespace GameCore
             GridFaceDirection.MoveToChangeFaceDirection(moveVector);
 
             return moveVector;
+        }
+
+        public InGameMapCell GetCurrentFaceCell(Vector3 pos, Vector2 touchRange)
+        {
+            InGameMapCell cell = inGameMapModel.GetCellInfo(pos, GridFaceDirection.CurrentFaceDirectionState, touchRange);
+            return cell;
         }
     }
 }

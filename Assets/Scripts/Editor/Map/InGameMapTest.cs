@@ -1,3 +1,4 @@
+using NSubstitute;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -6,10 +7,12 @@ namespace GameCore.Tests.Map
     public class InGameMapTest
     {
         private InGameMapModel mapModel;
+        private IInGameMapSetting inGameMapSetting;
 
         [SetUp]
         public void Setup()
         {
+            inGameMapSetting = Substitute.For<IInGameMapSetting>();
             mapModel = null;
         }
 
@@ -230,7 +233,10 @@ namespace GameCore.Tests.Map
 
         private void GivenMapModel(Vector2 mapSize, Vector2 cellSize)
         {
-            mapModel = new InGameMapModel(mapSize, cellSize);
+            inGameMapSetting.MapSize.Returns(mapSize);
+            inGameMapSetting.CellSize.Returns(cellSize);
+
+            mapModel = new InGameMapModel(inGameMapSetting);
         }
 
         private void BlockedCellCountShouldBe(int expectedBlockedCellCount)
