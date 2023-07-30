@@ -59,6 +59,15 @@ namespace GameCore.Tests.Player
             ShouldMoveLeftAndDown(moveVector);
         }
 
+        [Test]
+        //按下建造按鍵
+        public void press_build_key()
+        {
+            InGameMapCell emptyCell = InGameMapCell.GetEmptyCell();
+            inputKeyController.GetBuildKeyDown().Returns(true);
+            playerModel.UpdateCheckBuild(emptyCell);
+            playerOperationModel.Received(1).CreateBuilding(Arg.Any<IInGameMapCell>());
+        }
 
         private void GivenMoveAxis(float horizontalAxis, float verticalAxis)
         {

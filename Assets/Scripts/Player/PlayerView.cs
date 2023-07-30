@@ -26,13 +26,11 @@ namespace GameCore
             transform.Translate(playerModel.UpdateMove(moveSpeed, Time.deltaTime));
 
             InGameMapCell cell = playerModel.GetCurrentFaceCell(transform.position, touchRange);
-            if (playerModel.UpdateCheckClickBuildButton())
-                playerModel.BuildBuilding(cell);
-
-            RefreshCellHintPos(cell);
+            playerModel.UpdateCheckBuild(cell);
+            RefreshCellHint(cell);
         }
 
-        private void RefreshCellHintPos(InGameMapCell cell)
+        private void RefreshCellHint(InGameMapCell cell)
         {
             cellHint.gameObject.SetActive(cell.IsEmpty == false);
 

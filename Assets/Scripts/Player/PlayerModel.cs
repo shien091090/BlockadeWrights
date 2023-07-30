@@ -33,20 +33,16 @@ namespace GameCore
             return moveVector;
         }
 
-        public bool UpdateCheckClickBuildButton()
+        public void UpdateCheckBuild(IInGameMapCell cell)
         {
-            return inputKeyController.GetBuildKeyDown();
+            if (inputKeyController.GetBuildKeyDown())
+                playerOperationModel.CreateBuilding(cell);
         }
 
-        public InGameMapCell GetCurrentFaceCell(Vector3 pos, Vector2 touchRange)
+        public InGameMapCell GetCurrentFaceCell(Vector2 pos, Vector2 touchRange)
         {
             InGameMapCell cell = inGameMapModel.GetCellInfo(pos, GridFaceDirection.CurrentFaceDirectionState, touchRange);
             return cell;
-        }
-
-        public void BuildBuilding(IInGameMapCell targetMapCell)
-        {
-            playerOperationModel.CreateBuilding(targetMapCell);
         }
     }
 }
