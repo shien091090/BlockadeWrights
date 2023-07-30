@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using GameCore.Tests.Player;
 using UnityEngine;
 using Zenject;
 

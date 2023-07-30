@@ -1,4 +1,3 @@
-using GameCore.Tests.Player;
 using Zenject;
 
 namespace GameCore

@@ -1,4 +1,3 @@
-using GameCore.Tests.Player;
 using UnityEngine;
 
 namespace GameCore

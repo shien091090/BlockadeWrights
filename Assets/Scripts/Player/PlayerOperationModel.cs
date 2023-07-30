@@ -1,6 +1,6 @@
 using System;
 
-namespace GameCore.Tests.Player
+namespace GameCore
 {
     public class PlayerOperationModel : IPlayerOperationModel
     {

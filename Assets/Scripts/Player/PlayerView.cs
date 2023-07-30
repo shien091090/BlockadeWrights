@@ -1,5 +1,4 @@
 using System;
-using GameCore.Tests.Player;
 using UnityEngine;
 using Zenject;
 
