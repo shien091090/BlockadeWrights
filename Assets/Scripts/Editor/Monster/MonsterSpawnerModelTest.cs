@@ -6,41 +6,53 @@ namespace GameCore.Tests.Monster
 {
     public class MonsterSpawnerModelTest
     {
-        private IAttackWave attackWave;
         private MonsterSpawnerModel monsterSpawnerModel;
         private Action onSpawnMonster;
 
         [SetUp]
         public void Setup()
         {
-            attackWave = Substitute.For<IAttackWave>();
-            monsterSpawnerModel = new MonsterSpawnerModel(attackWave);
-
             onSpawnMonster = Substitute.For<Action>();
+            monsterSpawnerModel = new MonsterSpawnerModel();
             monsterSpawnerModel.OnSpawnMonster += onSpawnMonster;
         }
 
         [Test]
-        //目前波次已達產怪上限
-        public void current_wave_is_spawn_completed()
+        //產怪一次
+        public void spawn_monster_one_time()
         {
-            GivenMaxSpawnCount(5);
-            GivenCurrentSpawnCount(5);
+            monsterSpawnerModel.SetAttackWave(3);
+            monsterSpawnerModel.Spawn();
 
+            ShouldCanSpawnNext(true);
+            ShouldTriggerSpawnEvent(1);
+        }
+
+        [Test]
+        //產怪至上限
+        public void spawn_monster_to_max()
+        {
+            monsterSpawnerModel.SetAttackWave(3);
+            monsterSpawnerModel.Spawn();
+            monsterSpawnerModel.Spawn();
             monsterSpawnerModel.Spawn();
 
             ShouldCanSpawnNext(false);
-            ShouldTriggerSpawnEvent(0);
+            ShouldTriggerSpawnEvent(3);
         }
 
-        private void GivenCurrentSpawnCount(int currentSpawnCount)
+        [Test]
+        //產怪超過上限
+        public void spawn_monster_over_max()
         {
-            attackWave.GetCurrentSpawnCount.Returns(currentSpawnCount);
-        }
+            monsterSpawnerModel.SetAttackWave(3);
+            monsterSpawnerModel.Spawn();
+            monsterSpawnerModel.Spawn();
+            monsterSpawnerModel.Spawn();
+            monsterSpawnerModel.Spawn();
 
-        private void GivenMaxSpawnCount(int maxSpawnCount)
-        {
-            attackWave.GetMaxSpawnCount.Returns(maxSpawnCount);
+            ShouldCanSpawnNext(false);
+            ShouldTriggerSpawnEvent(3);
         }
 
         private void ShouldTriggerSpawnEvent(int triggerTimes)
@@ -55,7 +67,5 @@ namespace GameCore.Tests.Monster
         {
             Assert.AreEqual(expectedCanSpawnNext, monsterSpawnerModel.CanSpawnNext);
         }
-
-        //目前波次未達產怪上限
     }
 }

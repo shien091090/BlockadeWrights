@@ -4,19 +4,24 @@ namespace GameCore
 {
     public class MonsterSpawnerModel
     {
-        public event Action OnSpawnMonster;
-        public bool CanSpawnNext => false;
-        private IAttackWave AttackWave { get; }
+        private AttackWave attackWave;
 
-        public MonsterSpawnerModel(IAttackWave attackWave)
-        {
-            AttackWave = attackWave;
-        }
+        public event Action OnSpawnMonster;
+
+        public bool CanSpawnNext => attackWave.GetCurrentSpawnCount < attackWave.GetMaxSpawnCount;
 
         public void Spawn()
         {
-            if (AttackWave.GetCurrentSpawnCount < AttackWave.GetMaxSpawnCount)
-                OnSpawnMonster?.Invoke();
+            if (CanSpawnNext == false)
+                return;
+
+            attackWave.AddSpawnCount(1);
+            OnSpawnMonster?.Invoke();
+        }
+
+        public void SetAttackWave(int spawnCountPerWave)
+        {
+            attackWave = new AttackWave(spawnCountPerWave);
         }
     }
 }
