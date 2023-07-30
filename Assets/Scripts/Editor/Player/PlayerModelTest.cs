@@ -8,19 +8,15 @@ namespace GameCore.Tests.Player
     {
         private PlayerModel playerModel;
         private IInputAxisController inputAxisController;
-        private IInputKeyController inputKeyController;
         private IInGameMapModel inGameMapModel;
-        private IPlayerOperationModel playerOperationModel;
 
         [SetUp]
         public void Setup()
         {
             inputAxisController = Substitute.For<IInputAxisController>();
-            inputKeyController = Substitute.For<IInputKeyController>();
             inGameMapModel = Substitute.For<IInGameMapModel>();
-            playerOperationModel = Substitute.For<IPlayerOperationModel>();
 
-            playerModel = new PlayerModel(inputAxisController, inputKeyController, inGameMapModel, playerOperationModel);
+            playerModel = new PlayerModel(inputAxisController, inGameMapModel);
         }
 
         [Test]
@@ -57,16 +53,6 @@ namespace GameCore.Tests.Player
             GivenMoveAxis(-0.7f, -0.8f);
             Vector2 moveVector = playerModel.UpdateMove(1, 1);
             ShouldMoveLeftAndDown(moveVector);
-        }
-
-        [Test]
-        //按下建造按鍵
-        public void press_build_key()
-        {
-            InGameMapCell emptyCell = InGameMapCell.GetEmptyCell();
-            inputKeyController.GetBuildKeyDown().Returns(true);
-            playerModel.UpdateCheckBuild(emptyCell);
-            playerOperationModel.Received(1).CreateBuilding(Arg.Any<IInGameMapCell>());
         }
 
         private void GivenMoveAxis(float horizontalAxis, float verticalAxis)

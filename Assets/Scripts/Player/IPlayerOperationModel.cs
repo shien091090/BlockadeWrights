@@ -6,5 +6,6 @@ namespace GameCore
     {
         bool CreateBuilding(IInGameMapCell targetMapCell);
         event Action<IInGameMapCell> OnCreateBuilding;
+        void UpdateCheckBuild(IInGameMapCell cell);
     }
 }

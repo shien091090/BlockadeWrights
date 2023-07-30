@@ -9,11 +9,13 @@ namespace GameCore.Tests.Player
         private PlayerOperationModel playerOperationModel;
         private IInGameMapCell targetMapCell;
         private Action<IInGameMapCell> onCreateBuilding;
+        private IInputKeyController inputKeyController;
 
         [SetUp]
         public void Setup()
         {
-            playerOperationModel = new PlayerOperationModel();
+            inputKeyController = Substitute.For<IInputKeyController>();
+            playerOperationModel = new PlayerOperationModel(inputKeyController);
             targetMapCell = Substitute.For<IInGameMapCell>();
 
             onCreateBuilding = Substitute.For<Action<IInGameMapCell>>();
@@ -25,8 +27,10 @@ namespace GameCore.Tests.Player
         public void build_on_invalid_cell()
         {
             GivenCellIsEmpty(true);
+            GivenClickBuildKey();
 
-            ShouldAbleCreateBuilding(false);
+            playerOperationModel.UpdateCheckBuild(targetMapCell);
+
             ShouldTriggerCreateBuildingEvent(0);
         }
 
@@ -35,9 +39,16 @@ namespace GameCore.Tests.Player
         public void build_on_valid_cell()
         {
             GivenCellIsEmpty(false);
+            GivenClickBuildKey();
 
-            ShouldAbleCreateBuilding(true);
+            playerOperationModel.UpdateCheckBuild(targetMapCell);
+
             ShouldTriggerCreateBuildingEvent(1);
+        }
+
+        private void GivenClickBuildKey()
+        {
+            inputKeyController.GetBuildKeyDown().Returns(true);
         }
 
         private void GivenCellIsEmpty(bool isEmpty)
@@ -51,11 +62,6 @@ namespace GameCore.Tests.Player
                 onCreateBuilding.DidNotReceive().Invoke(Arg.Any<IInGameMapCell>());
             else
                 onCreateBuilding.Received(triggerTimes).Invoke(Arg.Any<IInGameMapCell>());
-        }
-
-        private void ShouldAbleCreateBuilding(bool expectedAbleCreate)
-        {
-            Assert.AreEqual(expectedAbleCreate, playerOperationModel.CreateBuilding(targetMapCell));
         }
     }
 }

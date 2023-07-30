@@ -14,6 +14,7 @@ namespace GameCore
         [SerializeField] private Transform cellHint;
 
         [Inject] private PlayerModel playerModel;
+        [Inject] private IPlayerOperationModel playerOperationModel;
 
         private void Start()
         {
@@ -25,7 +26,7 @@ namespace GameCore
             transform.Translate(playerModel.UpdateMove(moveSpeed, Time.deltaTime));
 
             InGameMapCell cell = playerModel.GetCurrentFaceCell(transform.position, touchRange);
-            playerModel.UpdateCheckBuild(cell);
+            playerOperationModel.UpdateCheckBuild(cell);
             RefreshCellHint(cell);
         }
 
