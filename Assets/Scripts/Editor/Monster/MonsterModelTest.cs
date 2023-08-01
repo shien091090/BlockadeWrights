@@ -5,29 +5,56 @@ namespace GameCore.Tests.Monster
 {
     public class MonsterModelTest
     {
+        private MonsterModel monsterModel;
+
         [Test]
         //無行走路線, 不移動
         public void move_no_path()
         {
-            MonsterMovementPath path = new MonsterMovementPath();
-            MonsterModel monsterModel = new MonsterModel(path);
+            GivenPath();
+
             Vector2 moveVector = monsterModel.UpdateMove(1, 1);
-            Assert.AreEqual(0, moveVector.x);
-            Assert.AreEqual(0, moveVector.y);
+
+            ShouldNoMove(moveVector);
         }
 
         [Test]
         //行走路徑僅起點和終點, 往終點移動
         public void move_path_start_to_end()
         {
-            MonsterMovementPath path = new MonsterMovementPath();
-            path.AddPoint(new Vector2(0, 0));
-            path.AddPoint(new Vector2(10, -10));
+            GivenPath(
+                new Vector2(0, 0),
+                new Vector2(10, -10));
 
-            MonsterModel monsterModel = new MonsterModel(path);
             Vector2 moveVector = monsterModel.UpdateMove(1, 1);
+            
+            ShouldMoveRightAndDown(moveVector);
+        }
+
+        private void GivenPath(params Vector2[] pathPoints)
+        {
+            MonsterMovementPath path = new MonsterMovementPath();
+            if (pathPoints != null && pathPoints.Length > 0)
+            {
+                foreach (Vector2 pathPoint in pathPoints)
+                {
+                    path.AddPoint(pathPoint);
+                }
+            }
+
+            monsterModel = new MonsterModel(path);
+        }
+
+        private void ShouldMoveRightAndDown(Vector2 moveVector)
+        {
             Assert.AreEqual(true, moveVector.x > 0);
             Assert.AreEqual(false, moveVector.y > 0);
+        }
+
+        private void ShouldNoMove(Vector2 moveVector)
+        {
+            Assert.AreEqual(0, moveVector.x);
+            Assert.AreEqual(0, moveVector.y);
         }
 
         //行走路徑有多個點, 從起點往第二個點移動
