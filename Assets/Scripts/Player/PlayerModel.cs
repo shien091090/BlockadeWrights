@@ -6,6 +6,7 @@ namespace GameCore
     {
         private readonly IInputAxisController inputAxisController;
         private readonly IInGameMapModel inGameMapModel;
+        private readonly MovementProcessor movementProcessor;
         public FaceDirection LookFaceDirection { get; }
         public FaceDirection GridFaceDirection { get; }
 
@@ -16,16 +17,20 @@ namespace GameCore
 
             LookFaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
             GridFaceDirection = new FaceDirection(new OctagonalDirectionStrategy(), FaceDirectionState.Right);
+            movementProcessor = new MovementProcessor();
         }
 
         public Vector2 UpdateMove(float speed, float deltaTime)
         {
-            Vector2 moveVector = new Vector2(inputAxisController.GetHorizontalAxis(), inputAxisController.GetVerticalAxis()) * speed * deltaTime;
+            Vector2 moveVector = movementProcessor.GetMoveVector(new Vector2(inputAxisController.GetHorizontalAxis(), inputAxisController.GetVerticalAxis()), speed,
+                deltaTime);
+
             LookFaceDirection.MoveToChangeFaceDirection(moveVector);
             GridFaceDirection.MoveToChangeFaceDirection(moveVector);
 
             return moveVector;
         }
+
 
         public InGameMapCell GetCurrentFaceCell(Vector2 pos, Vector2 touchRange)
         {
