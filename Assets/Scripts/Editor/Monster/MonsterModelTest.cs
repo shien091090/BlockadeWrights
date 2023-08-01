@@ -13,7 +13,7 @@ namespace GameCore.Tests.Monster
         {
             GivenPath();
 
-            Vector2 moveVector = monsterModel.UpdateMove(1, 1);
+            Vector2 moveVector = monsterModel.UpdateMove(new Vector2(0, 0), 1, 1);
 
             ShouldNoMove(moveVector);
         }
@@ -26,9 +26,31 @@ namespace GameCore.Tests.Monster
                 new Vector2(0, 0),
                 new Vector2(10, -10));
 
-            Vector2 moveVector = monsterModel.UpdateMove(1, 1);
-            
+            Vector2 moveVector = monsterModel.UpdateMove(new Vector2(0, 0), 1, 1);
+
             ShouldMoveRightAndDown(moveVector);
+        }
+
+        [Test]
+        //行走路徑有多個點, 從中間點往下一個點移動
+        public void move_path_middle_to_next()
+        {
+            GivenPath(
+                new Vector2(0, 0),
+                new Vector2(10, -10),
+                new Vector2(10, 0),
+                new Vector2(50, 50));
+
+            GivenTargetPathIndex(2);
+
+            Vector2 moveVector = monsterModel.UpdateMove(new Vector2(10, -10), 1, 1);
+
+            ShouldMoveUp(moveVector);
+        }
+
+        private void GivenTargetPathIndex(int index)
+        {
+            monsterModel.SetTargetPathIndex(index);
         }
 
         private void GivenPath(params Vector2[] pathPoints)
@@ -45,10 +67,16 @@ namespace GameCore.Tests.Monster
             monsterModel = new MonsterModel(path);
         }
 
+        private void ShouldMoveUp(Vector2 moveVector)
+        {
+            Assert.IsTrue(moveVector.y > 0);
+            Assert.IsTrue(moveVector.x == 0);
+        }
+
         private void ShouldMoveRightAndDown(Vector2 moveVector)
         {
-            Assert.AreEqual(true, moveVector.x > 0);
-            Assert.AreEqual(false, moveVector.y > 0);
+            Assert.IsTrue(moveVector.x > 0);
+            Assert.IsTrue(moveVector.y < 0);
         }
 
         private void ShouldNoMove(Vector2 moveVector)
@@ -57,9 +85,7 @@ namespace GameCore.Tests.Monster
             Assert.AreEqual(0, moveVector.y);
         }
 
-        //行走路徑有多個點, 從起點往第二個點移動
         //抵達第二個點, 轉向往第三個點移動
-        //行走路徑有多個點, 從中間點往下一個點移動
         //移動至終點, 破壞主堡
     }
 }
