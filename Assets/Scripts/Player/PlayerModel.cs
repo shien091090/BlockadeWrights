@@ -31,7 +31,6 @@ namespace GameCore
             return moveVector;
         }
 
-
         public InGameMapCell GetCurrentFaceCell(Vector2 pos, Vector2 touchRange)
         {
             InGameMapCell cell = inGameMapModel.GetCellInfo(pos, GridFaceDirection.CurrentFaceDirectionState, touchRange);
