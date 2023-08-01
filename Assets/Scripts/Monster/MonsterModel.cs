@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace GameCore
@@ -5,7 +6,10 @@ namespace GameCore
     public class MonsterModel
     {
         private readonly MonsterMovementPath path;
+
+        public event Action OnDamageFort;
         public int CurrentTargetPathIndex { get; private set; }
+        public bool IsArrivedGoal => !path.IsEmpty && CurrentTargetPathIndex >= path.GetLastPointIndex;
 
         public MonsterModel(MonsterMovementPath path)
         {
@@ -20,15 +24,18 @@ namespace GameCore
         {
             if (path.IsEmpty)
                 return Vector2.zero;
-            else
-            {
-                Vector2 end = path.GetPoint(CurrentTargetPathIndex);
-                Vector2 moveVector = (end - currentPos).normalized * speed * deltaTime;
-                if (IsArriveTarget(currentPos, end, moveVector))
-                    CurrentTargetPathIndex++;
 
+            Vector2 end = path.GetPoint(CurrentTargetPathIndex);
+            Vector2 moveVector = (end - currentPos).normalized * speed * deltaTime;
+            if (IsArriveTarget(currentPos, end, moveVector) == false)
                 return moveVector;
-            }
+
+            CurrentTargetPathIndex++;
+
+            if (IsArrivedGoal)
+                OnDamageFort?.Invoke();
+
+            return moveVector;
         }
 
         public void SetTargetPathIndex(int index)

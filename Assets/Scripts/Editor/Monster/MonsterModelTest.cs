@@ -1,3 +1,5 @@
+using System;
+using NSubstitute;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -6,12 +8,19 @@ namespace GameCore.Tests.Monster
     public class MonsterModelTest
     {
         private MonsterModel monsterModel;
+        private Action onDamageFort;
+
+        [SetUp]
+        public void Setup()
+        {
+            onDamageFort = Substitute.For<Action>();
+        }
 
         [Test]
         //無行走路線, 不移動
         public void move_no_path()
         {
-            GivenPath();
+            GivenInitModel();
 
             Vector2 moveVector = monsterModel.UpdateMove(new Vector2(0, 0), 1, 1);
 
@@ -22,7 +31,7 @@ namespace GameCore.Tests.Monster
         //行走路徑僅起點和終點, 往終點移動
         public void move_path_start_to_end()
         {
-            GivenPath(
+            GivenInitModel(
                 new Vector2(0, 0),
                 new Vector2(10, -10));
 
@@ -35,7 +44,7 @@ namespace GameCore.Tests.Monster
         //行走路徑有多個點, 從中間點往下一個點移動
         public void move_path_middle_to_next()
         {
-            GivenPath(
+            GivenInitModel(
                 new Vector2(0, 0),
                 new Vector2(10, -10),
                 new Vector2(10, 0),
@@ -55,7 +64,7 @@ namespace GameCore.Tests.Monster
         //抵達後轉向至下一個點
         public void move_to_next_point_when_arrived(int startIndex, float currentPosX, float currentPosY)
         {
-            GivenPath(
+            GivenInitModel(
                 new Vector2(0, 0),
                 new Vector2(10, -10),
                 new Vector2(10, 0),
@@ -68,12 +77,26 @@ namespace GameCore.Tests.Monster
             CurrentTargetPathIndexShouldBe(startIndex + 1);
         }
 
+        [Test]
+        //移動至終點, 破壞主堡
+        public void move_to_end_point_and_destroy_main_castle()
+        {
+            GivenInitModel(
+                new Vector2(0, 0),
+                new Vector2(10, -10));
+
+            monsterModel.UpdateMove(new Vector2(9.9f, -9.9f), 1, 1);
+
+            ShouldBeArrivedGoal();
+            ShouldBeTriggerDamageFortEvent(1);
+        }
+
         private void GivenTargetPathIndex(int index)
         {
             monsterModel.SetTargetPathIndex(index);
         }
 
-        private void GivenPath(params Vector2[] pathPoints)
+        private void GivenInitModel(params Vector2[] pathPoints)
         {
             MonsterMovementPath path = new MonsterMovementPath();
             if (pathPoints != null && pathPoints.Length > 0)
@@ -85,6 +108,20 @@ namespace GameCore.Tests.Monster
             }
 
             monsterModel = new MonsterModel(path);
+            monsterModel.OnDamageFort += onDamageFort;
+        }
+
+        private void ShouldBeTriggerDamageFortEvent(int triggerTimes)
+        {
+            if (triggerTimes == 0)
+                onDamageFort.DidNotReceive().Invoke();
+            else
+                onDamageFort.Received(triggerTimes).Invoke();
+        }
+
+        private void ShouldBeArrivedGoal()
+        {
+            Assert.IsTrue(monsterModel.IsArrivedGoal);
         }
 
         private void CurrentTargetPathIndexShouldBe(int expectedIndex)
@@ -109,7 +146,5 @@ namespace GameCore.Tests.Monster
             Assert.AreEqual(0, moveVector.x);
             Assert.AreEqual(0, moveVector.y);
         }
-
-        //移動至終點, 破壞主堡
     }
 }

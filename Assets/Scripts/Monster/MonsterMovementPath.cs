@@ -9,6 +9,10 @@ namespace GameCore
 
         public bool IsEmpty => pathPointList.Count == 0;
 
+        public int GetLastPointIndex => IsEmpty ?
+            -1 :
+            pathPointList.Count - 1;
+
         public MonsterMovementPath()
         {
             pathPointList = new List<Vector2>();
