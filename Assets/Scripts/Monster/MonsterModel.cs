@@ -4,16 +4,23 @@ namespace GameCore
 {
     public class MonsterModel
     {
-        private MonsterMovementPath Path { get; }
+        private readonly MonsterMovementPath path;
 
         public MonsterModel(MonsterMovementPath path)
         {
-            Path = path;
+            this.path = path;
         }
 
         public Vector2 UpdateMove(int speed, int deltaTime)
         {
-            return Vector2.zero;
+            if (path.IsEmpty)
+                return Vector2.zero;
+            else
+            {
+                Vector2 start = path.GetPoint(0);
+                Vector2 end = path.GetPoint(1);
+                return (end - start).normalized * speed * deltaTime;
+            }
         }
     }
 }
