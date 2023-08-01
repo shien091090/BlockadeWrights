@@ -25,6 +25,8 @@ namespace GameCore.Tests.Monster
             Vector2 moveVector = monsterModel.UpdateMove(new Vector2(0, 0), 1, 1);
 
             ShouldNoMove(moveVector);
+            ShouldBeArrivedGoal(false);
+            ShouldBeTriggerDamageFortEvent(0);
         }
 
         [Test]
@@ -38,6 +40,8 @@ namespace GameCore.Tests.Monster
             Vector2 moveVector = monsterModel.UpdateMove(new Vector2(0, 0), 1, 1);
 
             ShouldMoveRightAndDown(moveVector);
+            ShouldBeArrivedGoal(false);
+            ShouldBeTriggerDamageFortEvent(0);
         }
 
         [Test]
@@ -55,12 +59,13 @@ namespace GameCore.Tests.Monster
             Vector2 moveVector = monsterModel.UpdateMove(new Vector2(10, -10), 1, 1);
 
             ShouldMoveUp(moveVector);
+            ShouldBeArrivedGoal(false);
+            ShouldBeTriggerDamageFortEvent(0);
         }
 
         [Test]
         [TestCase(1, 9.9f, -9.9f)]
         [TestCase(2, 10.1f, -0.1f)]
-        [TestCase(3, 49.9f, 49.9f)]
         //抵達後轉向至下一個點
         public void move_to_next_point_when_arrived(int startIndex, float currentPosX, float currentPosY)
         {
@@ -75,6 +80,8 @@ namespace GameCore.Tests.Monster
             monsterModel.UpdateMove(new Vector2(currentPosX, currentPosY), 1.5f, 1);
 
             CurrentTargetPathIndexShouldBe(startIndex + 1);
+            ShouldBeArrivedGoal(false);
+            ShouldBeTriggerDamageFortEvent(0);
         }
 
         [Test]
@@ -87,7 +94,7 @@ namespace GameCore.Tests.Monster
 
             monsterModel.UpdateMove(new Vector2(9.9f, -9.9f), 1, 1);
 
-            ShouldBeArrivedGoal();
+            ShouldBeArrivedGoal(true);
             ShouldBeTriggerDamageFortEvent(1);
         }
 
@@ -119,9 +126,9 @@ namespace GameCore.Tests.Monster
                 onDamageFort.Received(triggerTimes).Invoke();
         }
 
-        private void ShouldBeArrivedGoal()
+        private void ShouldBeArrivedGoal(bool expectedArrived)
         {
-            Assert.IsTrue(monsterModel.IsArrivedGoal);
+            Assert.AreEqual(expectedArrived, monsterModel.IsArrivedGoal);
         }
 
         private void CurrentTargetPathIndexShouldBe(int expectedIndex)

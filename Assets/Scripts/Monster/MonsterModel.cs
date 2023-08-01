@@ -9,7 +9,7 @@ namespace GameCore
 
         public event Action OnDamageFort;
         public int CurrentTargetPathIndex { get; private set; }
-        public bool IsArrivedGoal => !path.IsEmpty && CurrentTargetPathIndex >= path.GetLastPointIndex;
+        public bool IsArrivedGoal => !path.IsEmpty && CurrentTargetPathIndex > path.GetLastPointIndex;
 
         public MonsterModel(MonsterMovementPath path)
         {
