@@ -48,6 +48,26 @@ namespace GameCore.Tests.Monster
             ShouldMoveUp(moveVector);
         }
 
+        [Test]
+        [TestCase(1, 9.9f, -9.9f)]
+        [TestCase(2, 10.1f, -0.1f)]
+        [TestCase(3, 49.9f, 49.9f)]
+        //抵達後轉向至下一個點
+        public void move_to_next_point_when_arrived(int startIndex, float currentPosX, float currentPosY)
+        {
+            GivenPath(
+                new Vector2(0, 0),
+                new Vector2(10, -10),
+                new Vector2(10, 0),
+                new Vector2(50, 50));
+
+            GivenTargetPathIndex(startIndex);
+
+            monsterModel.UpdateMove(new Vector2(currentPosX, currentPosY), 1.5f, 1);
+
+            CurrentTargetPathIndexShouldBe(startIndex + 1);
+        }
+
         private void GivenTargetPathIndex(int index)
         {
             monsterModel.SetTargetPathIndex(index);
@@ -65,6 +85,11 @@ namespace GameCore.Tests.Monster
             }
 
             monsterModel = new MonsterModel(path);
+        }
+
+        private void CurrentTargetPathIndexShouldBe(int expectedIndex)
+        {
+            Assert.AreEqual(expectedIndex, monsterModel.CurrentTargetPathIndex);
         }
 
         private void ShouldMoveUp(Vector2 moveVector)
@@ -85,7 +110,6 @@ namespace GameCore.Tests.Monster
             Assert.AreEqual(0, moveVector.y);
         }
 
-        //抵達第二個點, 轉向往第三個點移動
         //移動至終點, 破壞主堡
     }
 }
