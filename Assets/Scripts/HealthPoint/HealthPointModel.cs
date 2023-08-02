@@ -20,5 +20,10 @@ namespace GameCore
         {
             CurrentHp = Math.Max(0, CurrentHp - damageValue);
         }
+
+        public void Heal(int healValue)
+        {
+            CurrentHp = Math.Min(maxHp, CurrentHp + healValue);
+        }
     }
 }
