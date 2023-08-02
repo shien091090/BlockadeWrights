@@ -24,7 +24,16 @@ namespace GameCore.Tests.HealthPoint
             Assert.AreEqual(expectedRemainHp, healthPointModel.CurrentHp);
         }
 
+        [Test]
         //扣血至HP歸0
+        public void decrease_hp_to_0()
+        {
+            HealthPointModel healthPointModel = new HealthPointModel(10);
+            healthPointModel.Damage(10);
+            Assert.AreEqual(0, healthPointModel.CurrentHp);
+            Assert.IsTrue(healthPointModel.IsDead);
+        }
+        
         //扣血超出目前HP
         //補血
         //補血超出HP上限

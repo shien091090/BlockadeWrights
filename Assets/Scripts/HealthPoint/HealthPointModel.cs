@@ -6,6 +6,7 @@ namespace GameCore
 
         public bool IsValid => false;
         public float CurrentHp { private set; get; }
+        public bool IsDead => CurrentHp == 0;
 
         public HealthPointModel(float maxHp)
         {
