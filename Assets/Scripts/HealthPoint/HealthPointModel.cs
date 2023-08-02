@@ -5,15 +5,17 @@ namespace GameCore
         private readonly float maxHp;
 
         public bool IsValid => false;
-        public float CurrentHp => 5;
+        public float CurrentHp { private set; get; }
 
-        public HealthPointModel(int maxHp)
+        public HealthPointModel(float maxHp)
         {
             this.maxHp = maxHp;
+            CurrentHp = maxHp;
         }
 
         public void Damage(float damageValue)
         {
+            CurrentHp -= damageValue;
         }
     }
 }
