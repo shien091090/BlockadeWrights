@@ -2,7 +2,7 @@ using System;
 
 namespace GameCore
 {
-    public class MonsterSpawnerModel
+    public class MonsterSpawner
     {
         private AttackWave attackWave;
 

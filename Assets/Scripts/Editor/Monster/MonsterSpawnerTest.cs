@@ -4,25 +4,25 @@ using NUnit.Framework;
 
 namespace GameCore.Tests.Monster
 {
-    public class MonsterSpawnerModelTest
+    public class MonsterSpawnerTest
     {
-        private MonsterSpawnerModel monsterSpawnerModel;
+        private MonsterSpawner monsterSpawner;
         private Action onSpawnMonster;
 
         [SetUp]
         public void Setup()
         {
             onSpawnMonster = Substitute.For<Action>();
-            monsterSpawnerModel = new MonsterSpawnerModel();
-            monsterSpawnerModel.OnSpawnMonster += onSpawnMonster;
+            monsterSpawner = new MonsterSpawner();
+            monsterSpawner.OnSpawnMonster += onSpawnMonster;
         }
 
         [Test]
         //產怪一次
         public void spawn_monster_one_time()
         {
-            monsterSpawnerModel.SetAttackWave(3);
-            monsterSpawnerModel.Spawn();
+            monsterSpawner.SetAttackWave(3);
+            monsterSpawner.Spawn();
 
             ShouldCanSpawnNext(true);
             ShouldTriggerSpawnEvent(1);
@@ -32,10 +32,10 @@ namespace GameCore.Tests.Monster
         //產怪至上限
         public void spawn_monster_to_max()
         {
-            monsterSpawnerModel.SetAttackWave(3);
-            monsterSpawnerModel.Spawn();
-            monsterSpawnerModel.Spawn();
-            monsterSpawnerModel.Spawn();
+            monsterSpawner.SetAttackWave(3);
+            monsterSpawner.Spawn();
+            monsterSpawner.Spawn();
+            monsterSpawner.Spawn();
 
             ShouldCanSpawnNext(false);
             ShouldTriggerSpawnEvent(3);
@@ -45,11 +45,11 @@ namespace GameCore.Tests.Monster
         //產怪超過上限
         public void spawn_monster_over_max()
         {
-            monsterSpawnerModel.SetAttackWave(3);
-            monsterSpawnerModel.Spawn();
-            monsterSpawnerModel.Spawn();
-            monsterSpawnerModel.Spawn();
-            monsterSpawnerModel.Spawn();
+            monsterSpawner.SetAttackWave(3);
+            monsterSpawner.Spawn();
+            monsterSpawner.Spawn();
+            monsterSpawner.Spawn();
+            monsterSpawner.Spawn();
 
             ShouldCanSpawnNext(false);
             ShouldTriggerSpawnEvent(3);
@@ -65,7 +65,7 @@ namespace GameCore.Tests.Monster
 
         private void ShouldCanSpawnNext(bool expectedCanSpawnNext)
         {
-            Assert.AreEqual(expectedCanSpawnNext, monsterSpawnerModel.CanSpawnNext);
+            Assert.AreEqual(expectedCanSpawnNext, monsterSpawner.CanSpawnNext);
         }
     }
 }
