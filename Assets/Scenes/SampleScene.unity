@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preSpawnCount: 8
-  entityPrefab: {fileID: 3213269180381418258, guid: 2143107f2f24dea40a8c93d4ad2f78f7, type: 3}
+  gameObjectPrefab: {fileID: 3213269180381418258, guid: 2143107f2f24dea40a8c93d4ad2f78f7, type: 3}
   holderRoot: {fileID: 1938799248}
 --- !u!114 &107834698
 MonoBehaviour:
@@ -173,6 +173,8 @@ MonoBehaviour:
   - {x: -5.69, y: 2.85}
   - {x: -3.73, y: -2.56}
   - {x: 1.4, y: -3.58}
+  - {x: 5.17, y: 2.91}
+  - {x: 0, y: 3.62}
 --- !u!4 &107834699
 Transform:
   m_ObjectHideFlags: 0

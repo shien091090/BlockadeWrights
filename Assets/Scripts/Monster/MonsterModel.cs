@@ -8,6 +8,8 @@ namespace GameCore
         private readonly MonsterMovementPath path;
 
         public event Action OnDamageFort;
+        
+        public FaceDirection LookFaceDirection { get; }
         public int CurrentTargetPathIndex { get; private set; }
         public bool IsArrivedGoal => !path.IsEmpty && CurrentTargetPathIndex > path.GetLastPointIndex;
 
@@ -17,6 +19,8 @@ namespace GameCore
 
             if (path.IsEmpty == false)
                 CurrentTargetPathIndex = 1;
+            
+            LookFaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
         }
 
 
@@ -27,6 +31,8 @@ namespace GameCore
 
             Vector2 end = path.GetPoint(CurrentTargetPathIndex);
             Vector2 moveVector = (end - currentPos).normalized * speed * deltaTime;
+            LookFaceDirection.MoveToChangeFaceDirection(moveVector);
+            
             if (IsArriveTarget(currentPos, end, moveVector) == false)
                 return moveVector;
 
