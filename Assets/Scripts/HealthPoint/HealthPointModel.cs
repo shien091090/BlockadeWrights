@@ -1,3 +1,5 @@
+using System;
+
 namespace GameCore
 {
     public class HealthPointModel
@@ -16,7 +18,7 @@ namespace GameCore
 
         public void Damage(float damageValue)
         {
-            CurrentHp -= damageValue;
+            CurrentHp = Math.Max(0, CurrentHp - damageValue);
         }
     }
 }
