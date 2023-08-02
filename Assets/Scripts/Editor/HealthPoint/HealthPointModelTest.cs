@@ -69,6 +69,19 @@ namespace GameCore.Tests.HealthPoint
             CurrentHpShouldBe(8);
             ShouldBeDead(false);
         }
+        
+        [Test]
+        //補血超出HP上限
+        public void increase_hp_over_max_hp()
+        {
+            GivenInitModel(10);
+
+            healthPointModel.Damage(5);
+            healthPointModel.Heal(10);
+
+            CurrentHpShouldBe(10);
+            ShouldBeDead(false);
+        }
 
         private void GivenInitModel(float maxHp)
         {
@@ -90,6 +103,5 @@ namespace GameCore.Tests.HealthPoint
             Assert.AreEqual(expectedIsInvalid, healthPointModel.IsValid);
         }
 
-        //補血超出HP上限
     }
 }
