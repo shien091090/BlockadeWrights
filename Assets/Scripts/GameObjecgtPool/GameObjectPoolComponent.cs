@@ -7,33 +7,40 @@ namespace GameCore
     public class GameObjectPoolComponent : MonoBehaviour
     {
         [SerializeField] private int preSpawnCount;
-        [SerializeField] private BuildingView entityPrefab;
+        [SerializeField] private GameObject gameObjectPrefab;
         [SerializeField] private Transform holderRoot;
 
-        private readonly List<IGameObjectPoolEntity> gameObjectList = new List<IGameObjectPoolEntity>();
+        private readonly List<GameObject> gameObjectList = new List<GameObject>();
 
         public void InitPreSpawn()
         {
             for (int i = 0; i < preSpawnCount; i++)
             {
-                IGameObjectPoolEntity newEntity = CreateNewEntity();
-                newEntity.Hide();
+                GameObject go = CreateNewGameObject();
+                go.SetActive(false);
             }
         }
 
-        public void SpawnEntity(Vector2 pos)
+        public T SpawnGameObject<T>(Vector2 pos) where T : Object
         {
-            IGameObjectPoolEntity hidingEntity = gameObjectList.FirstOrDefault(x => x.IsActive == false);
-            IGameObjectPoolEntity entity = hidingEntity ?? CreateNewEntity();
-            entity.SetPos(pos);
-            entity.Show();
+            GameObject hidingGameObject = gameObjectList.FirstOrDefault(x => x.activeInHierarchy == false);
+            GameObject spawnGameObject = hidingGameObject ?? CreateNewGameObject();
+            spawnGameObject.transform.position = pos;
+            spawnGameObject.SetActive(true);
+
+            return spawnGameObject.GetComponent<T>();
         }
 
-        private IGameObjectPoolEntity CreateNewEntity()
+        public void SpawnGameObject(Vector2 pos)
         {
-            IGameObjectPoolEntity newEntity = Instantiate(entityPrefab, holderRoot);
-            gameObjectList.Add(newEntity);
-            return newEntity;
+            SpawnGameObject<GameObject>(pos);
+        }
+
+        private GameObject CreateNewGameObject()
+        {
+            GameObject newGameObj = Instantiate(gameObjectPrefab, holderRoot);
+            gameObjectList.Add(newGameObj);
+            return newGameObj;
         }
     }
 }

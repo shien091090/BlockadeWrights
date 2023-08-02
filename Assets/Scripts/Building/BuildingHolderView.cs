@@ -33,7 +33,7 @@ namespace GameCore
 
         private void OnBuildNewBuilding(IInGameMapCell targetMapCell)
         {
-            GameObjectPool.SpawnEntity(targetMapCell.CenterPosition);
+            GameObjectPool.SpawnGameObject(targetMapCell.CenterPosition);
         }
     }
 }
