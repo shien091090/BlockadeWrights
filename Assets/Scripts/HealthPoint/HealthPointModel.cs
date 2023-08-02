@@ -4,7 +4,7 @@ namespace GameCore
     {
         private readonly float maxHp;
 
-        public bool IsValid => false;
+        public bool IsValid => maxHp <= 0;
         public float CurrentHp { private set; get; }
         public bool IsDead => CurrentHp == 0;
 

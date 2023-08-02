@@ -1,15 +1,18 @@
 using NUnit.Framework;
+using Sirenix.Utilities;
 
 namespace GameCore.Tests.HealthPoint
 {
     public class HealthPointModelTest
     {
+        private HealthPointModel healthPointModel;
+
         [Test]
         //HP上限為0
         public void max_hp_is_0()
         {
-            HealthPointModel healthPointModel = new HealthPointModel(0);
-            Assert.IsFalse(healthPointModel.IsValid);
+            GivenInitModel(0);
+            ShouldBeInvalid(true);
         }
 
         [Test]
@@ -19,21 +22,48 @@ namespace GameCore.Tests.HealthPoint
         //扣血
         public void decrease_hp(float maxHp, float damageValue, float expectedRemainHp)
         {
-            HealthPointModel healthPointModel = new HealthPointModel(maxHp);
+            GivenInitModel(maxHp);
+
             healthPointModel.Damage(damageValue);
-            Assert.AreEqual(expectedRemainHp, healthPointModel.CurrentHp);
+
+            ShouldBeInvalid(false);
+            CurrentHpShouldBe(expectedRemainHp);
+            ShouldBeDead(false);
         }
 
         [Test]
         //扣血至HP歸0
         public void decrease_hp_to_0()
         {
-            HealthPointModel healthPointModel = new HealthPointModel(10);
+            GivenInitModel(10);
+
             healthPointModel.Damage(10);
-            Assert.AreEqual(0, healthPointModel.CurrentHp);
-            Assert.IsTrue(healthPointModel.IsDead);
+
+            ShouldBeInvalid(false);
+            CurrentHpShouldBe(0);
+            ShouldBeDead(true);
         }
-        
+
+        private void GivenInitModel(float maxHp)
+        {
+            healthPointModel = new HealthPointModel(maxHp);
+        }
+
+        private void ShouldBeDead(bool expectedIsDead)
+        {
+            Assert.AreEqual(expectedIsDead, healthPointModel.IsDead);
+        }
+
+        private void CurrentHpShouldBe(float expectedCurrentHp)
+        {
+            Assert.AreEqual(expectedCurrentHp, healthPointModel.CurrentHp);
+        }
+
+        private void ShouldBeInvalid(bool expectedIsInvalid)
+        {
+            Assert.AreEqual(expectedIsInvalid, healthPointModel.IsValid);
+        }
+
         //扣血超出目前HP
         //補血
         //補血超出HP上限
