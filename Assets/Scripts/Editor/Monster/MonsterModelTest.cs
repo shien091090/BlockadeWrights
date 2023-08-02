@@ -98,6 +98,23 @@ namespace GameCore.Tests.Monster
             ShouldBeTriggerDamageFortEvent(1);
         }
 
+        [Test]
+        //移動至終點後不再移動
+        public void move_to_end_point_and_no_move()
+        {
+            GivenInitModel(
+                new Vector2(0, 0),
+                new Vector2(10, -10));
+
+            GivenTargetPathIndex(2);
+
+            Vector2 moveVector = monsterModel.UpdateMove(new Vector2(10, -10), 1, 1);
+
+            ShouldNoMove(moveVector);
+            ShouldBeArrivedGoal(true);
+            ShouldBeTriggerDamageFortEvent(0);
+        }
+
         private void GivenTargetPathIndex(int index)
         {
             monsterModel.SetTargetPathIndex(index);

@@ -22,7 +22,7 @@ namespace GameCore
 
         public Vector2 UpdateMove(Vector2 currentPos, float speed, float deltaTime)
         {
-            if (path.IsEmpty)
+            if (path.IsEmpty || IsArrivedGoal)
                 return Vector2.zero;
 
             Vector2 end = path.GetPoint(CurrentTargetPathIndex);
