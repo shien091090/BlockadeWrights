@@ -6,23 +6,23 @@ namespace GameCore
     public class BuildingHolderView : MonoBehaviour
     {
         [Inject] private IPlayerOperationModel playerOperationModel;
-        private GameObjectPoolComponent gameObjectPoolComponent;
+        private GameObjectPoolComponent gameObjectPool;
 
-        private GameObjectPoolComponent GameObjectPoolComponent
+        private GameObjectPoolComponent GameObjectPool
         {
             get
             {
-                if (gameObjectPoolComponent == null)
-                    gameObjectPoolComponent = GetComponent<GameObjectPoolComponent>();
+                if (gameObjectPool == null)
+                    gameObjectPool = GetComponent<GameObjectPoolComponent>();
 
-                return gameObjectPoolComponent;
+                return gameObjectPool;
             }
         }
 
         private void Start()
         {
             RegisterEvent();
-            GameObjectPoolComponent.InitPreSpawn();
+            GameObjectPool.InitPreSpawn();
         }
 
         private void RegisterEvent()
@@ -33,7 +33,7 @@ namespace GameCore
 
         private void OnBuildNewBuilding(IInGameMapCell targetMapCell)
         {
-            GameObjectPoolComponent.SpawnEntity(targetMapCell.CenterPosition);
+            GameObjectPool.SpawnEntity(targetMapCell.CenterPosition);
         }
     }
 }
