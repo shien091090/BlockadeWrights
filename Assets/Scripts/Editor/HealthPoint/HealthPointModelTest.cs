@@ -99,7 +99,7 @@ namespace GameCore.Tests.HealthPoint
 
             healthPointModel.Damage(damageValue);
 
-            refreshHealthPointEvent.Received(1).Invoke(Arg.Is<HealthPointChangeInfo>(x => x.CurrentHealthPointRate == expectedHpRate));
+            ShouldReceiveHpChangeEvent(1, expectedHpRate);
         }
 
         private void GivenInitModel(float maxHp)
@@ -110,12 +110,16 @@ namespace GameCore.Tests.HealthPoint
             healthPointModel.OnRefreshHealthPoint += refreshHealthPointEvent;
         }
 
-        private void ShouldReceiveHpChangeEvent(int triggerTimes)
+        private void ShouldReceiveHpChangeEvent(int triggerTimes, float expectedHpRate = 0)
         {
             if (triggerTimes == 0)
                 refreshHealthPointEvent.DidNotReceive().Invoke(Arg.Any<HealthPointChangeInfo>());
             else
-                refreshHealthPointEvent.Received(triggerTimes).Invoke(Arg.Any<HealthPointChangeInfo>());
+            {
+                refreshHealthPointEvent.Received(triggerTimes).Invoke(expectedHpRate == 0 ?
+                    Arg.Any<HealthPointChangeInfo>() :
+                    Arg.Is<HealthPointChangeInfo>(h => h.CurrentHealthPointRate == expectedHpRate));
+            }
         }
 
         private void ShouldBeDead(bool expectedIsDead)
