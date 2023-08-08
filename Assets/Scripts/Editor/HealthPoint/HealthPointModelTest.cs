@@ -87,6 +87,21 @@ namespace GameCore.Tests.HealthPoint
             ShouldBeDead(false);
         }
 
+        [Test]
+        [TestCase(10, 5, 0.5f)]
+        [TestCase(100, 99, 0.01f)]
+        [TestCase(100, 0.1f, 0.999f)]
+        [TestCase(99999, 99999, 0)]
+        //驗證血量變化百分比
+        public void verify_hp_change_rate(float maxHp, float damageValue, float expectedHpRate)
+        {
+            GivenInitModel(maxHp);
+
+            healthPointModel.Damage(damageValue);
+
+            refreshHealthPointEvent.Received(1).Invoke(Arg.Is<HealthPointChangeInfo>(x => x.CurrentHealthPointRate == expectedHpRate));
+        }
+
         private void GivenInitModel(float maxHp)
         {
             healthPointModel = new HealthPointModel(maxHp);
