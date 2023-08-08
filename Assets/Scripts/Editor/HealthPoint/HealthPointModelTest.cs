@@ -1,11 +1,13 @@
+using System;
+using NSubstitute;
 using NUnit.Framework;
-using Sirenix.Utilities;
 
 namespace GameCore.Tests.HealthPoint
 {
     public class HealthPointModelTest
     {
         private HealthPointModel healthPointModel;
+        private Action<HealthPointChangeInfo> refreshHealthPointEvent;
 
         [Test]
         //HP上限為0
@@ -29,6 +31,7 @@ namespace GameCore.Tests.HealthPoint
             ShouldBeInvalid(false);
             CurrentHpShouldBe(expectedRemainHp);
             ShouldBeDead(false);
+            ShouldReceiveHpChangeEvent(1);
         }
 
         [Test]
@@ -43,7 +46,7 @@ namespace GameCore.Tests.HealthPoint
             CurrentHpShouldBe(0);
             ShouldBeDead(true);
         }
-        
+
         [Test]
         //扣血超出目前HP
         public void decrease_hp_over_max_hp()
@@ -56,7 +59,7 @@ namespace GameCore.Tests.HealthPoint
             CurrentHpShouldBe(0);
             ShouldBeDead(true);
         }
-        
+
         [Test]
         //補血
         public void increase_hp()
@@ -68,8 +71,9 @@ namespace GameCore.Tests.HealthPoint
 
             CurrentHpShouldBe(8);
             ShouldBeDead(false);
+            ShouldReceiveHpChangeEvent(2);
         }
-        
+
         [Test]
         //補血超出HP上限
         public void increase_hp_over_max_hp()
@@ -86,6 +90,17 @@ namespace GameCore.Tests.HealthPoint
         private void GivenInitModel(float maxHp)
         {
             healthPointModel = new HealthPointModel(maxHp);
+
+            refreshHealthPointEvent = Substitute.For<Action<HealthPointChangeInfo>>();
+            healthPointModel.OnRefreshHealthPoint += refreshHealthPointEvent;
+        }
+
+        private void ShouldReceiveHpChangeEvent(int triggerTimes)
+        {
+            if (triggerTimes == 0)
+                refreshHealthPointEvent.DidNotReceive().Invoke(Arg.Any<HealthPointChangeInfo>());
+            else
+                refreshHealthPointEvent.Received(triggerTimes).Invoke(Arg.Any<HealthPointChangeInfo>());
         }
 
         private void ShouldBeDead(bool expectedIsDead)
@@ -102,6 +117,5 @@ namespace GameCore.Tests.HealthPoint
         {
             Assert.AreEqual(expectedIsInvalid, healthPointModel.IsValid);
         }
-
     }
 }
