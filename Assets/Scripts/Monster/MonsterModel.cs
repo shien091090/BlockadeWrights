@@ -8,8 +8,9 @@ namespace GameCore
         private readonly MonsterMovementPath path;
 
         public event Action OnDamageFort;
-        
+
         public FaceDirection LookFaceDirection { get; }
+        public HealthPointModel HealthPointModel { get; private set; }
         public int CurrentTargetPathIndex { get; private set; }
         public bool IsArrivedGoal => !path.IsEmpty && CurrentTargetPathIndex > path.GetLastPointIndex;
 
@@ -19,10 +20,9 @@ namespace GameCore
 
             if (path.IsEmpty == false)
                 CurrentTargetPathIndex = 1;
-            
+
             LookFaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
         }
-
 
         public Vector2 UpdateMove(Vector2 currentPos, float speed, float deltaTime)
         {
@@ -32,7 +32,7 @@ namespace GameCore
             Vector2 end = path.GetPoint(CurrentTargetPathIndex);
             Vector2 moveVector = (end - currentPos).normalized * speed * deltaTime;
             LookFaceDirection.MoveToChangeFaceDirection(moveVector);
-            
+
             if (IsArriveTarget(currentPos, end, moveVector) == false)
                 return moveVector;
 
@@ -42,6 +42,11 @@ namespace GameCore
                 OnDamageFort?.Invoke();
 
             return moveVector;
+        }
+
+        public void InitHp(int maxHp)
+        {
+            HealthPointModel = new HealthPointModel(maxHp);
         }
 
         public void SetTargetPathIndex(int index)

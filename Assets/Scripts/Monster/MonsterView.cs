@@ -6,6 +6,7 @@ namespace GameCore
     {
         [SerializeField] private float moveSpeed;
 
+        private HealthPointComponent hpComponent;
         private MonsterModel monsterModel;
         private FaceDirectionComponent faceDirection;
 
@@ -20,6 +21,17 @@ namespace GameCore
             }
         }
 
+        private HealthPointComponent HpComponent
+        {
+            get
+            {
+                if (hpComponent == null)
+                    hpComponent = GetComponent<HealthPointComponent>();
+
+                return hpComponent;
+            }
+        }
+
         private void Update()
         {
             if (monsterModel == null)
@@ -31,6 +43,7 @@ namespace GameCore
         private void Start()
         {
             RegisterEvent();
+            HpComponent.Setup(monsterModel.HealthPointModel);
         }
 
         public void Init(MonsterModel monsterModel)

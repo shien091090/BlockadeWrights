@@ -52,6 +52,7 @@ namespace GameCore
         {
             MonsterView monsterView = GameObjectPool.SpawnGameObject<MonsterView>(StartPoint);
             MonsterModel monsterModel = new MonsterModel(GetPathInfo());
+            monsterModel.InitHp(100);
             monsterView.Init(monsterModel);
         }
     }
