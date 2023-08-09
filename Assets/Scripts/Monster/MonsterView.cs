@@ -40,21 +40,25 @@ namespace GameCore
             transform.Translate(monsterModel.UpdateMove(transform.position, moveSpeed, Time.deltaTime));
         }
 
-        private void Start()
-        {
-            RegisterEvent();
-            HpComponent.Setup(monsterModel.HealthPointModel);
-        }
-
         public void Init(MonsterModel monsterModel)
         {
             this.monsterModel = monsterModel;
+            HpComponent.Setup(monsterModel.HealthPointModel);
+            RegisterEvent();
         }
 
         private void RegisterEvent()
         {
             monsterModel.LookFaceDirection.OnFaceDirectionChanged -= FaceDirection.RefreshFaceDirection;
             monsterModel.LookFaceDirection.OnFaceDirectionChanged += FaceDirection.RefreshFaceDirection;
+
+            monsterModel.OnDead -= OnDead;
+            monsterModel.OnDead += OnDead;
+        }
+
+        private void OnDead()
+        {
+            gameObject.SetActive(false);
         }
     }
 }
