@@ -13,6 +13,7 @@ namespace GameCore
         public HealthPointModel HealthPointModel { get; private set; }
         public int CurrentTargetPathIndex { get; private set; }
         public bool IsArrivedGoal => !path.IsEmpty && CurrentTargetPathIndex > path.GetLastPointIndex;
+        public bool IsDead => HealthPointModel != null && HealthPointModel.IsDead;
 
         public MonsterModel(MonsterMovementPath path)
         {
@@ -44,7 +45,7 @@ namespace GameCore
             return moveVector;
         }
 
-        public void InitHp(int maxHp)
+        public void InitHp(float maxHp)
         {
             HealthPointModel = new HealthPointModel(maxHp);
         }
@@ -52,6 +53,11 @@ namespace GameCore
         public void SetTargetPathIndex(int index)
         {
             CurrentTargetPathIndex = index;
+        }
+
+        public void Damage(float damageValue)
+        {
+            HealthPointModel?.Damage(damageValue);
         }
 
         private bool IsArriveTarget(Vector2 currentPos, Vector2 end, Vector2 moveVector)

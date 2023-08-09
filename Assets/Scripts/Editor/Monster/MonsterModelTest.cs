@@ -115,6 +115,16 @@ namespace GameCore.Tests.Monster
             ShouldBeTriggerDamageFortEvent(0);
         }
 
+        [Test]
+        //攻擊怪物但怪物沒有HP
+        public void attack_monster_but_monster_no_hp()
+        {
+            GivenInitModel();
+
+            monsterModel.Damage(999);
+
+            ShouldMonsterDead(false);
+        }
         private void GivenTargetPathIndex(int index)
         {
             monsterModel.SetTargetPathIndex(index);
@@ -133,6 +143,11 @@ namespace GameCore.Tests.Monster
 
             monsterModel = new MonsterModel(path);
             monsterModel.OnDamageFort += onDamageFort;
+        }
+
+        private void ShouldMonsterDead(bool expectedIsDead)
+        {
+            Assert.AreEqual(expectedIsDead, monsterModel.IsDead);
         }
 
         private void ShouldBeTriggerDamageFortEvent(int triggerTimes)
