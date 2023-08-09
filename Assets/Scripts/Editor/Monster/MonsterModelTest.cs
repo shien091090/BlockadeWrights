@@ -9,11 +9,13 @@ namespace GameCore.Tests.Monster
     {
         private MonsterModel monsterModel;
         private Action onDamageFort;
+        private Action monsterDeadEvent;
 
         [SetUp]
         public void Setup()
         {
             onDamageFort = Substitute.For<Action>();
+            monsterDeadEvent = null;
         }
 
         [Test]
@@ -124,7 +126,30 @@ namespace GameCore.Tests.Monster
             monsterModel.Damage(999);
 
             ShouldMonsterDead(false);
+            ShouldReceiveDeadEvent(0);
         }
+
+        [Test]
+        //攻擊怪物並且怪物死亡
+        public void attack_monster_and_monster_dead()
+        {
+            GivenInitModel();
+            GivenHp(10);
+
+            monsterModel.Damage(11);
+
+            ShouldMonsterDead(true);
+            ShouldReceiveDeadEvent(1);
+        }
+
+        private void GivenHp(float maxHp)
+        {
+            monsterModel.InitHp(maxHp);
+
+            monsterDeadEvent = Substitute.For<Action>();
+            monsterModel.OnDead += monsterDeadEvent;
+        }
+
         private void GivenTargetPathIndex(int index)
         {
             monsterModel.SetTargetPathIndex(index);
@@ -143,6 +168,19 @@ namespace GameCore.Tests.Monster
 
             monsterModel = new MonsterModel(path);
             monsterModel.OnDamageFort += onDamageFort;
+        }
+
+        private void ShouldReceiveDeadEvent(int triggerTimes)
+        {
+            if (triggerTimes == 0)
+            {
+                if (monsterDeadEvent == null)
+                    return;
+
+                monsterDeadEvent.DidNotReceive().Invoke();
+            }
+            else
+                monsterDeadEvent.Received(triggerTimes).Invoke();
         }
 
         private void ShouldMonsterDead(bool expectedIsDead)

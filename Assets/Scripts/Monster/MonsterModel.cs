@@ -8,6 +8,7 @@ namespace GameCore
         private readonly MonsterMovementPath path;
 
         public event Action OnDamageFort;
+        public event Action OnDead;
 
         public FaceDirection LookFaceDirection { get; }
         public HealthPointModel HealthPointModel { get; private set; }
@@ -57,7 +58,13 @@ namespace GameCore
 
         public void Damage(float damageValue)
         {
-            HealthPointModel?.Damage(damageValue);
+            if (HealthPointModel == null)
+                return;
+
+            HealthPointModel.Damage(damageValue);
+            
+            if (HealthPointModel.IsDead)
+                OnDead?.Invoke();
         }
 
         private bool IsArriveTarget(Vector2 currentPos, Vector2 end, Vector2 moveVector)
