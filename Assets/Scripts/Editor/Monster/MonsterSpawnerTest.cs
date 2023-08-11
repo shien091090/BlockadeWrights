@@ -21,7 +21,8 @@ namespace GameCore.Tests.Monster
         //產怪一次
         public void spawn_monster_one_time()
         {
-            monsterSpawner.SetAttackWave(3, 0);
+            AttackWave wave1 = new AttackWave(3, 0);
+            monsterSpawner.SetAttackWave(wave1);
             monsterSpawner.CheckUpdateSpawn(1);
 
             ShouldCanSpawnNext(true);
@@ -32,7 +33,8 @@ namespace GameCore.Tests.Monster
         //產怪至上限
         public void spawn_monster_to_max()
         {
-            monsterSpawner.SetAttackWave(3, 0);
+            AttackWave wave1 = new AttackWave(3, 0);
+            monsterSpawner.SetAttackWave(wave1);
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
@@ -45,7 +47,8 @@ namespace GameCore.Tests.Monster
         //產怪超過上限
         public void spawn_monster_over_max()
         {
-            monsterSpawner.SetAttackWave(3, 0);
+            AttackWave wave1 = new AttackWave(3, 0);
+            monsterSpawner.SetAttackWave(wave1);
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
@@ -59,7 +62,8 @@ namespace GameCore.Tests.Monster
         //產怪後等待一段時間，再產怪
         public void spawn_monster_wait_time()
         {
-            monsterSpawner.SetAttackWave(3, 1);
+            AttackWave wave1 = new AttackWave(3, 1);
+            monsterSpawner.SetAttackWave(wave1);
 
             monsterSpawner.CheckUpdateSpawn(0.5f);
             ShouldTriggerSpawnEvent(0);
