@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace GameCore
 {
@@ -6,29 +7,56 @@ namespace GameCore
     {
         private float currentTimer;
         private AttackWave[] attackWaves;
-        private int currentWaveIndex;
 
         public event Action OnSpawnMonster;
 
-        public bool CanSpawnNext => attackWaves[currentWaveIndex].GetCurrentSpawnCount < attackWaves[currentWaveIndex].GetMaxSpawnCount;
+        public int GetCurrentWaveIndex { get; private set; }
+        public bool HaveNextWave => GetCurrentWaveIndex < attackWaves.Length - 1;
+
+        public bool IsAllWaveSpawnFinished
+        {
+            get
+            {
+                if (attackWaves == null)
+                    return true;
+
+                return attackWaves.FirstOrDefault(x => x.CanSpawnNext) == null;
+            }
+        }
+
+        private bool IsStartNextWave => currentTimer >= attackWaves[GetCurrentWaveIndex + 1].StartTimeSecond;
 
         public void CheckUpdateSpawn(float deltaTime)
         {
-            if (CanSpawnNext == false)
+            if (IsAllWaveSpawnFinished)
                 return;
 
             currentTimer += deltaTime;
-            if (currentTimer < attackWaves[currentWaveIndex].SpawnInterval)
-                return;
 
-            currentTimer = 0;
-            attackWaves[currentWaveIndex].AddSpawnCount(1);
-            OnSpawnMonster?.Invoke();
+            if (HaveNextWave && IsStartNextWave)
+                GetCurrentWaveIndex++;
+
+            for (int waveIndex = 0; waveIndex < attackWaves.Length; waveIndex++)
+            {
+                if (GetCurrentWaveIndex < waveIndex)
+                    continue;
+
+                AttackWave attackWave = attackWaves[waveIndex];
+                if (attackWave.CanSpawnNext == false)
+                    continue;
+
+                if (attackWave.UpdateTimerAndCheckSpawn(deltaTime) == false)
+                    continue;
+
+                attackWave.AddSpawnCount(1);
+                OnSpawnMonster?.Invoke();
+            }
         }
 
         public void SetAttackWave(params AttackWave[] attackWaves)
         {
             this.attackWaves = attackWaves;
+            GetCurrentWaveIndex = 0;
         }
     }
 }

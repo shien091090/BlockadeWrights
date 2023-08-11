@@ -25,7 +25,7 @@ namespace GameCore.Tests.Monster
             monsterSpawner.SetAttackWave(wave1);
             monsterSpawner.CheckUpdateSpawn(1);
 
-            ShouldCanSpawnNext(true);
+            ShouldAllWavesSpawnFinished(false);
             ShouldTriggerSpawnEvent(1);
         }
 
@@ -39,7 +39,7 @@ namespace GameCore.Tests.Monster
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
 
-            ShouldCanSpawnNext(false);
+            ShouldAllWavesSpawnFinished(true);
             ShouldTriggerSpawnEvent(3);
         }
 
@@ -54,7 +54,7 @@ namespace GameCore.Tests.Monster
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
 
-            ShouldCanSpawnNext(false);
+            ShouldAllWavesSpawnFinished(true);
             ShouldTriggerSpawnEvent(3);
         }
 
@@ -69,11 +69,48 @@ namespace GameCore.Tests.Monster
             ShouldTriggerSpawnEvent(0);
 
             monsterSpawner.CheckUpdateSpawn(0.5f);
+            ShouldAllWavesSpawnFinished(false);
             ShouldTriggerSpawnEvent(1);
-            ShouldCanSpawnNext(true);
         }
 
+        [Test]
         //第一波時間到, 開始第二波產怪
+        public void spawn_monster_next_wave()
+        {
+            AttackWave wave1 = new AttackWave(2, 1, 0);
+            AttackWave wave2 = new AttackWave(2, 1, 4);
+            monsterSpawner.SetAttackWave(wave1, wave2);
+
+            monsterSpawner.CheckUpdateSpawn(1);
+            monsterSpawner.CheckUpdateSpawn(1);
+            ShouldWaveCanSpawnNext(wave1, false);
+
+            monsterSpawner.CheckUpdateSpawn(1);
+            CurrentWaveIndexShouldBe(0);
+
+            monsterSpawner.CheckUpdateSpawn(1);
+            CurrentWaveIndexShouldBe(1);
+
+            ShouldTriggerSpawnEvent(3);
+            ShouldAllWavesSpawnFinished(false);
+        }
+
+        private void CurrentWaveIndexShouldBe(int expectedWaveIndex)
+        {
+            Assert.AreEqual(expectedWaveIndex, monsterSpawner.GetCurrentWaveIndex);
+        }
+
+        private void ShouldWaveCanSpawnNext(AttackWave wave1, bool expectedCanSpawn)
+        {
+            Assert.AreEqual(expectedCanSpawn, wave1.CanSpawnNext);
+        }
+
+        private void ShouldAllWavesSpawnFinished(bool expectedAllWaveFished)
+        {
+            Assert.AreEqual(expectedAllWaveFished, monsterSpawner.IsAllWaveSpawnFinished);
+        }
+
+        //第一波產怪結束, 沒有第二波
         //第一波產怪中, 第一波時間到開始第二波產怪
 
         private void ShouldTriggerSpawnEvent(int triggerTimes)
@@ -82,11 +119,6 @@ namespace GameCore.Tests.Monster
                 onSpawnMonster.DidNotReceive().Invoke();
             else
                 onSpawnMonster.Received(triggerTimes).Invoke();
-        }
-
-        private void ShouldCanSpawnNext(bool expectedCanSpawnNext)
-        {
-            Assert.AreEqual(expectedCanSpawnNext, monsterSpawner.CanSpawnNext);
         }
     }
 }

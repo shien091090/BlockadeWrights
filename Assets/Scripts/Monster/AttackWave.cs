@@ -2,14 +2,31 @@ namespace GameCore
 {
     public class AttackWave
     {
+        private float currentTimer;
+        public float StartTimeSecond { get; }
         public int GetMaxSpawnCount { get; }
-        public int SpawnInterval { get; }
+        public float SpawnIntervalSecond { get; }
         public int GetCurrentSpawnCount { get; private set; }
+        public bool CanSpawnNext => GetCurrentSpawnCount < GetMaxSpawnCount;
 
-        public AttackWave(int maxSpawnCount, int spawnInterval)
+        public AttackWave(int maxSpawnCount, float spawnIntervalSecond, float startTimeSecond = 0)
         {
+            StartTimeSecond = startTimeSecond;
             GetMaxSpawnCount = maxSpawnCount;
-            SpawnInterval = spawnInterval;
+            SpawnIntervalSecond = spawnIntervalSecond;
+        }
+
+        public bool UpdateTimerAndCheckSpawn(float deltaTime)
+        {
+            currentTimer += deltaTime;
+            
+            if(currentTimer >= SpawnIntervalSecond)
+            {
+                currentTimer = 0;
+                return true;
+            }
+            else
+                return false;
         }
 
         public void AddSpawnCount(int addCount)
