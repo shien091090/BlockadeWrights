@@ -21,8 +21,8 @@ namespace GameCore.Tests.Monster
         //產怪一次
         public void spawn_monster_one_time()
         {
-            monsterSpawner.SetAttackWave(3);
-            monsterSpawner.Spawn();
+            monsterSpawner.SetAttackWave(3, 0);
+            monsterSpawner.CheckUpdateSpawn(1);
 
             ShouldCanSpawnNext(true);
             ShouldTriggerSpawnEvent(1);
@@ -32,10 +32,10 @@ namespace GameCore.Tests.Monster
         //產怪至上限
         public void spawn_monster_to_max()
         {
-            monsterSpawner.SetAttackWave(3);
-            monsterSpawner.Spawn();
-            monsterSpawner.Spawn();
-            monsterSpawner.Spawn();
+            monsterSpawner.SetAttackWave(3, 0);
+            monsterSpawner.CheckUpdateSpawn(1);
+            monsterSpawner.CheckUpdateSpawn(1);
+            monsterSpawner.CheckUpdateSpawn(1);
 
             ShouldCanSpawnNext(false);
             ShouldTriggerSpawnEvent(3);
@@ -45,15 +45,32 @@ namespace GameCore.Tests.Monster
         //產怪超過上限
         public void spawn_monster_over_max()
         {
-            monsterSpawner.SetAttackWave(3);
-            monsterSpawner.Spawn();
-            monsterSpawner.Spawn();
-            monsterSpawner.Spawn();
-            monsterSpawner.Spawn();
+            monsterSpawner.SetAttackWave(3, 0);
+            monsterSpawner.CheckUpdateSpawn(1);
+            monsterSpawner.CheckUpdateSpawn(1);
+            monsterSpawner.CheckUpdateSpawn(1);
+            monsterSpawner.CheckUpdateSpawn(1);
 
             ShouldCanSpawnNext(false);
             ShouldTriggerSpawnEvent(3);
         }
+
+        [Test]
+        //產怪後等待一段時間，再產怪
+        public void spawn_monster_wait_time()
+        {
+            monsterSpawner.SetAttackWave(3, 1);
+
+            monsterSpawner.CheckUpdateSpawn(0.5f);
+            ShouldTriggerSpawnEvent(0);
+
+            monsterSpawner.CheckUpdateSpawn(0.5f);
+            ShouldTriggerSpawnEvent(1);
+            ShouldCanSpawnNext(true);
+        }
+
+        //第一波時間到, 開始第二波產怪
+        //第一波產怪中, 第一波時間到開始第二波產怪
 
         private void ShouldTriggerSpawnEvent(int triggerTimes)
         {
