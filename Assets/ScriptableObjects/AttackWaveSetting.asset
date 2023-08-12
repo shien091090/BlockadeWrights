@@ -12,14 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eaa2874893e467f9e9e28bb0587e860, type: 3}
   m_Name: AttackWaveSetting
   m_EditorClassIdentifier: 
-  pathPointList:
-  - {x: -9.5, y: 0}
-  - {x: 8, y: 0}
   attackWaveSettings:
   - startTimeSecond: 2
     maxSpawnCount: 10
     spawnIntervalSecond: 1
+    pathPointList:
+    - {x: -10.5, y: 0}
+    - {x: -3, y: 0}
+    - {x: -3, y: 4}
+    - {x: 7, y: 4}
   - startTimeSecond: 5
     maxSpawnCount: 10
     spawnIntervalSecond: 0.5
+    pathPointList:
+    - {x: 0, y: -5}
+    - {x: 0, y: -1}
+    - {x: 7, y: -1}
+    - {x: 7, y: 4}
   monsterHp: 100

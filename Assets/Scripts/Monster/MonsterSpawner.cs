@@ -8,7 +8,7 @@ namespace GameCore
         private float currentTimer;
         private AttackWave[] attackWaves;
 
-        public event Action OnSpawnMonster;
+        public event Action<MonsterModel> OnSpawnMonster;
         public event Action OnStartNextWave;
 
         public int GetCurrentWaveIndex { get; private set; }
@@ -57,7 +57,8 @@ namespace GameCore
                     continue;
 
                 attackWave.AddSpawnCount(1);
-                OnSpawnMonster?.Invoke();
+                MonsterModel monsterModel = new MonsterModel(attackWave.GetAttackPath);
+                OnSpawnMonster?.Invoke(monsterModel);
             }
         }
 

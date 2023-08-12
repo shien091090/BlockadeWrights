@@ -7,13 +7,13 @@ namespace GameCore.Tests.Monster
     public class MonsterSpawnerTest
     {
         private MonsterSpawner monsterSpawner;
-        private Action spawnMonsterEvent;
+        private Action<MonsterModel> spawnMonsterEvent;
         private Action startNextWaveEvent;
 
         [SetUp]
         public void Setup()
         {
-            spawnMonsterEvent = Substitute.For<Action>();
+            spawnMonsterEvent = Substitute.For<Action<MonsterModel>>();
             startNextWaveEvent = Substitute.For<Action>();
             monsterSpawner = new MonsterSpawner();
             monsterSpawner.OnSpawnMonster += spawnMonsterEvent;
@@ -130,7 +130,7 @@ namespace GameCore.Tests.Monster
 
             monsterSpawner.CheckUpdateSpawn(1);
             ShouldTriggerStartNextWaveEvent(2);
-            
+
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
 
@@ -186,9 +186,9 @@ namespace GameCore.Tests.Monster
         private void ShouldTriggerSpawnEvent(int triggerTimes)
         {
             if (triggerTimes == 0)
-                spawnMonsterEvent.DidNotReceive().Invoke();
+                spawnMonsterEvent.DidNotReceive().Invoke(Arg.Any<MonsterModel>());
             else
-                spawnMonsterEvent.Received(triggerTimes).Invoke();
+                spawnMonsterEvent.Received(triggerTimes).Invoke(Arg.Any<MonsterModel>());
         }
     }
 }
