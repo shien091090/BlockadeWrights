@@ -2,25 +2,20 @@ using UnityEngine;
 
 namespace GameCore
 {
-    [System.Serializable]
     public class AttackWave
     {
-        [SerializeField] private float startTimeSecond;
-        [SerializeField] private int maxSpawnCount;
-        [SerializeField] private float spawnIntervalSecond;
-        
         private float currentTimer;
-        public int GetCurrentSpawnCount { get; private set; }
+        private int GetCurrentSpawnCount { get; set; }
         public bool CanSpawnNext => GetCurrentSpawnCount < MaxSpawnCount;
-        public float StartTimeSecond => startTimeSecond;
-        public int MaxSpawnCount => maxSpawnCount;
-        public float SpawnIntervalSecond => spawnIntervalSecond;
+        public float StartTimeSecond { get; }
+        private int MaxSpawnCount { get; }
+        private float SpawnIntervalSecond { get; }
 
         public AttackWave(int maxSpawnCount, float spawnIntervalSecond, float startTimeSecond = 0)
         {
-            this.startTimeSecond = startTimeSecond;
-            this.maxSpawnCount = maxSpawnCount;
-            this.spawnIntervalSecond = spawnIntervalSecond;
+            StartTimeSecond = startTimeSecond;
+            MaxSpawnCount = maxSpawnCount;
+            SpawnIntervalSecond = spawnIntervalSecond;
         }
 
         public bool UpdateTimerAndCheckSpawn(float deltaTime)

@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 namespace GameCore
@@ -5,6 +6,7 @@ namespace GameCore
     public class MonsterHolderView : MonoBehaviour
     {
         [SerializeField] private AttackWaveSettingScriptableObject attackWaveSetting;
+        [SerializeField] private TextMeshProUGUI tmp_waveHint;
 
         private MonsterSpawner monsterSpawner;
         private GameObjectPoolComponent gameObjectPool;
@@ -20,15 +22,6 @@ namespace GameCore
             }
         }
 
-        private void Awake()
-        {
-            GameObjectPool.InitPreSpawn();
-
-            monsterSpawner = new MonsterSpawner();
-            monsterSpawner.Init(attackWaveSetting.GetAttackWaves);
-            
-            SetEventRegister();
-        }
 
         private void Update()
         {
@@ -39,6 +32,25 @@ namespace GameCore
         {
             monsterSpawner.OnSpawnMonster -= SpawnMonster;
             monsterSpawner.OnSpawnMonster += SpawnMonster;
+
+            monsterSpawner.OnStartNextWave -= RefreshWaveHint;
+            monsterSpawner.OnStartNextWave += RefreshWaveHint;
+        }
+
+        private void RefreshWaveHint()
+        {
+            tmp_waveHint.text = monsterSpawner.GetWaveHint;
+        }
+
+        private void Awake()
+        {
+            GameObjectPool.InitPreSpawn();
+
+            monsterSpawner = new MonsterSpawner();
+            monsterSpawner.Init(attackWaveSetting.GetAttackWaves());
+
+            SetEventRegister();
+            RefreshWaveHint();
         }
 
         private void SpawnMonster()

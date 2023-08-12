@@ -15,8 +15,11 @@ MonoBehaviour:
   pathPointList:
   - {x: -9.5, y: 0}
   - {x: 8, y: 0}
-  attackWaves:
-  - startTimeSecond: 0
+  attackWaveSettings:
+  - startTimeSecond: 2
     maxSpawnCount: 10
     spawnIntervalSecond: 1
+  - startTimeSecond: 5
+    maxSpawnCount: 10
+    spawnIntervalSecond: 0.5
   monsterHp: 100
