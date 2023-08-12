@@ -110,7 +110,23 @@ namespace GameCore.Tests.Monster
             ShouldAllWavesSpawnFinished(false);
         }
 
+        [Test]
         //第一波和第二波同時產怪
+        public void spawn_monster_same_time()
+        {
+            AttackWave wave1 = new AttackWave(3, 1, 0);
+            AttackWave wave2 = new AttackWave(3, 1, 1);
+            monsterSpawner.SetAttackWave(wave1, wave2);
+
+            monsterSpawner.CheckUpdateSpawn(1);
+            monsterSpawner.CheckUpdateSpawn(1);
+            monsterSpawner.CheckUpdateSpawn(1);
+            monsterSpawner.CheckUpdateSpawn(1);
+            
+            ShouldTriggerSpawnEvent(6);
+            CurrentWaveIndexShouldBe(1);
+            ShouldAllWavesSpawnFinished(true);
+        }
 
         private void CurrentWaveIndexShouldBe(int expectedWaveIndex)
         {
