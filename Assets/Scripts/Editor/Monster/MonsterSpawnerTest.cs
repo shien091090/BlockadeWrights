@@ -59,6 +59,21 @@ namespace GameCore.Tests.Monster
         }
 
         [Test]
+        //第一波時間尚未到, 不產怪
+        public void spawn_monster_not_at_start_time()
+        {
+            AttackWave wave1 = new AttackWave(3, 1, 10);
+            monsterSpawner.SetAttackWave(wave1);
+
+            monsterSpawner.CheckUpdateSpawn(0.5f);
+            monsterSpawner.CheckUpdateSpawn(0.5f);
+            monsterSpawner.CheckUpdateSpawn(0.5f);
+            monsterSpawner.CheckUpdateSpawn(0.5f);
+
+            ShouldTriggerSpawnEvent(0);
+        }
+
+        [Test]
         //產怪後等待一段時間，再產怪
         public void spawn_monster_wait_time()
         {
@@ -94,24 +109,7 @@ namespace GameCore.Tests.Monster
             ShouldTriggerSpawnEvent(3);
             ShouldAllWavesSpawnFinished(false);
         }
-        
-        [Test]
-        //第一波時間尚未到, 不產怪
-        public void spawn_monster_not_at_start_time()
-        {
-            AttackWave wave1 = new AttackWave(3, 1, 10);
-            monsterSpawner.SetAttackWave(wave1);
 
-            monsterSpawner.CheckUpdateSpawn(0.5f);
-            monsterSpawner.CheckUpdateSpawn(0.5f);
-            monsterSpawner.CheckUpdateSpawn(0.5f);
-            monsterSpawner.CheckUpdateSpawn(0.5f);
-
-            ShouldTriggerSpawnEvent(0);
-        }
-        
-        //第一波產怪結束, 沒有第二波
-        //第一波產怪中, 第一波時間到開始第二波產怪
         //第一波和第二波同時產怪
 
         private void CurrentWaveIndexShouldBe(int expectedWaveIndex)
