@@ -19,3 +19,4 @@ MonoBehaviour:
   - startTimeSecond: 0
     maxSpawnCount: 10
     spawnIntervalSecond: 1
+  monsterHp: 100

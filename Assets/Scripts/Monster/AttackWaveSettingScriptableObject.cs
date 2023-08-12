@@ -7,9 +7,11 @@ namespace GameCore
     {
         [SerializeField] private List<Vector2> pathPointList;
         [SerializeField] private AttackWave[] attackWaves;
-        
+        [SerializeField] private float monsterHp;
+
         public Vector2 StartPoint => pathPointList[0];
         public AttackWave[] GetAttackWaves => attackWaves;
+        public float MonsterHp => monsterHp;
 
         public MonsterMovementPath GetPathInfo()
         {

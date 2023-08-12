@@ -41,12 +41,11 @@ namespace GameCore
             monsterSpawner.OnSpawnMonster += SpawnMonster;
         }
 
-        [ContextMenu("SpawnMonster")]
         private void SpawnMonster()
         {
             MonsterView monsterView = GameObjectPool.SpawnGameObject<MonsterView>(attackWaveSetting.StartPoint);
             MonsterModel monsterModel = new MonsterModel(attackWaveSetting.GetPathInfo());
-            monsterModel.InitHp(100);
+            monsterModel.InitHp(attackWaveSetting.MonsterHp);
             monsterView.Init(monsterModel);
         }
     }
