@@ -75,13 +75,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd9ec8b292b2420f864a46062161eb0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathPointList:
-  - {x: -10, y: 2.85}
-  - {x: -5.69, y: 2.85}
-  - {x: -3.73, y: -2.56}
-  - {x: 1.4, y: -3.58}
-  - {x: 5.17, y: 2.91}
-  - {x: 0, y: 3.62}
+  attackWaveSetting: {fileID: 11400000, guid: 8afaf3249fb2a9046b8ca9110c9b4017, type: 2}
 --- !u!114 &1896530217731811332
 MonoBehaviour:
   m_ObjectHideFlags: 0

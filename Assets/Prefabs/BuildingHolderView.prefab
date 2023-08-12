@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preSpawnCount: 8
-  entityPrefab: {fileID: 0}
+  gameObjectPrefab: {fileID: 3523496205190177743, guid: 9ce02638df3cbc94789ff99e75ef6410, type: 3}
   holderRoot: {fileID: 933130808945901873}
 --- !u!1 &933130808945901872
 GameObject:
