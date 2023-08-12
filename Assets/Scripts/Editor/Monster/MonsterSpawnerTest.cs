@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using NSubstitute;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace GameCore.Tests.Monster
 {
@@ -158,6 +160,22 @@ namespace GameCore.Tests.Monster
             }
 
             Assert.AreEqual(expectedWaveHint, monsterSpawner.GetWaveHint);
+        }
+
+        [Test]
+        //產怪時不指定路徑, 產怪起始位置為預設中心位置
+        public void spawn_monster_and_no_path()
+        {
+            AttackWave wave1 = new AttackWave(1, 1, pathPointList: null);
+            monsterSpawner.Init(wave1);
+            monsterSpawner.CheckUpdateSpawn(1);
+            
+            SpawnMonsterStartPosShouldBe(Vector2.zero);
+        }
+
+        private void SpawnMonsterStartPosShouldBe(Vector2 expectedStartPos)
+        {
+            spawnMonsterEvent.Received(1).Invoke(Arg.Is<MonsterModel>(x => x.GetStartPoint == expectedStartPos));
         }
 
         private void CurrentWaveIndexShouldBe(int expectedWaveIndex)

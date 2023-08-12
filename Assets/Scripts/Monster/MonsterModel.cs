@@ -15,7 +15,10 @@ namespace GameCore
         public int CurrentTargetPathIndex { get; private set; }
         public bool IsArrivedGoal => !path.IsEmpty && CurrentTargetPathIndex > path.GetLastPointIndex;
         public bool IsDead => HealthPointModel != null && HealthPointModel.IsDead;
-        public Vector2 GetStartPoint => path?.GetPoint(0) ?? Vector2.zero;
+
+        public Vector2 GetStartPoint => path != null && path.IsEmpty == false ?
+            path.GetPoint(0) :
+            Vector2.zero;
 
         public MonsterModel(MonsterMovementPath path)
         {
@@ -63,7 +66,7 @@ namespace GameCore
                 return;
 
             HealthPointModel.Damage(damageValue);
-            
+
             if (HealthPointModel.IsDead)
                 OnDead?.Invoke();
         }
