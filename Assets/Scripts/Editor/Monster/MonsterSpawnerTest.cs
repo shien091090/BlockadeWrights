@@ -169,8 +169,19 @@ namespace GameCore.Tests.Monster
             AttackWave wave1 = new AttackWave(1, 1, pathPointList: null);
             monsterSpawner.Init(wave1);
             monsterSpawner.CheckUpdateSpawn(1);
-            
+
             SpawnMonsterStartPosShouldBe(Vector2.zero);
+        }
+
+        [Test]
+        //產怪時指定路徑, 產怪起始位置為路徑起始位置
+        public void spawn_monster_and_have_path()
+        {
+            AttackWave wave1 = new AttackWave(1, 1, pathPointList: new List<Vector2> { new Vector2(1, 1), new Vector2(2, 2) });
+            monsterSpawner.Init(wave1);
+            monsterSpawner.CheckUpdateSpawn(1);
+
+            SpawnMonsterStartPosShouldBe(new Vector2(1, 1));
         }
 
         private void SpawnMonsterStartPosShouldBe(Vector2 expectedStartPos)
