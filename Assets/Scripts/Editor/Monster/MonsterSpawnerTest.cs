@@ -159,7 +159,7 @@ namespace GameCore.Tests.Monster
                 monsterSpawner.CheckUpdateSpawn(1);
             }
 
-            Assert.AreEqual(expectedWaveHint, monsterSpawner.GetWaveHint);
+            WaveHintShouldBe(expectedWaveHint);
         }
 
         [Test]
@@ -182,6 +182,11 @@ namespace GameCore.Tests.Monster
             monsterSpawner.CheckUpdateSpawn(1);
 
             SpawnMonsterStartPosShouldBe(new Vector2(1, 1));
+        }
+
+        private void WaveHintShouldBe(string expectedWaveHint)
+        {
+            Assert.AreEqual(expectedWaveHint, monsterSpawner.GetWaveHint);
         }
 
         private void SpawnMonsterStartPosShouldBe(Vector2 expectedStartPos)
