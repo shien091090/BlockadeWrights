@@ -22,7 +22,7 @@ namespace GameCore.Tests.Monster
         public void spawn_monster_one_time()
         {
             AttackWave wave1 = new AttackWave(3, 0);
-            monsterSpawner.SetAttackWave(wave1);
+            monsterSpawner.Init(wave1);
             monsterSpawner.CheckUpdateSpawn(1);
 
             ShouldAllWavesSpawnFinished(false);
@@ -34,7 +34,7 @@ namespace GameCore.Tests.Monster
         public void spawn_monster_to_max()
         {
             AttackWave wave1 = new AttackWave(3, 0);
-            monsterSpawner.SetAttackWave(wave1);
+            monsterSpawner.Init(wave1);
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
@@ -48,7 +48,7 @@ namespace GameCore.Tests.Monster
         public void spawn_monster_over_max()
         {
             AttackWave wave1 = new AttackWave(3, 0);
-            monsterSpawner.SetAttackWave(wave1);
+            monsterSpawner.Init(wave1);
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
@@ -63,7 +63,7 @@ namespace GameCore.Tests.Monster
         public void spawn_monster_not_at_start_time()
         {
             AttackWave wave1 = new AttackWave(3, 1, 10);
-            monsterSpawner.SetAttackWave(wave1);
+            monsterSpawner.Init(wave1);
 
             monsterSpawner.CheckUpdateSpawn(0.5f);
             monsterSpawner.CheckUpdateSpawn(0.5f);
@@ -78,7 +78,7 @@ namespace GameCore.Tests.Monster
         public void spawn_monster_wait_time()
         {
             AttackWave wave1 = new AttackWave(3, 1);
-            monsterSpawner.SetAttackWave(wave1);
+            monsterSpawner.Init(wave1);
 
             monsterSpawner.CheckUpdateSpawn(0.5f);
             ShouldTriggerSpawnEvent(0);
@@ -94,7 +94,7 @@ namespace GameCore.Tests.Monster
         {
             AttackWave wave1 = new AttackWave(2, 1, 0);
             AttackWave wave2 = new AttackWave(2, 1, 4);
-            monsterSpawner.SetAttackWave(wave1, wave2);
+            monsterSpawner.Init(wave1, wave2);
 
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
@@ -116,7 +116,7 @@ namespace GameCore.Tests.Monster
         {
             AttackWave wave1 = new AttackWave(3, 1, 0);
             AttackWave wave2 = new AttackWave(3, 1, 1);
-            monsterSpawner.SetAttackWave(wave1, wave2);
+            monsterSpawner.Init(wave1, wave2);
 
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);

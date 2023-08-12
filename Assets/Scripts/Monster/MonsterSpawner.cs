@@ -53,7 +53,7 @@ namespace GameCore
             }
         }
 
-        public void SetAttackWave(params AttackWave[] attackWaves)
+        public void Init(params AttackWave[] attackWaves)
         {
             this.attackWaves = attackWaves;
             GetCurrentWaveIndex = -1;

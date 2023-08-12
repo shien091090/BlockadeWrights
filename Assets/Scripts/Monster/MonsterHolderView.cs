@@ -1,17 +1,13 @@
-using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
 
 namespace GameCore
 {
     public class MonsterHolderView : MonoBehaviour
     {
-        [Inject] private MonsterSpawner monsterSpawner;
+        [SerializeField] private AttackWaveSettingScriptableObject attackWaveSetting;
 
-        [SerializeField] private List<Vector2> pathPointList;
-
+        private MonsterSpawner monsterSpawner;
         private GameObjectPoolComponent gameObjectPool;
-        private Vector2 StartPoint => pathPointList[0];
 
         private GameObjectPoolComponent GameObjectPool
         {
@@ -24,21 +20,19 @@ namespace GameCore
             }
         }
 
-        private void Start()
+        private void Awake()
         {
-            SetEventRegister();
             GameObjectPool.InitPreSpawn();
+
+            monsterSpawner = new MonsterSpawner();
+            monsterSpawner.Init(attackWaveSetting.GetAttackWaves);
+            
+            SetEventRegister();
         }
 
-        private MonsterMovementPath GetPathInfo()
+        private void Update()
         {
-            MonsterMovementPath pathInfo = new MonsterMovementPath();
-            foreach (Vector2 pos in pathPointList)
-            {
-                pathInfo.AddPoint(pos);
-            }
-
-            return pathInfo;
+            monsterSpawner.CheckUpdateSpawn(Time.deltaTime);
         }
 
         private void SetEventRegister()
@@ -50,8 +44,8 @@ namespace GameCore
         [ContextMenu("SpawnMonster")]
         private void SpawnMonster()
         {
-            MonsterView monsterView = GameObjectPool.SpawnGameObject<MonsterView>(StartPoint);
-            MonsterModel monsterModel = new MonsterModel(GetPathInfo());
+            MonsterView monsterView = GameObjectPool.SpawnGameObject<MonsterView>(attackWaveSetting.StartPoint);
+            MonsterModel monsterModel = new MonsterModel(attackWaveSetting.GetPathInfo());
             monsterModel.InitHp(100);
             monsterView.Init(monsterModel);
         }
