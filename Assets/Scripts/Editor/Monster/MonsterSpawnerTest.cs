@@ -7,14 +7,17 @@ namespace GameCore.Tests.Monster
     public class MonsterSpawnerTest
     {
         private MonsterSpawner monsterSpawner;
-        private Action onSpawnMonster;
+        private Action spawnMonsterEvent;
+        private Action startNextWaveEvent;
 
         [SetUp]
         public void Setup()
         {
-            onSpawnMonster = Substitute.For<Action>();
+            spawnMonsterEvent = Substitute.For<Action>();
+            startNextWaveEvent = Substitute.For<Action>();
             monsterSpawner = new MonsterSpawner();
-            monsterSpawner.OnSpawnMonster += onSpawnMonster;
+            monsterSpawner.OnSpawnMonster += spawnMonsterEvent;
+            monsterSpawner.OnStartNextWave += startNextWaveEvent;
         }
 
         [Test]
@@ -71,6 +74,7 @@ namespace GameCore.Tests.Monster
             monsterSpawner.CheckUpdateSpawn(0.5f);
 
             ShouldTriggerSpawnEvent(0);
+            ShouldTriggerStartNextWaveEvent(0);
         }
 
         [Test]
@@ -82,6 +86,7 @@ namespace GameCore.Tests.Monster
 
             monsterSpawner.CheckUpdateSpawn(0.5f);
             ShouldTriggerSpawnEvent(0);
+            ShouldTriggerStartNextWaveEvent(1);
 
             monsterSpawner.CheckUpdateSpawn(0.5f);
             ShouldAllWavesSpawnFinished(false);
@@ -99,12 +104,14 @@ namespace GameCore.Tests.Monster
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
             ShouldWaveCanSpawnNext(wave1, false);
+            ShouldTriggerStartNextWaveEvent(1);
 
             monsterSpawner.CheckUpdateSpawn(1);
             CurrentWaveIndexShouldBe(0);
 
             monsterSpawner.CheckUpdateSpawn(1);
             CurrentWaveIndexShouldBe(1);
+            ShouldTriggerStartNextWaveEvent(2);
 
             ShouldTriggerSpawnEvent(3);
             ShouldAllWavesSpawnFinished(false);
@@ -119,7 +126,11 @@ namespace GameCore.Tests.Monster
             monsterSpawner.Init(wave1, wave2);
 
             monsterSpawner.CheckUpdateSpawn(1);
+            ShouldTriggerStartNextWaveEvent(1);
+
             monsterSpawner.CheckUpdateSpawn(1);
+            ShouldTriggerStartNextWaveEvent(2);
+            
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
 
@@ -164,12 +175,20 @@ namespace GameCore.Tests.Monster
             Assert.AreEqual(expectedAllWaveFished, monsterSpawner.IsAllWaveSpawnFinished);
         }
 
+        private void ShouldTriggerStartNextWaveEvent(int triggerTimes)
+        {
+            if (triggerTimes == 0)
+                startNextWaveEvent.DidNotReceive().Invoke();
+            else
+                startNextWaveEvent.Received(triggerTimes).Invoke();
+        }
+
         private void ShouldTriggerSpawnEvent(int triggerTimes)
         {
             if (triggerTimes == 0)
-                onSpawnMonster.DidNotReceive().Invoke();
+                spawnMonsterEvent.DidNotReceive().Invoke();
             else
-                onSpawnMonster.Received(triggerTimes).Invoke();
+                spawnMonsterEvent.Received(triggerTimes).Invoke();
         }
     }
 }

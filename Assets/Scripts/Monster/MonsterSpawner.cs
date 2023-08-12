@@ -9,6 +9,7 @@ namespace GameCore
         private AttackWave[] attackWaves;
 
         public event Action OnSpawnMonster;
+        public event Action OnStartNextWave;
 
         public int GetCurrentWaveIndex { get; private set; }
         public bool HaveNextWave => GetCurrentWaveIndex < attackWaves.Length - 1;
@@ -38,7 +39,10 @@ namespace GameCore
             currentTimer += deltaTime;
 
             if (HaveNextWave && IsStartNextWave)
+            {
                 GetCurrentWaveIndex++;
+                OnStartNextWave?.Invoke();
+            }
 
             for (int waveIndex = 0; waveIndex < attackWaves.Length; waveIndex++)
             {
