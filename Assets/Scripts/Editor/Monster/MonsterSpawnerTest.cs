@@ -122,10 +122,31 @@ namespace GameCore.Tests.Monster
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
-            
+
             ShouldTriggerSpawnEvent(6);
             CurrentWaveIndexShouldBe(1);
             ShouldAllWavesSpawnFinished(true);
+        }
+
+        [Test]
+        [TestCase(0, "0/3")]
+        [TestCase(2, "1/3")]
+        [TestCase(3, "2/3")]
+        [TestCase(4, "3/3")]
+        //驗證波次提示
+        public void spawn_monster_wave_hint(int updateTimes, string expectedWaveHint)
+        {
+            AttackWave wave1 = new AttackWave(1, 1, 2);
+            AttackWave wave2 = new AttackWave(1, 1, 3);
+            AttackWave wave3 = new AttackWave(1, 1, 4);
+            monsterSpawner.Init(wave1, wave2, wave3);
+
+            for (int i = 0; i < updateTimes; i++)
+            {
+                monsterSpawner.CheckUpdateSpawn(1);
+            }
+
+            Assert.AreEqual(expectedWaveHint, monsterSpawner.GetWaveHint);
         }
 
         private void CurrentWaveIndexShouldBe(int expectedWaveIndex)

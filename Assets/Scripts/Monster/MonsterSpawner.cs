@@ -24,6 +24,10 @@ namespace GameCore
             }
         }
 
+        public string GetWaveHint => attackWaves == null ?
+            string.Empty :
+            $"{GetCurrentWaveIndex + 1}/{attackWaves.Length}";
+
         private bool IsStartNextWave => currentTimer >= attackWaves[GetCurrentWaveIndex + 1].StartTimeSecond;
 
         public void CheckUpdateSpawn(float deltaTime)
