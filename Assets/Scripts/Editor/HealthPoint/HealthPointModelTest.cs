@@ -134,7 +134,7 @@ namespace GameCore.Tests.HealthPoint
 
         private void ShouldBeInvalid(bool expectedIsInvalid)
         {
-            Assert.AreEqual(expectedIsInvalid, healthPointModel.IsValid);
+            Assert.AreEqual(expectedIsInvalid, healthPointModel.IsInValid);
         }
     }
 }

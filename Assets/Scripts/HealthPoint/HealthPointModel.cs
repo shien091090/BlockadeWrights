@@ -7,7 +7,7 @@ namespace GameCore
         private readonly float maxHp;
         public event Action<HealthPointChangeInfo> OnRefreshHealthPoint;
 
-        public bool IsValid => maxHp <= 0;
+        public bool IsInValid => maxHp <= 0;
         public float CurrentHp { private set; get; }
         public bool IsDead => CurrentHp == 0;
 
