@@ -21,7 +21,7 @@ namespace GameCore.Tests.Fortress
         {
             GivenInitModel(0);
 
-            Assert.AreEqual(true, fortressModel.IsInValid);
+            ShouldModelInvalid(true);
         }
 
         [Test]
@@ -29,15 +29,29 @@ namespace GameCore.Tests.Fortress
         public void fortress_be_attacked_but_not_destroyed()
         {
             GivenInitModel(100);
+            ShouldModelInvalid(false);
 
             fortressModel.Damage(10);
 
-            fortressDestroyEvent.DidNotReceive().Invoke();
+            ShouldTriggerFortressDestroyEvent(0);
         }
 
         private void GivenInitModel(int mapHp)
         {
             fortressModel = new FortressModel(mapHp);
+        }
+
+        private void ShouldTriggerFortressDestroyEvent(int triggerTimes)
+        {
+            if (triggerTimes == 0)
+                fortressDestroyEvent.DidNotReceive().Invoke();
+            else
+                fortressDestroyEvent.Received(triggerTimes).Invoke();
+        }
+
+        private void ShouldModelInvalid(bool expectedInvalid)
+        {
+            Assert.AreEqual(expectedInvalid, fortressModel.IsInValid);
         }
         //主堡被攻擊並且被破壞
     }
