@@ -36,9 +36,30 @@ namespace GameCore.Tests.Fortress
             ShouldTriggerFortressDestroyEvent(0);
         }
 
+        [Test]
+        [TestCase(100)]
+        [TestCase(100.01f)]
+        [TestCase(500)]
+        //主堡被攻擊並且被破壞
+        public void fortress_be_attacked_and_destroyed(float damageValue)
+        {
+            GivenInitModel(100);
+
+            fortressModel.Damage(damageValue);
+
+            ShouldFortressHpShouldBe(0);
+            ShouldTriggerFortressDestroyEvent(1);
+        }
+
         private void GivenInitModel(int mapHp)
         {
             fortressModel = new FortressModel(mapHp);
+            fortressModel.OnFortressDestroy += fortressDestroyEvent;
+        }
+
+        private void ShouldFortressHpShouldBe(int expectedHp)
+        {
+            Assert.AreEqual(expectedHp, fortressModel.CurrentHp);
         }
 
         private void ShouldTriggerFortressDestroyEvent(int triggerTimes)
@@ -53,6 +74,5 @@ namespace GameCore.Tests.Fortress
         {
             Assert.AreEqual(expectedInvalid, fortressModel.IsInValid);
         }
-        //主堡被攻擊並且被破壞
     }
 }
