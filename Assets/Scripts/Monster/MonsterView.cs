@@ -7,7 +7,7 @@ namespace GameCore
         [SerializeField] private float moveSpeed;
 
         private HealthPointComponent hpComponent;
-        private MonsterModel monsterModel;
+        private IMonsterModel monsterModel;
         private FaceDirectionComponent faceDirection;
 
         private FaceDirectionComponent FaceDirection
@@ -40,7 +40,7 @@ namespace GameCore
             transform.Translate(monsterModel.UpdateMove(transform.position, moveSpeed, Time.deltaTime));
         }
 
-        public void Init(MonsterModel monsterModel)
+        public void Init(IMonsterModel monsterModel)
         {
             this.monsterModel = monsterModel;
             HpComponent.Setup(monsterModel.HpModel);

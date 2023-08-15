@@ -3,12 +3,12 @@ using System.Linq;
 
 namespace GameCore
 {
-    public class MonsterSpawner
+    public class MonsterSpawner : IMonsterSpawner
     {
         private float currentTimer;
         private AttackWave[] attackWaves;
 
-        public event Action<MonsterModel> OnSpawnMonster;
+        public event Action<IMonsterModel> OnSpawnMonster;
         public event Action OnStartNextWave;
 
         public int GetCurrentWaveIndex { get; private set; }

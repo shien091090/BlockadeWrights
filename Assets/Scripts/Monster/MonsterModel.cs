@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public class MonsterModel
+    public class MonsterModel : IMonsterModel
     {
         private readonly MonsterMovementPath path;
 

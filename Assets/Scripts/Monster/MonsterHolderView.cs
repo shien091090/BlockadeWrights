@@ -53,11 +53,10 @@ namespace GameCore
             RefreshWaveHint();
         }
 
-        private void SpawnMonster(MonsterModel monsterModel)
+        private void SpawnMonster(IMonsterModel monsterModel)
         {
             MonsterView monsterView = GameObjectPool.SpawnGameObject<MonsterView>(monsterModel.GetStartPoint);
             monsterModel.InitHp(attackWaveSetting.MonsterHp);
-            // MonsterModel monsterModel = new MonsterModel(attackWaveSetting.GetPathInfo());
             monsterView.Init(monsterModel);
         }
     }

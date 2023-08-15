@@ -9,13 +9,13 @@ namespace GameCore.Tests.Monster
     public class MonsterSpawnerTest
     {
         private MonsterSpawner monsterSpawner;
-        private Action<MonsterModel> spawnMonsterEvent;
+        private Action<IMonsterModel> spawnMonsterEvent;
         private Action startNextWaveEvent;
 
         [SetUp]
         public void Setup()
         {
-            spawnMonsterEvent = Substitute.For<Action<MonsterModel>>();
+            spawnMonsterEvent = Substitute.For<Action<IMonsterModel>>();
             startNextWaveEvent = Substitute.For<Action>();
             monsterSpawner = new MonsterSpawner();
             monsterSpawner.OnSpawnMonster += spawnMonsterEvent;
