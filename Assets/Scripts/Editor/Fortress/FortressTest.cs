@@ -32,10 +32,11 @@ namespace GameCore.Tests.Fortress
         //主堡被攻擊, 但尚未被破壞
         public void fortress_be_attacked_but_not_destroyed()
         {
-            GivenInitModel(5);
+            GivenInitModel(3);
             ShouldModelInvalid(false);
 
             CallSpawnMonsterEvent();
+            CallDamageFortEvent();
             CallDamageFortEvent();
 
             ShouldTriggerFortressDestroyEvent(0);
