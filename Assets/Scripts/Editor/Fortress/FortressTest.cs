@@ -8,11 +8,15 @@ namespace GameCore.Tests.Fortress
     {
         private Action fortressDestroyEvent;
         private FortressModel fortressModel;
+        private IMonsterSpawner monsterSpawner;
+        private IMonsterModel monsterModel;
 
         [SetUp]
         public void Setup()
         {
             fortressDestroyEvent = Substitute.For<Action>();
+            monsterSpawner = Substitute.For<IMonsterSpawner>();
+            monsterModel = Substitute.For<IMonsterModel>();
         }
 
         [Test]
@@ -28,24 +32,25 @@ namespace GameCore.Tests.Fortress
         //主堡被攻擊, 但尚未被破壞
         public void fortress_be_attacked_but_not_destroyed()
         {
-            GivenInitModel(100);
+            GivenInitModel(5);
             ShouldModelInvalid(false);
 
-            fortressModel.Damage(10);
+            CallSpawnMonsterEvent();
+            CallDamageFortEvent();
 
             ShouldTriggerFortressDestroyEvent(0);
         }
 
         [Test]
-        [TestCase(100)]
-        [TestCase(100.01f)]
-        [TestCase(500)]
         //主堡被攻擊並且被破壞
-        public void fortress_be_attacked_and_destroyed(float damageValue)
+        public void fortress_be_attacked_and_destroyed()
         {
-            GivenInitModel(100);
+            GivenInitModel(3);
 
-            fortressModel.Damage(damageValue);
+            CallSpawnMonsterEvent();
+            CallDamageFortEvent();
+            CallDamageFortEvent();
+            CallDamageFortEvent();
 
             ShouldFortressHpShouldBe(0);
             ShouldTriggerFortressDestroyEvent(1);
@@ -53,8 +58,18 @@ namespace GameCore.Tests.Fortress
 
         private void GivenInitModel(int mapHp)
         {
-            fortressModel = new FortressModel(mapHp);
+            fortressModel = new FortressModel(mapHp, monsterSpawner);
             fortressModel.OnFortressDestroy += fortressDestroyEvent;
+        }
+
+        private void CallDamageFortEvent()
+        {
+            monsterModel.OnDamageFort += Raise.Event<Action>();
+        }
+
+        private void CallSpawnMonsterEvent()
+        {
+            monsterSpawner.OnSpawnMonster += Raise.Event<Action<IMonsterModel>>(monsterModel);
         }
 
         private void ShouldFortressHpShouldBe(int expectedHp)
