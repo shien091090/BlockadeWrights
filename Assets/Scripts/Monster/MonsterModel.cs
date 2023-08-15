@@ -11,10 +11,10 @@ namespace GameCore
         public event Action OnDead;
 
         public FaceDirection LookFaceDirection { get; }
-        public HealthPointModel HealthPointModel { get; private set; }
+        public HealthPointModel HpModel { get; private set; }
         public int CurrentTargetPathIndex { get; private set; }
         public bool IsArrivedGoal => !path.IsEmpty && CurrentTargetPathIndex > path.GetLastPointIndex;
-        public bool IsDead => HealthPointModel != null && HealthPointModel.IsDead;
+        public bool IsDead => HpModel != null && HpModel.IsDead;
 
         public Vector2 GetStartPoint => path != null && path.IsEmpty == false ?
             path.GetPoint(0) :
@@ -52,7 +52,7 @@ namespace GameCore
 
         public void InitHp(float maxHp)
         {
-            HealthPointModel = new HealthPointModel(maxHp);
+            HpModel = new HealthPointModel(maxHp);
         }
 
         public void SetTargetPathIndex(int index)
@@ -62,12 +62,12 @@ namespace GameCore
 
         public void Damage(float damageValue)
         {
-            if (HealthPointModel == null)
+            if (HpModel == null)
                 return;
 
-            HealthPointModel.Damage(damageValue);
+            HpModel.Damage(damageValue);
 
-            if (HealthPointModel.IsDead)
+            if (HpModel.IsDead)
                 OnDead?.Invoke();
         }
 

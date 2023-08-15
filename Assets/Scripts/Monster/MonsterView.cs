@@ -43,7 +43,7 @@ namespace GameCore
         public void Init(MonsterModel monsterModel)
         {
             this.monsterModel = monsterModel;
-            HpComponent.Setup(monsterModel.HealthPointModel);
+            HpComponent.Setup(monsterModel.HpModel);
             RegisterEvent();
         }
 
