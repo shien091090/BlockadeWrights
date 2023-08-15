@@ -5,10 +5,8 @@ namespace GameCore
 {
     public class MonsterHolderView : MonoBehaviour
     {
-        [SerializeField] private AttackWaveSettingScriptableObject attackWaveSetting;
         [SerializeField] private TextMeshProUGUI tmp_waveHint;
 
-        private MonsterSpawner monsterSpawner;
         private GameObjectPoolComponent gameObjectPool;
 
         private GameObjectPoolComponent GameObjectPool
@@ -23,40 +21,21 @@ namespace GameCore
         }
 
 
-        private void Update()
-        {
-            monsterSpawner.CheckUpdateSpawn(Time.deltaTime);
-        }
-
-        private void SetEventRegister()
-        {
-            monsterSpawner.OnSpawnMonster -= SpawnMonster;
-            monsterSpawner.OnSpawnMonster += SpawnMonster;
-
-            monsterSpawner.OnStartNextWave -= RefreshWaveHint;
-            monsterSpawner.OnStartNextWave += RefreshWaveHint;
-        }
-
-        private void RefreshWaveHint()
-        {
-            tmp_waveHint.text = monsterSpawner.GetWaveHint;
-        }
-
-        private void Awake()
+        public void Init(string startWaveHint)
         {
             GameObjectPool.InitPreSpawn();
-
-            monsterSpawner = new MonsterSpawner();
-            monsterSpawner.Init(attackWaveSetting.GetAttackWaves());
-
-            SetEventRegister();
-            RefreshWaveHint();
+            SetWaveHint(startWaveHint);
         }
 
-        private void SpawnMonster(IMonsterModel monsterModel)
+
+        public void SetWaveHint(string waveHint)
+        {
+            tmp_waveHint.text = waveHint;
+        }
+
+        public void SpawnMonster(IMonsterModel monsterModel)
         {
             MonsterView monsterView = GameObjectPool.SpawnGameObject<MonsterView>(monsterModel.GetStartPoint);
-            monsterModel.InitHp(attackWaveSetting.MonsterHp);
             monsterView.Init(monsterModel);
         }
     }
