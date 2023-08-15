@@ -10,5 +10,10 @@ namespace GameCore
         {
             hpModel = new HealthPointModel(mapHp);
         }
+
+        public void Damage(float damageValue)
+        {
+            hpModel.Damage(damageValue);
+        }
     }
 }
