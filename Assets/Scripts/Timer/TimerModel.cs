@@ -13,13 +13,17 @@ namespace GameCore
                 IsTimerPlaying = false;
                 return;
             }
-            
+
             CurrentTime = countDownTime;
             IsTimerPlaying = true;
         }
 
-        public void UpdateCountDownTime(int deltaTime)
+        public void UpdateCountDownTime(float deltaTime)
         {
+            if (IsTimerPlaying == false)
+                return;
+
+            CurrentTime -= deltaTime;
         }
     }
 }

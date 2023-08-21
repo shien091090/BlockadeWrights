@@ -34,7 +34,18 @@ namespace GameCore.Tests.Timer
             CurrentTimeShouldBe(0);
         }
 
-        private void CurrentTimeShouldBe(int expectedCurrentTime)
+        [Test]
+        //刷新倒數時間
+        public void update_count_down_time()
+        {
+            timerModel.StartCountDown(10);
+            timerModel.UpdateCountDownTime(0.5f);
+
+            ShouldTimerPlaying(true);
+            CurrentTimeShouldBe(9.5f);
+        }
+
+        private void CurrentTimeShouldBe(float expectedCurrentTime)
         {
             Assert.AreEqual(expectedCurrentTime, timerModel.CurrentTime);
         }
@@ -44,7 +55,6 @@ namespace GameCore.Tests.Timer
             Assert.AreEqual(expectedIsPlaying, timerModel.IsTimerPlaying);
         }
 
-        //刷新倒數時間
         //刷新倒數時間結束
     }
 }
