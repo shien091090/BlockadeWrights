@@ -102,6 +102,13 @@ namespace GameCore.Tests.Timer
 
             TimerTextShouldBe("02:35");
         }
+        
+        [Test]
+        //尚未設置倒數時間, 顯示文字為"00:00"
+        public void update_count_down_time_text_before_setting()
+        {
+            TimerTextShouldBe("00:00");
+        }
 
         [Test]
         //設置倒數時間, 驗證刷新後顯示時間文字
