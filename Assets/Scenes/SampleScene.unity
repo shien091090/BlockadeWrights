@@ -123,6 +123,50 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &107834696
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 107834699}
+  - component: {fileID: 107834697}
+  m_Layer: 0
+  m_Name: WaveHintView
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &107834697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107834696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd9ec8b292b2420f864a46062161eb0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tmp_waveHint: {fileID: 311803266}
+--- !u!4 &107834699
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107834696}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &141874695
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,9 +680,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackWaveSetting: {fileID: 11400000, guid: 8afaf3249fb2a9046b8ca9110c9b4017, type: 2}
-  monsterHolderView: {fileID: 1896530217701180750}
+  waveHintView: {fileID: 107834697}
   fortressView: {fileID: 900968239009750113}
   fortressHp: 3
+  monsterObjectPool: {fileID: 1938799249}
 --- !u!4 &696065018
 Transform:
   m_ObjectHideFlags: 0
@@ -651,7 +696,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1856126173
 GameObject:
@@ -696,6 +741,52 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1938799247
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1938799248}
+  - component: {fileID: 1938799249}
+  m_Layer: 0
+  m_Name: MonsterHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1938799248
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1938799247}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1938799249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1938799247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecc9f72bb6fb4a089f48fdd1aa936be1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  preSpawnCount: 8
+  gameObjectPrefab: {fileID: 3213269180381418258, guid: 2143107f2f24dea40a8c93d4ad2f78f7, type: 3}
+  holderRoot: {fileID: 1938799248}
 --- !u!4 &1996666688 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3511956436385535606, guid: ad13062c729d1f64982a4958c7baa8f5, type: 3}
@@ -819,50 +910,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78a1d883446ebed47966bbec650d9097, type: 3}
---- !u!1001 &1896530217701180749
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1896530217731811333, guid: 9c41b7f7d84470c4983a3f087c55a2e5, type: 3}
-      propertyPath: m_Name
-      value: MonsterHolderView
-      objectReference: {fileID: 0}
-    - target: {fileID: 1896530217731811334, guid: 9c41b7f7d84470c4983a3f087c55a2e5, type: 3}
-      propertyPath: m_RootOrder
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1896530217731811334, guid: 9c41b7f7d84470c4983a3f087c55a2e5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1896530217731811334, guid: 9c41b7f7d84470c4983a3f087c55a2e5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1896530217731811334, guid: 9c41b7f7d84470c4983a3f087c55a2e5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1896530217731811335, guid: 9c41b7f7d84470c4983a3f087c55a2e5, type: 3}
-      propertyPath: tmp_waveHint
-      value: 
-      objectReference: {fileID: 311803266}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 9c41b7f7d84470c4983a3f087c55a2e5, type: 3}
---- !u!114 &1896530217701180750 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1896530217731811335, guid: 9c41b7f7d84470c4983a3f087c55a2e5, type: 3}
-  m_PrefabInstance: {fileID: 1896530217701180749}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd9ec8b292b2420f864a46062161eb0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &3511956437811765558
 PrefabInstance:
   m_ObjectHideFlags: 0
