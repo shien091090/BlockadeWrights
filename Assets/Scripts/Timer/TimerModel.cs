@@ -8,6 +8,7 @@ namespace GameCore
         public event Action<string> onUpdateTimeText;
         public bool IsTimerPlaying { get; private set; }
         public float CurrentTime { get; private set; }
+        public string CurrentTimeText => ConvertTimeText(CurrentTime);
 
         public void StartCountDown(float countDownTime, Action callback)
         {

@@ -95,6 +95,15 @@ namespace GameCore.Tests.Timer
         }
 
         [Test]
+        //設置倒數時間, 驗證尚未刷新時的顯示時間文字
+        public void update_count_down_time_text_before_update()
+        {
+            timerModel.StartCountDown(155, onTimeUpCallback);
+
+            TimerTextShouldBe("02:35");
+        }
+
+        [Test]
         //設置倒數時間, 驗證刷新後顯示時間文字
         public void update_count_down_time_text()
         {
@@ -102,16 +111,16 @@ namespace GameCore.Tests.Timer
             timerModel.UpdateCountDownTime(1);
 
             ShouldReceiveUpdateTimeTextEvent("01:01");
-            
+
             timerModel.UpdateCountDownTime(1);
 
             ShouldReceiveUpdateTimeTextEvent("01:00");
-            
+
             timerModel.UpdateCountDownTime(1);
 
             ShouldReceiveUpdateTimeTextEvent("00:59");
         }
-        
+
         [Test]
         //設置倒數時間, 驗證刷新間隔為小數點時的顯示時間文字
         public void update_count_down_time_text_with_decimal()
@@ -120,15 +129,15 @@ namespace GameCore.Tests.Timer
             timerModel.UpdateCountDownTime(0.5f);
 
             ShouldReceiveUpdateTimeTextEvent("01:01");
-            
+
             timerModel.UpdateCountDownTime(0.5f);
 
             ShouldReceiveUpdateTimeTextEvent("01:00");
-            
+
             timerModel.UpdateCountDownTime(0.5f);
 
             ShouldReceiveUpdateTimeTextEvent("01:00");
-            
+
             timerModel.UpdateCountDownTime(0.5f);
 
             ShouldReceiveUpdateTimeTextEvent("00:59");
@@ -137,6 +146,11 @@ namespace GameCore.Tests.Timer
         private void ShouldReceiveUpdateTimeTextEvent(string expectedTimeText)
         {
             onUpdateTimeText.Received(1).Invoke(expectedTimeText);
+        }
+
+        private void TimerTextShouldBe(string expectedTimeText)
+        {
+            Assert.AreEqual(expectedTimeText, timerModel.CurrentTimeText);
         }
 
         private void ShouldTriggerTimeUpEvent()
