@@ -62,6 +62,27 @@ namespace GameCore.Tests.Timer
             ShouldTimerPlaying(false);
             CurrentTimeShouldBe(0);
         }
+        
+        [Test]
+        //倒數到一半時重新開始倒數
+        public void restart_count_down_time()
+        {
+            timerModel.StartCountDown(10);
+            timerModel.UpdateCountDownTime(1);
+            timerModel.UpdateCountDownTime(1);
+            timerModel.UpdateCountDownTime(1);
+            
+            ShouldTimerPlaying(true);
+            CurrentTimeShouldBe(7);
+            
+            timerModel.StartCountDown(15);
+            timerModel.UpdateCountDownTime(1);
+            timerModel.UpdateCountDownTime(1);
+            timerModel.UpdateCountDownTime(1);
+
+            ShouldTimerPlaying(true);
+            CurrentTimeShouldBe(12);
+        }
 
         private void CurrentTimeShouldBe(float expectedCurrentTime)
         {
