@@ -24,6 +24,12 @@ namespace GameCore
                 return;
 
             CurrentTime -= deltaTime;
+
+            if (CurrentTime <= 0)
+            {
+                CurrentTime = 0;
+                IsTimerPlaying = false;
+            }
         }
     }
 }
