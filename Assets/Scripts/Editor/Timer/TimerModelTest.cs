@@ -8,12 +8,17 @@ namespace GameCore.Tests.Timer
     {
         private TimerModel timerModel;
         private Action onTimeUpCallback;
+        private Action<string> onUpdateTimeText;
 
         [SetUp]
         public void Setup()
         {
-            onTimeUpCallback = Substitute.For<Action>();
             timerModel = new TimerModel();
+
+            onTimeUpCallback = Substitute.For<Action>();
+
+            onUpdateTimeText = Substitute.For<Action<string>>();
+            timerModel.onUpdateTimeText += onUpdateTimeText;
         }
 
         [Test]
@@ -87,6 +92,21 @@ namespace GameCore.Tests.Timer
 
             ShouldTimerPlaying(true);
             CurrentTimeShouldBe(12);
+        }
+
+        [Test]
+        //設置倒數時間小於60秒, 驗證刷新後顯示時間文字
+        public void update_count_down_time_text()
+        {
+            timerModel.StartCountDown(59, onTimeUpCallback);
+            timerModel.UpdateCountDownTime(1);
+
+            ShouldReceiveUpdateTimeTextEvent("00:58");
+        }
+
+        private void ShouldReceiveUpdateTimeTextEvent(string expectedTimeText)
+        {
+            onUpdateTimeText.Received(1).Invoke(expectedTimeText);
         }
 
         private void ShouldTriggerTimeUpEvent()

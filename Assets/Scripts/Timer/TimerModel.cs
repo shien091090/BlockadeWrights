@@ -4,6 +4,8 @@ namespace GameCore
 {
     public class TimerModel
     {
+        public event Action<string> onUpdateTimeText;
+        
         private Action onTimeUpCallback;
         public bool IsTimerPlaying { get; private set; }
         public float CurrentTime { get; private set; }
@@ -30,12 +32,22 @@ namespace GameCore
 
             CurrentTime -= deltaTime;
 
+            string timeText = ConvertTimeText(CurrentTime);
+            onUpdateTimeText?.Invoke(timeText);
+
             if (CurrentTime > 0)
                 return;
 
             CurrentTime = 0;
             IsTimerPlaying = false;
             onTimeUpCallback?.Invoke();
+        }
+
+        private string ConvertTimeText(float currentTime)
+        {
+            int minute = (int)currentTime / 60;
+            int second = (int)currentTime % 60;
+            return $"{minute:00}:{second:00}";
         }
     }
 }

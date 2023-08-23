@@ -12,6 +12,7 @@ namespace GameCore
 
         private MonsterSpawner monsterSpawner;
         private FortressModel fortressModel;
+        private TimerModel timerModel;
 
         private void Update()
         {
@@ -30,7 +31,10 @@ namespace GameCore
 
             monsterObjectPool.InitPreSpawn();
 
+            timerModel = new TimerModel();
+
             SetEventRegister();
+            CheckStartTimer();
         }
 
         private void SetEventRegister()
@@ -43,6 +47,18 @@ namespace GameCore
 
             fortressModel.OnFortressDestroy -= OnFortressDestroy;
             fortressModel.OnFortressDestroy += OnFortressDestroy;
+        }
+
+        private void CheckStartTimer()
+        {
+            if (attackWaveSetting.GetAttackWaves().Length <= 0)
+                return;
+
+            AttackWave firstAttackWave = attackWaveSetting.GetAttackWaves()[0];
+            if (firstAttackWave.StartTimeSecond <= 0)
+                return;
+
+            timerModel.StartCountDown(firstAttackWave.StartTimeSecond, null);
         }
 
         private void OnFortressDestroy()
