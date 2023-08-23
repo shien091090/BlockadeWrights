@@ -9,10 +9,10 @@ namespace GameCore
         [SerializeField] private FortressView fortressView;
         [SerializeField] private float fortressHp;
         [SerializeField] private GameObjectPoolComponent monsterObjectPool;
+        [SerializeField] private TimerView timerView;
 
         private MonsterSpawner monsterSpawner;
         private FortressModel fortressModel;
-        private TimerModel timerModel;
 
         private void Update()
         {
@@ -30,8 +30,6 @@ namespace GameCore
             fortressView.Init(fortressModel);
 
             monsterObjectPool.InitPreSpawn();
-
-            timerModel = new TimerModel();
 
             SetEventRegister();
             CheckStartTimer();
@@ -58,7 +56,7 @@ namespace GameCore
             if (firstAttackWave.StartTimeSecond <= 0)
                 return;
 
-            timerModel.StartCountDown(firstAttackWave.StartTimeSecond, null);
+            timerView.StartCountDown(firstAttackWave.StartTimeSecond);
         }
 
         private void OnFortressDestroy()
