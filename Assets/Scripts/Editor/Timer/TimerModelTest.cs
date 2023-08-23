@@ -111,6 +111,28 @@ namespace GameCore.Tests.Timer
 
             ShouldReceiveUpdateTimeTextEvent("00:59");
         }
+        
+        [Test]
+        //設置倒數時間, 驗證刷新間隔為小數點時的顯示時間文字
+        public void update_count_down_time_text_with_decimal()
+        {
+            timerModel.StartCountDown(61, onTimeUpCallback);
+            timerModel.UpdateCountDownTime(0.5f);
+
+            ShouldReceiveUpdateTimeTextEvent("01:01");
+            
+            timerModel.UpdateCountDownTime(0.5f);
+
+            ShouldReceiveUpdateTimeTextEvent("01:00");
+            
+            timerModel.UpdateCountDownTime(0.5f);
+
+            ShouldReceiveUpdateTimeTextEvent("01:00");
+            
+            timerModel.UpdateCountDownTime(0.5f);
+
+            ShouldReceiveUpdateTimeTextEvent("00:59");
+        }
 
         private void ShouldReceiveUpdateTimeTextEvent(string expectedTimeText)
         {
