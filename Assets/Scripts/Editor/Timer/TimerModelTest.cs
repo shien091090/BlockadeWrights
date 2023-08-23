@@ -95,13 +95,21 @@ namespace GameCore.Tests.Timer
         }
 
         [Test]
-        //設置倒數時間小於60秒, 驗證刷新後顯示時間文字
+        //設置倒數時間, 驗證刷新後顯示時間文字
         public void update_count_down_time_text()
         {
-            timerModel.StartCountDown(59, onTimeUpCallback);
+            timerModel.StartCountDown(62, onTimeUpCallback);
             timerModel.UpdateCountDownTime(1);
 
-            ShouldReceiveUpdateTimeTextEvent("00:58");
+            ShouldReceiveUpdateTimeTextEvent("01:01");
+            
+            timerModel.UpdateCountDownTime(1);
+
+            ShouldReceiveUpdateTimeTextEvent("01:00");
+            
+            timerModel.UpdateCountDownTime(1);
+
+            ShouldReceiveUpdateTimeTextEvent("00:59");
         }
 
         private void ShouldReceiveUpdateTimeTextEvent(string expectedTimeText)
