@@ -19,7 +19,7 @@ namespace GameCore
             monsterSpawner.CheckUpdateSpawn(Time.deltaTime);
         }
 
-        public void Awake()
+        public void Start()
         {
             monsterSpawner = new MonsterSpawner();
             monsterSpawner.Init(attackWaveSetting.GetAttackWaves());
