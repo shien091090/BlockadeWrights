@@ -14,5 +14,9 @@ namespace GameCore
         public void UpdateAttackTimer(int deltaTime)
         {
         }
+
+        public void AddAttackTarget(IAttackTarget attackTarget)
+        {
+        }
     }
 }
