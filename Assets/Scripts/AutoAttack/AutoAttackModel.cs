@@ -5,6 +5,7 @@ namespace GameCore
 {
     public class AutoAttackModel
     {
+        private readonly int attackRange;
         private readonly float attackFrequency;
         private readonly Vector2 position;
         private float timer;
@@ -13,6 +14,7 @@ namespace GameCore
 
         public AutoAttackModel(int attackRange, float attackFrequency, Vector2 position, float attackPower)
         {
+            this.attackRange = attackRange;
             this.attackFrequency = attackFrequency;
             this.position = position;
             this.attackPower = attackPower;
@@ -28,6 +30,8 @@ namespace GameCore
                 return;
 
             timer = 0;
+
+            CheckRemoveOverDistanceTarget();
             IAttackTarget nearestTarget = CheckNearestTarget();
             nearestTarget?.Damage(attackPower);
         }
@@ -35,6 +39,16 @@ namespace GameCore
         public void AddAttackTarget(IAttackTarget attackTarget)
         {
             AttackTargets.Add(attackTarget);
+        }
+
+        private void CheckRemoveOverDistanceTarget()
+        {
+            for (int i = AttackTargets.Count - 1; i >= 0; i--)
+            {
+                IAttackTarget target = AttackTargets[i];
+                if (Vector2.Distance(target.GetPos, position) > attackRange)
+                    AttackTargets.RemoveAt(i);
+            }
         }
 
         private IAttackTarget CheckNearestTarget()
