@@ -96,7 +96,7 @@ namespace GameCore.Tests.AutoAttack
             AttackTargetCountShouldBe(1);
             ShouldDamageTarget(attackTarget, 2);
         }
-        
+
         [Test]
         //進入攻擊範圍, 攻擊, CD時間結束前對象離開後又進入攻擊範圍, 再攻擊一次
         public void in_attack_range_then_attack_then_target_leave_attack_range_then_enter_attack_range()
@@ -124,6 +124,24 @@ namespace GameCore.Tests.AutoAttack
             ShouldDamageTarget(attackTarget, 2);
         }
 
+        [Test]
+        //同一個目標進出攻擊範圍多次, 驗證攻擊目標列表中是否只有一個目標
+        public void same_target_enter_and_leave_attack_range_multiple_times()
+        {
+            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
+
+            IAttackTarget attackTarget = Substitute.For<IAttackTarget>();
+
+            autoAttackModel.AddAttackTarget(attackTarget);
+            autoAttackModel.RemoveAttackTarget(attackTarget);
+            autoAttackModel.AddAttackTarget(attackTarget);
+            autoAttackModel.RemoveAttackTarget(attackTarget);
+            autoAttackModel.AddAttackTarget(attackTarget);
+            autoAttackModel.AddAttackTarget(attackTarget);
+
+            AttackTargetCountShouldBe(1);
+        }
+
         private void GivenAttackTargetPos(IAttackTarget attackTarget, Vector2 targetPos)
         {
             attackTarget.GetPos.Returns(targetPos);
@@ -142,7 +160,6 @@ namespace GameCore.Tests.AutoAttack
                 attackTarget.Received(triggerTimes).Damage(Arg.Any<float>());
         }
 
-        //同一個目標進出攻擊範圍多次, 驗證攻擊目標列表中是否只有一個目標
         //多個目標進入攻擊範圍後離開, 只剩一個攻擊目標
         //攻擊後, 對象死亡, 不再攻擊
         //攻擊範圍中有多個目標, 攻擊距離最近的對象

@@ -38,7 +38,13 @@ namespace GameCore
 
         public void AddAttackTarget(IAttackTarget attackTarget)
         {
-            AttackTargets.Add(attackTarget);
+            if (AttackTargets.Exists(x => x.Id == attackTarget.Id) == false)
+                AttackTargets.Add(attackTarget);
+        }
+
+        public void RemoveAttackTarget(IAttackTarget attackTarget)
+        {
+            AttackTargets.RemoveAll(x => x.Id == attackTarget.Id);
         }
 
         private void CheckRemoveOverDistanceTarget()
