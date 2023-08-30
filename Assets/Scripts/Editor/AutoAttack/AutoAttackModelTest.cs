@@ -50,7 +50,7 @@ namespace GameCore.Tests.AutoAttack
 
             autoAttackModel.UpdateAttackTimer(0.5f);
 
-            ShouldDamageTarget(attackTarget, 1);
+            ShouldDamageTarget(attackTarget, 1, DEFAULT_ATTACK_POWER);
         }
 
         [Test]
@@ -152,12 +152,16 @@ namespace GameCore.Tests.AutoAttack
             Assert.AreEqual(expectedCount, autoAttackModel.AttackTargets.Count);
         }
 
-        private void ShouldDamageTarget(IAttackTarget attackTarget, int triggerTimes)
+        private void ShouldDamageTarget(IAttackTarget attackTarget, int triggerTimes, float expectedDamage = -1)
         {
+            float damageValue = expectedDamage < 0 ?
+                Arg.Any<float>() :
+                expectedDamage;
+
             if (triggerTimes == 0)
-                attackTarget.DidNotReceive().Damage(Arg.Any<float>());
+                attackTarget.DidNotReceive().Damage(damageValue);
             else
-                attackTarget.Received(triggerTimes).Damage(Arg.Any<float>());
+                attackTarget.Received(triggerTimes).Damage(damageValue);
         }
 
         //多個目標進入攻擊範圍後離開, 只剩一個攻擊目標
