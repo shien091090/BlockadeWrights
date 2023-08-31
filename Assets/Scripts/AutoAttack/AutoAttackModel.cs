@@ -8,9 +8,11 @@ namespace GameCore
         private readonly int attackRange;
         private readonly float attackFrequency;
         private readonly Vector2 position;
+        private readonly float attackPower;
         private float timer;
-        private float attackPower;
+
         public List<IAttackTarget> AttackTargets { get; }
+        public bool IsStop { get; set; }
 
         public AutoAttackModel(int attackRange, float attackFrequency, Vector2 position, float attackPower)
         {
@@ -24,6 +26,9 @@ namespace GameCore
 
         public void UpdateAttackTimer(float deltaTime)
         {
+            if (IsStop)
+                return;
+
             timer += deltaTime;
 
             if (timer < attackFrequency || attackFrequency <= 0)
@@ -37,6 +42,11 @@ namespace GameCore
 
             if (nearestTarget != null && nearestTarget.IsDead)
                 RemoveAttackTarget(nearestTarget);
+        }
+
+        public void SetStopState(bool isStop)
+        {
+            IsStop = isStop;
         }
 
         public void AddAttackTarget(IAttackTarget attackTarget)

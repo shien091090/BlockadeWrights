@@ -249,6 +249,30 @@ namespace GameCore.Tests.AutoAttack
             ShouldDamageTarget(attackTarget5, 1);
         }
 
+        [Test]
+        //停止自動攻擊
+        public void stop_auto_attack()
+        {
+            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, 3, Vector2.zero, DEFAULT_ATTACK_POWER);
+
+            IAttackTarget attackTarget = CreateAttackTarget();
+
+            autoAttackModel.AddAttackTarget(attackTarget);
+            autoAttackModel.UpdateAttackTimer(2.8f);
+            autoAttackModel.SetStopState(true);
+            
+            ShouldDamageTarget(attackTarget, 0);
+
+            autoAttackModel.UpdateAttackTimer(0.2f);
+
+            ShouldDamageTarget(attackTarget, 0);
+            
+            autoAttackModel.SetStopState(false);
+            autoAttackModel.UpdateAttackTimer(0.2f);
+            
+            ShouldDamageTarget(attackTarget, 1);
+        }
+        
         private void GivenAttackTargetIsDead(IAttackTarget attackTarget, bool isDead)
         {
             attackTarget.IsDead.Returns(isDead);
@@ -291,6 +315,5 @@ namespace GameCore.Tests.AutoAttack
             return attackTarget;
         }
 
-        //停止自動攻擊
     }
 }
