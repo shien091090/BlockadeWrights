@@ -27,7 +27,7 @@ namespace GameCore.Tests.AutoAttack
         {
             autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, 0, Vector2.zero, DEFAULT_ATTACK_POWER);
 
-            IAttackTarget attackTarget = Substitute.For<IAttackTarget>();
+            IAttackTarget attackTarget = CreateAttackTarget();
             autoAttackModel.AddAttackTarget(attackTarget);
 
             autoAttackModel.UpdateAttackTimer(1);
@@ -41,7 +41,7 @@ namespace GameCore.Tests.AutoAttack
         {
             autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
 
-            IAttackTarget attackTarget = Substitute.For<IAttackTarget>();
+            IAttackTarget attackTarget = CreateAttackTarget();
             autoAttackModel.AddAttackTarget(attackTarget);
 
             autoAttackModel.UpdateAttackTimer(0.5f);
@@ -59,7 +59,7 @@ namespace GameCore.Tests.AutoAttack
         {
             autoAttackModel = new AutoAttackModel(4, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
 
-            IAttackTarget attackTarget = Substitute.For<IAttackTarget>();
+            IAttackTarget attackTarget = CreateAttackTarget();
             GivenAttackTargetPos(attackTarget, new Vector2(2, 3));
 
             autoAttackModel.AddAttackTarget(attackTarget);
@@ -81,7 +81,7 @@ namespace GameCore.Tests.AutoAttack
         {
             autoAttackModel = new AutoAttackModel(5, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
 
-            IAttackTarget attackTarget = Substitute.For<IAttackTarget>();
+            IAttackTarget attackTarget = CreateAttackTarget();
             GivenAttackTargetPos(attackTarget, new Vector2(2, 3));
 
             autoAttackModel.AddAttackTarget(attackTarget);
@@ -103,7 +103,7 @@ namespace GameCore.Tests.AutoAttack
         {
             autoAttackModel = new AutoAttackModel(4, 1, Vector2.zero, DEFAULT_ATTACK_POWER);
 
-            IAttackTarget attackTarget = Substitute.For<IAttackTarget>();
+            IAttackTarget attackTarget = CreateAttackTarget();
             GivenAttackTargetPos(attackTarget, new Vector2(2, 3));
 
             autoAttackModel.AddAttackTarget(attackTarget);
@@ -130,7 +130,7 @@ namespace GameCore.Tests.AutoAttack
         {
             autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
 
-            IAttackTarget attackTarget = Substitute.For<IAttackTarget>();
+            IAttackTarget attackTarget = CreateAttackTarget();
 
             autoAttackModel.AddAttackTarget(attackTarget);
             autoAttackModel.RemoveAttackTarget(attackTarget);
@@ -175,7 +175,7 @@ namespace GameCore.Tests.AutoAttack
         {
             autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
 
-            IAttackTarget attackTarget = Substitute.For<IAttackTarget>();
+            IAttackTarget attackTarget = CreateAttackTarget();
 
             autoAttackModel.AddAttackTarget(attackTarget);
 
@@ -224,11 +224,12 @@ namespace GameCore.Tests.AutoAttack
                 attackTarget.Received(triggerTimes).Damage(damageValue);
         }
 
-        private IAttackTarget CreateAttackTarget(string id, Vector2 pos)
+        private IAttackTarget CreateAttackTarget(string id = null, Vector2 pos = default)
         {
             IAttackTarget attackTarget = Substitute.For<IAttackTarget>();
             GivenAttackTargetId(attackTarget, id);
             GivenAttackTargetPos(attackTarget, pos);
+            GivenAttackTargetIsDead(attackTarget, false);
 
             return attackTarget;
         }
