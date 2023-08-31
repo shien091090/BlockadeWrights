@@ -25,7 +25,7 @@ namespace GameCore
 
         private void OnTriggerEnter2D(Collider2D collider)
         {
-            if (collider.CompareTag("Monster"))
+            if (collider.CompareTag(GameConst.GAME_OBJECT_TAG_MONSTER))
             {
                 Debug.Log("BuildingView OnTriggerEnter");
             }
