@@ -169,6 +169,34 @@ namespace GameCore.Tests.AutoAttack
             AttackTargetCountShouldBe(1);
         }
 
+        [Test]
+        //攻擊後, 對象死亡, 不再攻擊
+        public void attack_then_target_dead()
+        {
+            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
+
+            IAttackTarget attackTarget = Substitute.For<IAttackTarget>();
+
+            autoAttackModel.AddAttackTarget(attackTarget);
+
+            AttackTargetCountShouldBe(1);
+
+            GivenAttackTargetIsDead(attackTarget, true);
+            autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
+
+            ShouldDamageTarget(attackTarget, 1);
+            AttackTargetCountShouldBe(0);
+
+            autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
+
+            ShouldDamageTarget(attackTarget, 1);
+        }
+
+        private void GivenAttackTargetIsDead(IAttackTarget attackTarget, bool isDead)
+        {
+            attackTarget.IsDead.Returns(isDead);
+        }
+
         private void GivenAttackTargetId(IAttackTarget attackTarget, string id)
         {
             attackTarget.Id.Returns(id);
@@ -205,7 +233,6 @@ namespace GameCore.Tests.AutoAttack
             return attackTarget;
         }
 
-        //攻擊後, 對象死亡, 不再攻擊
         //攻擊範圍中有多個目標, 攻擊距離最近的對象
         //攻擊範圍中最近目標, CD時間結束後有其他更近的目標, 攻擊距離最近的對象
         //停止自動攻擊

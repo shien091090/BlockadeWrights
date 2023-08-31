@@ -34,6 +34,9 @@ namespace GameCore
             CheckRemoveOverDistanceTarget();
             IAttackTarget nearestTarget = CheckNearestTarget();
             nearestTarget?.Damage(attackPower);
+
+            if (nearestTarget != null && nearestTarget.IsDead)
+                RemoveAttackTarget(nearestTarget);
         }
 
         public void AddAttackTarget(IAttackTarget attackTarget)
