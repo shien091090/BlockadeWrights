@@ -192,6 +192,30 @@ namespace GameCore.Tests.AutoAttack
             ShouldDamageTarget(attackTarget, 1);
         }
 
+        [Test]
+        //攻擊範圍中有多個目標, 攻擊距離最近的對象
+        public void multiple_targets_in_attack_range()
+        {
+            autoAttackModel = new AutoAttackModel(10, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
+
+            IAttackTarget attackTarget1 = CreateAttackTarget("1", new Vector2(3, 3));
+            IAttackTarget attackTarget2 = CreateAttackTarget("2", new Vector2(2, 2));
+            IAttackTarget attackTarget3 = CreateAttackTarget("3", new Vector2(4, 4));
+            IAttackTarget attackTarget4 = CreateAttackTarget("4", new Vector2(5, 5));
+
+            autoAttackModel.AddAttackTarget(attackTarget1);
+            autoAttackModel.AddAttackTarget(attackTarget2);
+            autoAttackModel.AddAttackTarget(attackTarget3);
+            autoAttackModel.AddAttackTarget(attackTarget4);
+
+            autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
+
+            ShouldDamageTarget(attackTarget1, 0);
+            ShouldDamageTarget(attackTarget2, 1);
+            ShouldDamageTarget(attackTarget3, 0);
+            ShouldDamageTarget(attackTarget4, 0);
+        }
+
         private void GivenAttackTargetIsDead(IAttackTarget attackTarget, bool isDead)
         {
             attackTarget.IsDead.Returns(isDead);
@@ -234,7 +258,6 @@ namespace GameCore.Tests.AutoAttack
             return attackTarget;
         }
 
-        //攻擊範圍中有多個目標, 攻擊距離最近的對象
         //攻擊範圍中最近目標, CD時間結束後有其他更近的目標, 攻擊距離最近的對象
         //停止自動攻擊
     }
