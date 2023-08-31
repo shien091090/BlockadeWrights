@@ -142,6 +142,38 @@ namespace GameCore.Tests.AutoAttack
             AttackTargetCountShouldBe(1);
         }
 
+        [Test]
+        //多個目標進入攻擊範圍後離開, 只剩一個攻擊目標
+        public void multiple_targets_enter_and_leave_attack_range()
+        {
+            autoAttackModel = new AutoAttackModel(3, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
+
+            IAttackTarget attackTarget1 = CreateAttackTarget("1", new Vector2(0, 0));
+            IAttackTarget attackTarget2 = CreateAttackTarget("2", new Vector2(0, 0));
+            IAttackTarget attackTarget3 = CreateAttackTarget("3", new Vector2(0, 0));
+            IAttackTarget attackTarget4 = CreateAttackTarget("4", new Vector2(0, 0));
+
+            autoAttackModel.AddAttackTarget(attackTarget1);
+            autoAttackModel.AddAttackTarget(attackTarget2);
+            autoAttackModel.AddAttackTarget(attackTarget3);
+            autoAttackModel.AddAttackTarget(attackTarget4);
+
+            AttackTargetCountShouldBe(4);
+
+            GivenAttackTargetPos(attackTarget1, new Vector2(5, 5));
+            GivenAttackTargetPos(attackTarget3, new Vector2(5, 5));
+            autoAttackModel.RemoveAttackTarget(attackTarget4);
+
+            autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
+
+            AttackTargetCountShouldBe(1);
+        }
+
+        private void GivenAttackTargetId(IAttackTarget attackTarget, string id)
+        {
+            attackTarget.Id.Returns(id);
+        }
+
         private void GivenAttackTargetPos(IAttackTarget attackTarget, Vector2 targetPos)
         {
             attackTarget.GetPos.Returns(targetPos);
@@ -164,7 +196,15 @@ namespace GameCore.Tests.AutoAttack
                 attackTarget.Received(triggerTimes).Damage(damageValue);
         }
 
-        //多個目標進入攻擊範圍後離開, 只剩一個攻擊目標
+        private IAttackTarget CreateAttackTarget(string id, Vector2 pos)
+        {
+            IAttackTarget attackTarget = Substitute.For<IAttackTarget>();
+            GivenAttackTargetId(attackTarget, id);
+            GivenAttackTargetPos(attackTarget, pos);
+
+            return attackTarget;
+        }
+
         //攻擊後, 對象死亡, 不再攻擊
         //攻擊範圍中有多個目標, 攻擊距離最近的對象
         //攻擊範圍中最近目標, CD時間結束後有其他更近的目標, 攻擊距離最近的對象
