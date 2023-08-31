@@ -2,9 +2,13 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public class MonsterView : MonoBehaviour
+    public class MonsterView : MonoBehaviour, IAttackTarget
     {
         [SerializeField] private float moveSpeed;
+
+        public Vector2 GetPos => transform.position;
+        public string Id => gameObject.GetInstanceID().ToString();
+        public bool IsDead => monsterModel.HpModel.IsDead;
 
         private HealthPointComponent hpComponent;
         private IMonsterModel monsterModel;
@@ -30,6 +34,11 @@ namespace GameCore
 
                 return hpComponent;
             }
+        }
+
+        public void Damage(float damageValue)
+        {
+            throw new System.NotImplementedException();
         }
 
         private void Update()

@@ -1,23 +1,34 @@
+using System;
 using UnityEngine;
 
 public class CircleMeshEffect : MonoBehaviour
 {
     private const int SEGMENTS = 40;
 
-    [SerializeField] private float radius;
     [SerializeField] private Color circleColor;
 
+    private float radius;
     private MeshRenderer meshRenderer;
     private MeshFilter meshFilter;
     private Mesh mesh;
     private bool isDrawn;
 
-    public void SetCircleEffectActive(bool isActive)
+    public void ShowEffect(float newRadius)
     {
-        if (isActive && !isDrawn)
+        if (Math.Abs(newRadius - radius) > 0.1f)
+            isDrawn = false;
+
+        radius = newRadius;
+
+        if (!isDrawn)
             DrawFilledCircle();
 
-        meshRenderer.enabled = isActive;
+        meshRenderer.enabled = true;
+    }
+
+    public void HideEffect()
+    {
+        meshRenderer.enabled = false;
     }
 
     private void DrawFilledCircle()
