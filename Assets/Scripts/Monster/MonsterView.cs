@@ -25,7 +25,7 @@ namespace GameCore
             }
         }
 
-        private HealthPointComponent HpComponent
+        private HealthPointComponent GetHpComponent
         {
             get
             {
@@ -38,7 +38,7 @@ namespace GameCore
 
         public void Damage(float damageValue)
         {
-            throw new System.NotImplementedException();
+            monsterModel.HpModel.Damage(damageValue);
         }
 
         private void Update()
@@ -52,7 +52,7 @@ namespace GameCore
         public void Init(IMonsterModel monsterModel)
         {
             this.monsterModel = monsterModel;
-            HpComponent.Setup(monsterModel.HpModel);
+            GetHpComponent.Setup(monsterModel.HpModel);
             RegisterEvent();
         }
 
