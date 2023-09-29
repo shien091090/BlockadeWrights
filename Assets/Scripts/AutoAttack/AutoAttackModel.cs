@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public class AutoAttackModel
+    public class AutoAttackModel : IColliderHandler
     {
         private readonly int attackRange;
         private readonly float attackFrequency;
@@ -24,6 +24,37 @@ namespace GameCore
             timer = 0;
         }
 
+        public void ColliderTriggerEnter(ITriggerCollider col)
+        {
+            IAttackTarget attackTarget = col.GetComponent<IAttackTarget>();
+            if (attackTarget != null)
+                AddAttackTarget(attackTarget);
+        }
+
+        public void ColliderTriggerExit(ITriggerCollider col)
+        {
+            IAttackTarget attackTarget = col.GetComponent<IAttackTarget>();
+            if (attackTarget != null)
+                RemoveAttackTarget(attackTarget);
+        }
+
+        public void ColliderTriggerStay(ITriggerCollider col)
+        {
+        }
+
+        public void CollisionEnter(ICollision col)
+        {
+        }
+
+        public void CollisionExit(ICollision col)
+        {
+        }
+
+        public void SetStopState(bool isStop)
+        {
+            IsStop = isStop;
+        }
+
         public void UpdateAttackTimer(float deltaTime)
         {
             if (IsStop)
@@ -42,22 +73,6 @@ namespace GameCore
 
             if (nearestTarget != null && nearestTarget.IsDead)
                 RemoveAttackTarget(nearestTarget);
-        }
-
-        public void SetStopState(bool isStop)
-        {
-            IsStop = isStop;
-        }
-
-        public void AddAttackTarget(IAttackTarget attackTarget)
-        {
-            if (AttackTargets.Exists(x => x.Id == attackTarget.Id) == false)
-                AttackTargets.Add(attackTarget);
-        }
-
-        public void RemoveAttackTarget(IAttackTarget attackTarget)
-        {
-            AttackTargets.RemoveAll(x => x.Id == attackTarget.Id);
         }
 
         private void CheckRemoveOverDistanceTarget()
@@ -87,6 +102,17 @@ namespace GameCore
             }
 
             return nearestTarget;
+        }
+
+        private void AddAttackTarget(IAttackTarget attackTarget)
+        {
+            if (AttackTargets.Exists(x => x.Id == attackTarget.Id) == false)
+                AttackTargets.Add(attackTarget);
+        }
+
+        private void RemoveAttackTarget(IAttackTarget attackTarget)
+        {
+            AttackTargets.RemoveAll(x => x.Id == attackTarget.Id);
         }
     }
 }

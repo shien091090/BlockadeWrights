@@ -8,6 +8,7 @@ namespace GameCore
         [SerializeField] private int attackRange;
         [SerializeField] private float attackFrequency;
         [SerializeField] private float attackPower;
+        [SerializeField] private TriggerColliderComponent triggerCollider;
 
         private AutoAttackModel autoAttackModel;
 
@@ -15,19 +16,12 @@ namespace GameCore
         {
             autoAttackModel = new AutoAttackModel(attackRange, attackFrequency, transform.position, attackPower);
             circleMeshEffect.ShowEffect(attackRange);
+            triggerCollider.InitHandler(autoAttackModel);
         }
 
         private void Update()
         {
             autoAttackModel.UpdateAttackTimer(Time.deltaTime);
-        }
-
-        private void OnTriggerEnter2D(Collider2D collider)
-        {
-            if (collider.CompareTag(GameConst.GAME_OBJECT_TAG_MONSTER))
-            {
-                Debug.Log("BuildingView OnTriggerEnter");
-            }
         }
     }
 }
