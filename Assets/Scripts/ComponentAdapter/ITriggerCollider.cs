@@ -1,5 +1,8 @@
-public interface ITriggerCollider
+namespace GameCore
 {
-    int Layer { get; }
-    T GetComponent<T>();
+    public interface ITriggerCollider
+    {
+        int Layer { get; }
+        T GetComponent<T>();
+    }
 }

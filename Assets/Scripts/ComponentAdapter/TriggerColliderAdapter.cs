@@ -1,17 +1,20 @@
 using UnityEngine;
 
-public class TriggerColliderAdapter : ITriggerCollider
+namespace GameCore
 {
-    public int Layer => collider.gameObject.layer;
-    private readonly Collider2D collider;
-
-    public TriggerColliderAdapter(Collider2D collider)
+    public class TriggerColliderAdapter : ITriggerCollider
     {
-        this.collider = collider;
-    }
+        public int Layer => collider.gameObject.layer;
+        private readonly Collider2D collider;
 
-    public T GetComponent<T>()
-    {
-        return collider.GetComponent<T>();
+        public TriggerColliderAdapter(Collider2D collider)
+        {
+            this.collider = collider;
+        }
+
+        public T GetComponent<T>()
+        {
+            return collider.GetComponent<T>();
+        }
     }
 }

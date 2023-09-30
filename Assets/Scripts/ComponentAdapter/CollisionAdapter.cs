@@ -1,22 +1,25 @@
 using UnityEngine;
 
-public class CollisionAdapter : ICollision
+namespace GameCore
 {
-    public int Layer => collision.gameObject.layer;
-    private readonly Collision2D collision;
-
-    public CollisionAdapter(Collision2D col)
+    public class CollisionAdapter : ICollision
     {
-        collision = col;
-    }
+        public int Layer => collision.gameObject.layer;
+        private readonly Collision2D collision;
 
-    public bool CheckPhysicsOverlapCircle(Vector3 point, float radius, string layerMask)
-    {
-        return Physics2D.OverlapCircle(point, radius, LayerMask.GetMask(layerMask));
-    }
+        public CollisionAdapter(Collision2D col)
+        {
+            collision = col;
+        }
 
-    public T GetComponent<T>()
-    {
-        return collision.gameObject.GetComponent<T>();
+        public bool CheckPhysicsOverlapCircle(Vector3 point, float radius, string layerMask)
+        {
+            return Physics2D.OverlapCircle(point, radius, LayerMask.GetMask(layerMask));
+        }
+
+        public T GetComponent<T>()
+        {
+            return collision.gameObject.GetComponent<T>();
+        }
     }
 }

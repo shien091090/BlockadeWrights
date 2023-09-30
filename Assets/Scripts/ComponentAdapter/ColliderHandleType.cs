@@ -1,5 +1,8 @@
-public enum ColliderHandleType
+namespace GameCore
 {
-    Trigger,
-    Collision
+    public enum ColliderHandleType
+    {
+        Trigger,
+        Collision
+    }
 }
