@@ -285,7 +285,9 @@ namespace GameCore.Tests.AutoAttack
 
         private void GivenAttackTargetPos(IAttackTarget attackTarget, Vector2 targetPos)
         {
-            attackTarget.GetPos.Returns(targetPos);
+            ITransform transform = Substitute.For<ITransform>();
+            transform.Position.Returns(targetPos);
+            attackTarget.GetTransform.Returns(transform);
         }
 
         private void AttackTargetCountShouldBe(int expectedCount)

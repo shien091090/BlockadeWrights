@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 5070846603487379150}
   - component: {fileID: 6100951104529340153}
   - component: {fileID: 4014001636785606046}
+  - component: {fileID: 6071345093340363394}
   - component: {fileID: 2849844701515295746}
   m_Layer: 0
   m_Name: Monster
@@ -188,6 +189,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sld_healthPoint: {fileID: 5639671350626899038}
+--- !u!114 &6071345093340363394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3213269180381418258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3281e9ce49194d60a48349682d96a773, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!58 &2849844701515295746
 CircleCollider2D:
   m_ObjectHideFlags: 0

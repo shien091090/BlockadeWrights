@@ -80,7 +80,7 @@ namespace GameCore
             for (int i = AttackTargets.Count - 1; i >= 0; i--)
             {
                 IAttackTarget target = AttackTargets[i];
-                if (Vector2.Distance(target.GetPos, position) > attackRange)
+                if (Vector2.Distance(target.GetTransform.Position, position) > attackRange)
                     AttackTargets.RemoveAt(i);
             }
         }
@@ -92,7 +92,7 @@ namespace GameCore
 
             foreach (IAttackTarget target in AttackTargets)
             {
-                Vector2 targetPos = target.GetPos;
+                Vector2 targetPos = target.GetTransform.Position;
                 float distance = Vector2.Distance(targetPos, position);
                 if (distance < nearestDistance)
                 {

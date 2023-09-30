@@ -6,10 +6,21 @@ namespace GameCore
     {
         [SerializeField] private float moveSpeed;
 
-        public Vector2 GetPos => transform.position;
+        public ITransform GetTransform
+        {
+            get
+            {
+                if (transformAdapter == null)
+                    transformAdapter = GetComponent<TransformComponent>();
+
+                return transformAdapter;
+            }
+        }
+
         public string Id => gameObject.GetInstanceID().ToString();
         public bool IsDead => monsterModel.HpModel.IsDead;
 
+        private ITransform transformAdapter;
         private HealthPointComponent hpComponent;
         private IMonsterModel monsterModel;
         private FaceDirectionComponent faceDirection;
