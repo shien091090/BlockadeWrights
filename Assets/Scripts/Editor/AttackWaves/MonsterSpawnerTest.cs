@@ -4,7 +4,7 @@ using NSubstitute;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace GameCore.Tests.Monster
+namespace GameCore.Tests.AttackWaves
 {
     public class MonsterSpawnerTest
     {
