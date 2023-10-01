@@ -6,7 +6,7 @@ namespace GameCore
     {
         [SerializeField] private GameObjectPoolComponent effectObjectPool;
 
-        public void StartAttack(IAttackTarget attackTarget, float attackPower)
+        public void LaunchAttack(IAttackTarget attackTarget, float attackPower)
         {
             ParticleFollowEffect particleFollowEffect = effectObjectPool.SpawnGameObject<ParticleFollowEffect>(transform.position);
             particleFollowEffect.StartFollow(attackTarget, () =>

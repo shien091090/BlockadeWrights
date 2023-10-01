@@ -72,7 +72,7 @@ namespace GameCore
             CheckRemoveOverDistanceTarget();
             IAttackTarget nearestTarget = CheckNearestTarget();
             if (nearestTarget != null)
-                buildingAttackView.StartAttack(nearestTarget, attackPower);
+                buildingAttackView.LaunchAttack(nearestTarget, attackPower);
 
             if (nearestTarget != null && nearestTarget.IsDead)
                 RemoveAttackTarget(nearestTarget);
