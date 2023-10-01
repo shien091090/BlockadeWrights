@@ -28,20 +28,17 @@ namespace GameCore
 
         public void ColliderTriggerEnter(ITriggerCollider col)
         {
-            IAttackTarget attackTarget = col.GetComponent<IAttackTarget>();
-            if (attackTarget != null)
-                AddAttackTarget(attackTarget);
         }
 
         public void ColliderTriggerExit(ITriggerCollider col)
         {
-            IAttackTarget attackTarget = col.GetComponent<IAttackTarget>();
-            if (attackTarget != null)
-                RemoveAttackTarget(attackTarget);
         }
 
         public void ColliderTriggerStay(ITriggerCollider col)
         {
+            IAttackTarget attackTarget = col.GetComponent<IAttackTarget>();
+            if (attackTarget != null)
+                AddAttackTarget(attackTarget);
         }
 
         public void CollisionEnter(ICollision col)

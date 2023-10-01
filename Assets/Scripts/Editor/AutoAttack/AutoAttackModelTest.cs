@@ -35,7 +35,7 @@ namespace GameCore.Tests.AutoAttack
             autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, 0, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget = CreateAttackTarget();
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget));
 
             autoAttackModel.UpdateAttackTimer(1);
 
@@ -49,7 +49,7 @@ namespace GameCore.Tests.AutoAttack
             autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget = CreateAttackTarget();
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget));
 
             autoAttackModel.UpdateAttackTimer(0.5f);
 
@@ -69,7 +69,7 @@ namespace GameCore.Tests.AutoAttack
             IAttackTarget attackTarget = CreateAttackTarget();
             GivenAttackTargetPos(attackTarget, new Vector2(2, 3));
 
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget));
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
             AttackTargetCountShouldBe(1);
@@ -91,7 +91,7 @@ namespace GameCore.Tests.AutoAttack
             IAttackTarget attackTarget = CreateAttackTarget();
             GivenAttackTargetPos(attackTarget, new Vector2(2, 3));
 
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget));
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
             AttackTargetCountShouldBe(1);
@@ -113,7 +113,7 @@ namespace GameCore.Tests.AutoAttack
             IAttackTarget attackTarget = CreateAttackTarget();
             GivenAttackTargetPos(attackTarget, new Vector2(2, 3));
 
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget));
             autoAttackModel.UpdateAttackTimer(1);
 
             AttackTargetCountShouldBe(1);
@@ -132,19 +132,17 @@ namespace GameCore.Tests.AutoAttack
         }
 
         [Test]
-        //同一個目標進出攻擊範圍多次, 驗證攻擊目標列表中是否只有一個目標
-        public void same_target_enter_and_leave_attack_range_multiple_times()
+        //同一個目標重複觸發攻擊範圍多次, 驗證攻擊目標列表中是否只有一個目標
+        public void same_target_trigger_attack_range_multiple_times()
         {
             autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget = CreateAttackTarget();
 
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget));
-            autoAttackModel.ColliderTriggerExit(CreateTriggerCollider(attackTarget));
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget));
-            autoAttackModel.ColliderTriggerExit(CreateTriggerCollider(attackTarget));
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget));
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget));
 
             AttackTargetCountShouldBe(1);
         }
@@ -160,16 +158,16 @@ namespace GameCore.Tests.AutoAttack
             IAttackTarget attackTarget3 = CreateAttackTarget("3", new Vector2(0, 0));
             IAttackTarget attackTarget4 = CreateAttackTarget("4", new Vector2(0, 0));
 
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget1));
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget2));
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget3));
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget4));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget1));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget2));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget3));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget4));
 
             AttackTargetCountShouldBe(4);
 
             GivenAttackTargetPos(attackTarget1, new Vector2(5, 5));
             GivenAttackTargetPos(attackTarget3, new Vector2(5, 5));
-            autoAttackModel.ColliderTriggerExit(CreateTriggerCollider(attackTarget4));
+            GivenAttackTargetPos(attackTarget4, new Vector2(7, 6));
 
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
@@ -184,7 +182,7 @@ namespace GameCore.Tests.AutoAttack
 
             IAttackTarget attackTarget = CreateAttackTarget();
 
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget));
 
             AttackTargetCountShouldBe(1);
 
@@ -210,10 +208,10 @@ namespace GameCore.Tests.AutoAttack
             IAttackTarget attackTarget3 = CreateAttackTarget("3", new Vector2(4, 4));
             IAttackTarget attackTarget4 = CreateAttackTarget("4", new Vector2(5, 5));
 
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget1));
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget2));
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget3));
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget4));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget1));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget2));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget3));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget4));
 
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
@@ -234,10 +232,10 @@ namespace GameCore.Tests.AutoAttack
             IAttackTarget attackTarget3 = CreateAttackTarget("3", new Vector2(2, 3));
             IAttackTarget attackTarget4 = CreateAttackTarget("4", new Vector2(5, 5));
 
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget1));
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget2));
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget3));
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget4));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget1));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget2));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget3));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget4));
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
             ShouldLaunchAttack(attackTarget1.Id, DEFAULT_ATTACK_POWER, 0);
@@ -246,7 +244,7 @@ namespace GameCore.Tests.AutoAttack
             ShouldLaunchAttack(attackTarget4.Id, DEFAULT_ATTACK_POWER, 0);
 
             IAttackTarget attackTarget5 = CreateAttackTarget("5", new Vector2(1, 1));
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget5));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget5));
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
             ShouldLaunchAttack(attackTarget1.Id, DEFAULT_ATTACK_POWER, 0);
@@ -264,7 +262,7 @@ namespace GameCore.Tests.AutoAttack
 
             IAttackTarget attackTarget = CreateAttackTarget();
 
-            autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget));
             autoAttackModel.UpdateAttackTimer(2.8f);
             autoAttackModel.SetStopState(true);
 
