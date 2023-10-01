@@ -39,7 +39,7 @@ namespace GameCore.Tests.AutoAttack
 
             autoAttackModel.UpdateAttackTimer(1);
 
-            ShouldDamageTarget(attackTarget, 0);
+            ShouldNotLaunchAttack();
         }
 
         [Test]
@@ -53,12 +53,11 @@ namespace GameCore.Tests.AutoAttack
 
             autoAttackModel.UpdateAttackTimer(0.5f);
 
-            ShouldDamageTarget(attackTarget, 0);
+            ShouldNotLaunchAttack();
 
             autoAttackModel.UpdateAttackTimer(0.5f);
 
-            ShouldDamageTarget(attackTarget, 1, DEFAULT_ATTACK_POWER);
-            // view.Received(1).StartAttack(attackTarget, DEFAULT_ATTACK_POWER);
+            ShouldLaunchAttack(attackTarget.Id, DEFAULT_ATTACK_POWER);
         }
 
         [Test]
@@ -74,13 +73,13 @@ namespace GameCore.Tests.AutoAttack
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
             AttackTargetCountShouldBe(1);
-            ShouldDamageTarget(attackTarget, 1);
+            ShouldLaunchAttack(attackTarget.Id, DEFAULT_ATTACK_POWER, 1);
 
             GivenAttackTargetPos(attackTarget, new Vector2(3, 4));
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
             AttackTargetCountShouldBe(0);
-            ShouldDamageTarget(attackTarget, 1);
+            ShouldLaunchAttack(attackTarget.Id, DEFAULT_ATTACK_POWER, 1);
         }
 
         [Test]
@@ -96,13 +95,13 @@ namespace GameCore.Tests.AutoAttack
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
             AttackTargetCountShouldBe(1);
-            ShouldDamageTarget(attackTarget, 1);
+            ShouldLaunchAttack(attackTarget.Id, DEFAULT_ATTACK_POWER, 1);
 
             GivenAttackTargetPos(attackTarget, new Vector2(3, 4));
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
             AttackTargetCountShouldBe(1);
-            ShouldDamageTarget(attackTarget, 2);
+            ShouldLaunchAttack(attackTarget.Id, DEFAULT_ATTACK_POWER, 2);
         }
 
         [Test]
@@ -118,7 +117,7 @@ namespace GameCore.Tests.AutoAttack
             autoAttackModel.UpdateAttackTimer(1);
 
             AttackTargetCountShouldBe(1);
-            ShouldDamageTarget(attackTarget, 1);
+            ShouldLaunchAttack(attackTarget.Id, DEFAULT_ATTACK_POWER, 1);
 
             GivenAttackTargetPos(attackTarget, new Vector2(3, 4));
             autoAttackModel.UpdateAttackTimer(0.5f);
@@ -129,7 +128,7 @@ namespace GameCore.Tests.AutoAttack
             autoAttackModel.UpdateAttackTimer(0.5f);
 
             AttackTargetCountShouldBe(1);
-            ShouldDamageTarget(attackTarget, 2);
+            ShouldLaunchAttack(attackTarget.Id, DEFAULT_ATTACK_POWER, 2);
         }
 
         [Test]
@@ -192,12 +191,12 @@ namespace GameCore.Tests.AutoAttack
             GivenAttackTargetIsDead(attackTarget, true);
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
-            ShouldDamageTarget(attackTarget, 1);
+            ShouldLaunchAttack(attackTarget.Id, DEFAULT_ATTACK_POWER, 1);
             AttackTargetCountShouldBe(0);
 
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
-            ShouldDamageTarget(attackTarget, 1);
+            ShouldLaunchAttack(attackTarget.Id, DEFAULT_ATTACK_POWER, 1);
         }
 
         [Test]
@@ -218,10 +217,10 @@ namespace GameCore.Tests.AutoAttack
 
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
-            ShouldDamageTarget(attackTarget1, 0);
-            ShouldDamageTarget(attackTarget2, 1);
-            ShouldDamageTarget(attackTarget3, 0);
-            ShouldDamageTarget(attackTarget4, 0);
+            ShouldLaunchAttack(attackTarget1.Id, DEFAULT_ATTACK_POWER, 0);
+            ShouldLaunchAttack(attackTarget2.Id, DEFAULT_ATTACK_POWER, 1);
+            ShouldLaunchAttack(attackTarget3.Id, DEFAULT_ATTACK_POWER, 0);
+            ShouldLaunchAttack(attackTarget4.Id, DEFAULT_ATTACK_POWER, 0);
         }
 
         [Test]
@@ -241,20 +240,20 @@ namespace GameCore.Tests.AutoAttack
             autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget4));
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
-            ShouldDamageTarget(attackTarget1, 0);
-            ShouldDamageTarget(attackTarget2, 0);
-            ShouldDamageTarget(attackTarget3, 1);
-            ShouldDamageTarget(attackTarget4, 0);
+            ShouldLaunchAttack(attackTarget1.Id, DEFAULT_ATTACK_POWER, 0);
+            ShouldLaunchAttack(attackTarget2.Id, DEFAULT_ATTACK_POWER, 0);
+            ShouldLaunchAttack(attackTarget3.Id, DEFAULT_ATTACK_POWER, 1);
+            ShouldLaunchAttack(attackTarget4.Id, DEFAULT_ATTACK_POWER, 0);
 
             IAttackTarget attackTarget5 = CreateAttackTarget("5", new Vector2(1, 1));
             autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget5));
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
-            ShouldDamageTarget(attackTarget1, 0);
-            ShouldDamageTarget(attackTarget2, 0);
-            ShouldDamageTarget(attackTarget3, 1);
-            ShouldDamageTarget(attackTarget4, 0);
-            ShouldDamageTarget(attackTarget5, 1);
+            ShouldLaunchAttack(attackTarget1.Id, DEFAULT_ATTACK_POWER, 0);
+            ShouldLaunchAttack(attackTarget2.Id, DEFAULT_ATTACK_POWER, 0);
+            ShouldLaunchAttack(attackTarget3.Id, DEFAULT_ATTACK_POWER, 1);
+            ShouldLaunchAttack(attackTarget4.Id, DEFAULT_ATTACK_POWER, 0);
+            ShouldLaunchAttack(attackTarget5.Id, DEFAULT_ATTACK_POWER, 1);
         }
 
         [Test]
@@ -269,16 +268,16 @@ namespace GameCore.Tests.AutoAttack
             autoAttackModel.UpdateAttackTimer(2.8f);
             autoAttackModel.SetStopState(true);
 
-            ShouldDamageTarget(attackTarget, 0);
+            ShouldNotLaunchAttack();
 
             autoAttackModel.UpdateAttackTimer(0.2f);
 
-            ShouldDamageTarget(attackTarget, 0);
+            ShouldNotLaunchAttack();
 
             autoAttackModel.SetStopState(false);
             autoAttackModel.UpdateAttackTimer(0.2f);
 
-            ShouldDamageTarget(attackTarget, 1);
+            ShouldLaunchAttack(attackTarget.Id, DEFAULT_ATTACK_POWER);
         }
 
         private void GivenAttackTargetIsDead(IAttackTarget attackTarget, bool isDead)
@@ -298,21 +297,19 @@ namespace GameCore.Tests.AutoAttack
             attackTarget.GetTransform.Returns(transform);
         }
 
+        private void ShouldNotLaunchAttack()
+        {
+            buildingAttackView.DidNotReceive().LaunchAttack(Arg.Any<IAttackTarget>(), Arg.Any<float>());
+        }
+
+        private void ShouldLaunchAttack(string targetId, int attackPower, int callTimes = 1)
+        {
+            buildingAttackView.Received(callTimes).LaunchAttack(Arg.Is<IAttackTarget>(target => target.Id == targetId), attackPower);
+        }
+
         private void AttackTargetCountShouldBe(int expectedCount)
         {
             Assert.AreEqual(expectedCount, autoAttackModel.AttackTargets.Count);
-        }
-
-        private void ShouldDamageTarget(IAttackTarget attackTarget, int triggerTimes, float expectedDamage = -1)
-        {
-            float damageValue = expectedDamage < 0 ?
-                Arg.Any<float>() :
-                expectedDamage;
-
-            if (triggerTimes == 0)
-                attackTarget.DidNotReceive().Damage(damageValue);
-            else
-                attackTarget.Received(triggerTimes).Damage(damageValue);
         }
 
         private ITriggerCollider CreateTriggerCollider<T>(T attackTarget)
