@@ -63,9 +63,10 @@ namespace GameCore
                 if (attackWave.UpdateTimerAndCheckSpawn(deltaTime) == false)
                     continue;
 
+                IMonsterSetting monsterSetting = attackWave.GetCurrentSpawnMonsterSetting;
                 attackWave.AddSpawnCount(1);
                 MonsterModel monsterModel = new MonsterModel(attackWave.GetAttackPath);
-                monsterModel.InitHp(attackWaveSetting.MonsterHp);
+                monsterModel.InitHp(monsterSetting.GetHp);
                 OnSpawnMonster?.Invoke(monsterModel);
             }
         }

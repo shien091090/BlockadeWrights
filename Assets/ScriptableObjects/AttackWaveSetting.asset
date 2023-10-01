@@ -13,20 +13,26 @@ MonoBehaviour:
   m_Name: AttackWaveSetting
   m_EditorClassIdentifier: 
   attackWaveSettings:
-  - startTimeSecond: 2
-    maxSpawnCount: 10
+  - startTimeSecond: 5
     spawnIntervalSecond: 1
     pathPointList:
     - {x: -10.5, y: 0}
     - {x: -3, y: 0}
     - {x: -3, y: 4}
     - {x: 7, y: 4}
-  - startTimeSecond: 5
-    maxSpawnCount: 10
+    monsterSpawnOrderSetting:
+    - spawnCount: 3
+      monsterSetting: {fileID: 11400000, guid: f51bb0e5b3ed448489a6d5604cea5c88, type: 2}
+    - spawnCount: 3
+      monsterSetting: {fileID: 11400000, guid: 60287131df6a3ac4abf430586539d080, type: 2}
+  - startTimeSecond: 10
     spawnIntervalSecond: 0.5
     pathPointList:
     - {x: 0, y: -5}
     - {x: 0, y: -1}
     - {x: 7, y: -1}
     - {x: 7, y: 4}
+    monsterSpawnOrderSetting:
+    - spawnCount: 5
+      monsterSetting: {fileID: 11400000, guid: f51bb0e5b3ed448489a6d5604cea5c88, type: 2}
   monsterHp: 100

@@ -5,20 +5,18 @@ namespace GameCore
     public class AttackWaveSettingScriptableObject : ScriptableObject, IAttackWaveSetting
     {
         [SerializeField] private AttackWaveSetting[] attackWaveSettings;
-        [SerializeField] private float monsterHp;
-
-        public float MonsterHp => monsterHp;
 
         public AttackWave[] GetAttackWaves()
         {
             AttackWave[] attackWaves = new AttackWave[attackWaveSettings.Length];
             for (int i = 0; i < attackWaves.Length; i++)
             {
+                AttackWaveSetting attackWaveSetting = attackWaveSettings[i];
                 attackWaves[i] = new AttackWave(
-                    attackWaveSettings[i].MaxSpawnCount,
-                    attackWaveSettings[i].SpawnIntervalSecond,
-                    attackWaveSettings[i].StartTimeSecond,
-                    attackWaveSettings[i].PathPointList);
+                    attackWaveSetting.SpawnIntervalSecond,
+                    attackWaveSetting.GetMonsterOrderList(),
+                    attackWaveSetting.StartTimeSecond,
+                    attackWaveSetting.PathPointList);
             }
 
             return attackWaves;

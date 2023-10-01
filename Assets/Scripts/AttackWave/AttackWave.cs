@@ -6,19 +6,30 @@ namespace GameCore
     public class AttackWave
     {
         private float currentTimer;
+        private readonly List<IMonsterSetting> spawnMonsterOrderList;
         public MonsterMovementPath GetAttackPath { get; }
         public bool CanSpawnNext => GetCurrentSpawnCount < MaxSpawnCount;
         public float StartTimeSecond { get; }
+        public IMonsterSetting GetCurrentSpawnMonsterSetting => spawnMonsterOrderList[GetCurrentSpawnCount];
         private int GetCurrentSpawnCount { get; set; }
         private int MaxSpawnCount { get; }
         private float SpawnIntervalSecond { get; }
 
-        public AttackWave(int maxSpawnCount, float spawnIntervalSecond, float startTimeSecond = 0, List<Vector2> pathPointList = null)
+        public AttackWave(float spawnIntervalSecond, List<IMonsterSetting> spawnMonsterOrderList, float startTimeSecond = 0, List<Vector2> pathPointList = null)
         {
             StartTimeSecond = startTimeSecond;
-            MaxSpawnCount = maxSpawnCount;
+            MaxSpawnCount = spawnMonsterOrderList.Count;
             SpawnIntervalSecond = spawnIntervalSecond;
+            this.spawnMonsterOrderList = spawnMonsterOrderList;
             GetAttackPath = ConvertMovementPathInfo(pathPointList);
+            GetCurrentSpawnCount = 0;
+        }
+
+        public void AddSpawnCount(int addCount)
+        {
+            GetCurrentSpawnCount += addCount;
+            if (GetCurrentSpawnCount > MaxSpawnCount)
+                GetCurrentSpawnCount = MaxSpawnCount;
         }
 
         public bool UpdateTimerAndCheckSpawn(float deltaTime)
@@ -32,13 +43,6 @@ namespace GameCore
             }
             else
                 return false;
-        }
-
-        public void AddSpawnCount(int addCount)
-        {
-            GetCurrentSpawnCount += addCount;
-            if (GetCurrentSpawnCount > MaxSpawnCount)
-                GetCurrentSpawnCount = MaxSpawnCount;
         }
 
         private MonsterMovementPath ConvertMovementPathInfo(List<Vector2> pathPointList)
