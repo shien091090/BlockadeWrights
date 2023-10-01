@@ -63,6 +63,27 @@ namespace GameCore.Tests.AttackWaves
         }
 
         [Test]
+        //產不同怪
+        public void spawn_different_monster()
+        {
+            GivenModel(new AttackWave(1, new List<IMonsterSetting>
+            {
+                CreateMonsterSetting(10),
+                CreateMonsterSetting(20),
+                CreateMonsterSetting(30)
+            }));
+
+            monsterSpawner.CheckUpdateSpawn(1);
+            ShouldTriggerSpawnEvent(10, 1);
+
+            monsterSpawner.CheckUpdateSpawn(1);
+            ShouldTriggerSpawnEvent(20, 1);
+
+            monsterSpawner.CheckUpdateSpawn(1);
+            ShouldTriggerSpawnEvent(30, 1);
+        }
+
+        [Test]
         //第一波時間尚未到, 不產怪
         public void spawn_monster_not_at_start_time()
         {
@@ -193,6 +214,11 @@ namespace GameCore.Tests.AttackWaves
             monsterSpawner.OnStartNextWave += startNextWaveEvent;
         }
 
+        private void ShouldTriggerSpawnEvent(float expectedHp, int triggerTimes = 1)
+        {
+            spawnMonsterEvent.Received(triggerTimes).Invoke(Arg.Is<IMonsterModel>(monster => monster.HpModel.CurrentHp == expectedHp));
+        }
+
         private void WaveHintShouldBe(string expectedWaveHint)
         {
             Assert.AreEqual(expectedWaveHint, monsterSpawner.GetWaveHint);
@@ -245,6 +271,13 @@ namespace GameCore.Tests.AttackWaves
             }
 
             return monsterSettings;
+        }
+
+        private IMonsterSetting CreateMonsterSetting(int hp)
+        {
+            IMonsterSetting monsterSetting = Substitute.For<IMonsterSetting>();
+            monsterSetting.GetHp.Returns(hp);
+            return monsterSetting;
         }
     }
 }
