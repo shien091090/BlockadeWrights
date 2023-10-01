@@ -8,6 +8,7 @@ namespace GameCore.Tests.Monster
 {
     public class MonsterSpawnerTest
     {
+        private IAttackWaveSetting attackWaveSetting;
         private MonsterSpawner monsterSpawner;
         private Action<IMonsterModel> spawnMonsterEvent;
         private Action startNextWaveEvent;
@@ -17,17 +18,15 @@ namespace GameCore.Tests.Monster
         {
             spawnMonsterEvent = Substitute.For<Action<IMonsterModel>>();
             startNextWaveEvent = Substitute.For<Action>();
-            monsterSpawner = new MonsterSpawner();
-            monsterSpawner.OnSpawnMonster += spawnMonsterEvent;
-            monsterSpawner.OnStartNextWave += startNextWaveEvent;
+            attackWaveSetting = Substitute.For<IAttackWaveSetting>();
         }
 
         [Test]
         //產怪一次
         public void spawn_monster_one_time()
         {
-            AttackWave wave1 = new AttackWave(3, 0);
-            monsterSpawner.Init(wave1);
+            GivenModel(new AttackWave(3, 0));
+
             monsterSpawner.CheckUpdateSpawn(1);
 
             ShouldAllWavesSpawnFinished(false);
@@ -38,8 +37,8 @@ namespace GameCore.Tests.Monster
         //產怪至上限
         public void spawn_monster_to_max()
         {
-            AttackWave wave1 = new AttackWave(3, 0);
-            monsterSpawner.Init(wave1);
+            GivenModel(new AttackWave(3, 0));
+
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
@@ -52,8 +51,8 @@ namespace GameCore.Tests.Monster
         //產怪超過上限
         public void spawn_monster_over_max()
         {
-            AttackWave wave1 = new AttackWave(3, 0);
-            monsterSpawner.Init(wave1);
+            GivenModel(new AttackWave(3, 0));
+
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
@@ -67,8 +66,7 @@ namespace GameCore.Tests.Monster
         //第一波時間尚未到, 不產怪
         public void spawn_monster_not_at_start_time()
         {
-            AttackWave wave1 = new AttackWave(3, 1, 10);
-            monsterSpawner.Init(wave1);
+            GivenModel(new AttackWave(3, 1, 10));
 
             monsterSpawner.CheckUpdateSpawn(0.5f);
             monsterSpawner.CheckUpdateSpawn(0.5f);
@@ -83,8 +81,7 @@ namespace GameCore.Tests.Monster
         //產怪後等待一段時間，再產怪
         public void spawn_monster_wait_time()
         {
-            AttackWave wave1 = new AttackWave(3, 1);
-            monsterSpawner.Init(wave1);
+            GivenModel(new AttackWave(3, 1));
 
             monsterSpawner.CheckUpdateSpawn(0.5f);
             ShouldTriggerSpawnEvent(0);
@@ -101,7 +98,9 @@ namespace GameCore.Tests.Monster
         {
             AttackWave wave1 = new AttackWave(2, 1, 0);
             AttackWave wave2 = new AttackWave(2, 1, 4);
-            monsterSpawner.Init(wave1, wave2);
+            GivenModel(
+                wave1,
+                wave2);
 
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
@@ -123,9 +122,9 @@ namespace GameCore.Tests.Monster
         //第一波和第二波同時產怪
         public void spawn_monster_same_time()
         {
-            AttackWave wave1 = new AttackWave(3, 1, 0);
-            AttackWave wave2 = new AttackWave(3, 1, 1);
-            monsterSpawner.Init(wave1, wave2);
+            GivenModel(
+                new AttackWave(3, 1, 0),
+                new AttackWave(3, 1, 1));
 
             monsterSpawner.CheckUpdateSpawn(1);
             ShouldTriggerStartNextWaveEvent(1);
@@ -149,10 +148,10 @@ namespace GameCore.Tests.Monster
         //驗證波次提示
         public void spawn_monster_wave_hint(int updateTimes, string expectedWaveHint)
         {
-            AttackWave wave1 = new AttackWave(1, 1, 2);
-            AttackWave wave2 = new AttackWave(1, 1, 3);
-            AttackWave wave3 = new AttackWave(1, 1, 4);
-            monsterSpawner.Init(wave1, wave2, wave3);
+            GivenModel(
+                new AttackWave(1, 1, 2),
+                new AttackWave(1, 1, 3),
+                new AttackWave(1, 1, 4));
 
             for (int i = 0; i < updateTimes; i++)
             {
@@ -166,8 +165,8 @@ namespace GameCore.Tests.Monster
         //產怪時不指定路徑, 產怪起始位置為預設中心位置
         public void spawn_monster_and_no_path()
         {
-            AttackWave wave1 = new AttackWave(1, 1, pathPointList: null);
-            monsterSpawner.Init(wave1);
+            GivenModel(new AttackWave(1, 1, pathPointList: null));
+
             monsterSpawner.CheckUpdateSpawn(1);
 
             SpawnMonsterStartPosShouldBe(Vector2.zero);
@@ -177,11 +176,20 @@ namespace GameCore.Tests.Monster
         //產怪時指定路徑, 產怪起始位置為路徑起始位置
         public void spawn_monster_and_have_path()
         {
-            AttackWave wave1 = new AttackWave(1, 1, pathPointList: new List<Vector2> { new Vector2(1, 1), new Vector2(2, 2) });
-            monsterSpawner.Init(wave1);
+            GivenModel(new AttackWave(1, 1, pathPointList: new List<Vector2> { new Vector2(1, 1), new Vector2(2, 2) }));
+
             monsterSpawner.CheckUpdateSpawn(1);
 
             SpawnMonsterStartPosShouldBe(new Vector2(1, 1));
+        }
+
+        private void GivenModel(params AttackWave[] waves)
+        {
+            attackWaveSetting.GetAttackWaves().Returns(waves);
+            monsterSpawner = new MonsterSpawner(attackWaveSetting);
+
+            monsterSpawner.OnSpawnMonster += spawnMonsterEvent;
+            monsterSpawner.OnStartNextWave += startNextWaveEvent;
         }
 
         private void WaveHintShouldBe(string expectedWaveHint)
@@ -199,9 +207,9 @@ namespace GameCore.Tests.Monster
             Assert.AreEqual(expectedWaveIndex, monsterSpawner.GetCurrentWaveIndex);
         }
 
-        private void ShouldWaveCanSpawnNext(AttackWave wave1, bool expectedCanSpawn)
+        private void ShouldWaveCanSpawnNext(AttackWave waveInfo, bool expectedCanSpawn)
         {
-            Assert.AreEqual(expectedCanSpawn, wave1.CanSpawnNext);
+            Assert.AreEqual(expectedCanSpawn, waveInfo.CanSpawnNext);
         }
 
         private void ShouldAllWavesSpawnFinished(bool expectedAllWaveFished)

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public class AttackWaveSettingScriptableObject : ScriptableObject
+    public class AttackWaveSettingScriptableObject : ScriptableObject, IAttackWaveSetting
     {
         [SerializeField] private AttackWaveSetting[] attackWaveSettings;
         [SerializeField] private float monsterHp;

@@ -11,6 +11,7 @@ namespace GameCore
             Container.Bind<IPlayerOperationModel>().To<PlayerOperationModel>().AsSingle();
             Container.Bind<IInGameMapModel>().To<InGameMapModel>().AsSingle();
             Container.Bind<PlayerModel>().AsSingle();
+            Container.Bind<IMonsterSpawner>().To<MonsterSpawner>().AsSingle();
         }
     }
 }

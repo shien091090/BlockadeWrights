@@ -1,17 +1,19 @@
 using UnityEngine;
+using Zenject;
 
 namespace GameCore
 {
     public class GameSceneProcessView : MonoBehaviour
     {
-        [SerializeField] private AttackWaveSettingScriptableObject attackWaveSetting;
+        // [SerializeField] private AttackWaveSettingScriptableObject attackWaveSetting;
         [SerializeField] private WaveHintView waveHintView;
         [SerializeField] private FortressView fortressView;
         [SerializeField] private float fortressHp;
         [SerializeField] private GameObjectPoolComponent monsterObjectPool;
         [SerializeField] private TimerView timerView;
 
-        private MonsterSpawner monsterSpawner;
+        [Inject] private IMonsterSpawner monsterSpawner;
+
         private FortressModel fortressModel;
 
         private void Update()
@@ -21,9 +23,6 @@ namespace GameCore
 
         public void Start()
         {
-            monsterSpawner = new MonsterSpawner();
-            monsterSpawner.Init(attackWaveSetting.GetAttackWaves());
-
             waveHintView.SetWaveHint(monsterSpawner.GetWaveHint);
 
             fortressModel = new FortressModel(fortressHp, monsterSpawner);
@@ -49,15 +48,10 @@ namespace GameCore
 
         private void CheckStartTimer()
         {
-            if (attackWaveSetting.GetAttackWaves().Length <= 0)
-                return;
-
-            AttackWave firstAttackWave = attackWaveSetting.GetAttackWaves()[0];
-            if (firstAttackWave.StartTimeSecond <= 0)
-                return;
-
-            timerView.StartCountDown(firstAttackWave.StartTimeSecond);
+            if (monsterSpawner.IsNeedCountDownToSpawnMonster())
+                timerView.StartCountDown(monsterSpawner.GetStartTimeSeconds());
         }
+
 
         private void OnFortressDestroy()
         {
@@ -71,8 +65,6 @@ namespace GameCore
 
         private void OnSpawnMonster(IMonsterModel monsterModel)
         {
-            monsterModel.InitHp(attackWaveSetting.MonsterHp);
-
             MonsterView monsterView = monsterObjectPool.SpawnGameObject<MonsterView>(monsterModel.GetStartPoint);
             monsterView.Init(monsterModel);
         }

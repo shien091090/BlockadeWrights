@@ -5,11 +5,13 @@ namespace GameCore
 {
     public class MonsterSpawner : IMonsterSpawner
     {
+        public string GetWaveHint => attackWaves == null ?
+            string.Empty :
+            $"{GetCurrentWaveIndex + 1}/{attackWaves.Length}";
+
         private float currentTimer;
         private AttackWave[] attackWaves;
-
-        public event Action<IMonsterModel> OnSpawnMonster;
-        public event Action OnStartNextWave;
+        private readonly IAttackWaveSetting attackWaveSetting;
 
         public int GetCurrentWaveIndex { get; private set; }
         public bool HaveNextWave => GetCurrentWaveIndex < attackWaves.Length - 1;
@@ -25,11 +27,16 @@ namespace GameCore
             }
         }
 
-        public string GetWaveHint => attackWaves == null ?
-            string.Empty :
-            $"{GetCurrentWaveIndex + 1}/{attackWaves.Length}";
-
         private bool IsStartNextWave => currentTimer >= attackWaves[GetCurrentWaveIndex + 1].StartTimeSecond;
+
+        public MonsterSpawner(IAttackWaveSetting attackWaveSetting)
+        {
+            this.attackWaveSetting = attackWaveSetting;
+            Init(attackWaveSetting.GetAttackWaves());
+        }
+
+        public event Action OnStartNextWave;
+        public event Action<IMonsterModel> OnSpawnMonster;
 
         public void CheckUpdateSpawn(float deltaTime)
         {
@@ -58,11 +65,30 @@ namespace GameCore
 
                 attackWave.AddSpawnCount(1);
                 MonsterModel monsterModel = new MonsterModel(attackWave.GetAttackPath);
+                monsterModel.InitHp(attackWaveSetting.MonsterHp);
                 OnSpawnMonster?.Invoke(monsterModel);
             }
         }
 
-        public void Init(params AttackWave[] attackWaves)
+        public bool IsNeedCountDownToSpawnMonster()
+        {
+            if (attackWaveSetting.GetAttackWaves().Length <= 0)
+                return false;
+
+            AttackWave firstAttackWave = attackWaveSetting.GetAttackWaves()[0];
+            if (firstAttackWave.StartTimeSecond <= 0)
+                return false;
+
+            return true;
+        }
+
+        public float GetStartTimeSeconds()
+        {
+            float countDownSeconds = attackWaveSetting.GetAttackWaves()[0].StartTimeSecond;
+            return countDownSeconds;
+        }
+
+        private void Init(params AttackWave[] attackWaves)
         {
             this.attackWaves = attackWaves;
             GetCurrentWaveIndex = -1;
