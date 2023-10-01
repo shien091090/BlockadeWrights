@@ -30,7 +30,6 @@ namespace GameCore
             {
                 Vector3 directionToTarget = ((Vector3)target.GetTransform.Position - particles[i].position).normalized;
                 float distance = Vector3.Distance((Vector3)target.GetTransform.Position, particles[i].position);
-                Debug.Log($"distance: {distance}");
                 if (distance <= 0.01f)
                     isHit = true;
 
