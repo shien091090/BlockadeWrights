@@ -9,17 +9,19 @@ namespace GameCore
         private readonly float attackFrequency;
         private readonly Vector2 position;
         private readonly float attackPower;
+        private readonly IBuildingAttackView buildingAttackView;
         private float timer;
 
         public List<IAttackTarget> AttackTargets { get; }
         public bool IsStop { get; set; }
 
-        public AutoAttackModel(int attackRange, float attackFrequency, Vector2 position, float attackPower)
+        public AutoAttackModel(int attackRange, float attackFrequency, Vector2 position, float attackPower, IBuildingAttackView buildingAttackView)
         {
             this.attackRange = attackRange;
             this.attackFrequency = attackFrequency;
             this.position = position;
             this.attackPower = attackPower;
+            this.buildingAttackView = buildingAttackView;
             AttackTargets = new List<IAttackTarget>();
             timer = 0;
         }
@@ -69,7 +71,8 @@ namespace GameCore
 
             CheckRemoveOverDistanceTarget();
             IAttackTarget nearestTarget = CheckNearestTarget();
-            nearestTarget?.Damage(attackPower);
+            if (nearestTarget != null)
+                buildingAttackView.StartAttack(nearestTarget, attackPower);
 
             if (nearestTarget != null && nearestTarget.IsDead)
                 RemoveAttackTarget(nearestTarget);

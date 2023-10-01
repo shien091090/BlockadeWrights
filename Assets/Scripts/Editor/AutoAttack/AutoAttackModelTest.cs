@@ -11,12 +11,19 @@ namespace GameCore.Tests.AutoAttack
         private const int DEFAULT_ATTACK_POWER = 1;
 
         private AutoAttackModel autoAttackModel;
+        private IBuildingAttackView buildingAttackView;
+
+        [SetUp]
+        public void Setup()
+        {
+            buildingAttackView = Substitute.For<IBuildingAttackView>();
+        }
 
         [Test]
         //未進入攻擊範圍, 不攻擊
         public void not_in_attack_range()
         {
-            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
+            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             AttackTargetCountShouldBe(0);
         }
@@ -25,7 +32,7 @@ namespace GameCore.Tests.AutoAttack
         //進入攻擊範圍, 但未設定攻擊頻率, 不攻擊
         public void in_attack_range_but_not_set_attack_frequency()
         {
-            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, 0, Vector2.zero, DEFAULT_ATTACK_POWER);
+            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, 0, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget = CreateAttackTarget();
             autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget));
@@ -39,7 +46,7 @@ namespace GameCore.Tests.AutoAttack
         //進入攻擊範圍, 攻擊
         public void in_attack_range_then_attack()
         {
-            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
+            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget = CreateAttackTarget();
             autoAttackModel.ColliderTriggerEnter(CreateTriggerCollider(attackTarget));
@@ -51,13 +58,14 @@ namespace GameCore.Tests.AutoAttack
             autoAttackModel.UpdateAttackTimer(0.5f);
 
             ShouldDamageTarget(attackTarget, 1, DEFAULT_ATTACK_POWER);
+            // view.Received(1).StartAttack(attackTarget, DEFAULT_ATTACK_POWER);
         }
 
         [Test]
         //進入攻擊範圍, 攻擊, CD時間結束後對象離開攻擊範圍, 不攻擊
         public void in_attack_range_then_attack_then_target_leave_attack_range()
         {
-            autoAttackModel = new AutoAttackModel(4, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
+            autoAttackModel = new AutoAttackModel(4, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget = CreateAttackTarget();
             GivenAttackTargetPos(attackTarget, new Vector2(2, 3));
@@ -79,7 +87,7 @@ namespace GameCore.Tests.AutoAttack
         //進入攻擊範圍, 攻擊, CD時間結束後對象尚未離開攻擊範圍, 再攻擊一次
         public void in_attack_range_then_attack_then_target_still_in_attack_range()
         {
-            autoAttackModel = new AutoAttackModel(5, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
+            autoAttackModel = new AutoAttackModel(5, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget = CreateAttackTarget();
             GivenAttackTargetPos(attackTarget, new Vector2(2, 3));
@@ -101,7 +109,7 @@ namespace GameCore.Tests.AutoAttack
         //進入攻擊範圍, 攻擊, CD時間結束前對象離開後又進入攻擊範圍, 再攻擊一次
         public void in_attack_range_then_attack_then_target_leave_attack_range_then_enter_attack_range()
         {
-            autoAttackModel = new AutoAttackModel(4, 1, Vector2.zero, DEFAULT_ATTACK_POWER);
+            autoAttackModel = new AutoAttackModel(4, 1, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget = CreateAttackTarget();
             GivenAttackTargetPos(attackTarget, new Vector2(2, 3));
@@ -128,7 +136,7 @@ namespace GameCore.Tests.AutoAttack
         //同一個目標進出攻擊範圍多次, 驗證攻擊目標列表中是否只有一個目標
         public void same_target_enter_and_leave_attack_range_multiple_times()
         {
-            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
+            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget = CreateAttackTarget();
 
@@ -146,7 +154,7 @@ namespace GameCore.Tests.AutoAttack
         //多個目標進入攻擊範圍後離開, 只剩一個攻擊目標
         public void multiple_targets_enter_and_leave_attack_range()
         {
-            autoAttackModel = new AutoAttackModel(3, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
+            autoAttackModel = new AutoAttackModel(3, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget1 = CreateAttackTarget("1", new Vector2(0, 0));
             IAttackTarget attackTarget2 = CreateAttackTarget("2", new Vector2(0, 0));
@@ -173,7 +181,7 @@ namespace GameCore.Tests.AutoAttack
         //攻擊後, 對象死亡, 不再攻擊
         public void attack_then_target_dead()
         {
-            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
+            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget = CreateAttackTarget();
 
@@ -196,7 +204,7 @@ namespace GameCore.Tests.AutoAttack
         //攻擊範圍中有多個目標, 攻擊距離最近的對象
         public void multiple_targets_in_attack_range()
         {
-            autoAttackModel = new AutoAttackModel(10, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
+            autoAttackModel = new AutoAttackModel(10, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget1 = CreateAttackTarget("1", new Vector2(3, 3));
             IAttackTarget attackTarget2 = CreateAttackTarget("2", new Vector2(2, 2));
@@ -220,7 +228,7 @@ namespace GameCore.Tests.AutoAttack
         //攻擊範圍中最近目標, CD時間結束後有其他更近的目標, 攻擊距離最近的對象
         public void attack_target_then_other_target_in_range()
         {
-            autoAttackModel = new AutoAttackModel(10, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER);
+            autoAttackModel = new AutoAttackModel(10, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget1 = CreateAttackTarget("1", new Vector2(4, 4));
             IAttackTarget attackTarget2 = CreateAttackTarget("2", new Vector2(3, 3));
@@ -253,7 +261,7 @@ namespace GameCore.Tests.AutoAttack
         //停止自動攻擊
         public void stop_auto_attack()
         {
-            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, 3, Vector2.zero, DEFAULT_ATTACK_POWER);
+            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, 3, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
 
             IAttackTarget attackTarget = CreateAttackTarget();
 
