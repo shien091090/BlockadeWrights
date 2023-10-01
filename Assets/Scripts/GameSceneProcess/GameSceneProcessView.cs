@@ -5,7 +5,6 @@ namespace GameCore
 {
     public class GameSceneProcessView : MonoBehaviour
     {
-        // [SerializeField] private AttackWaveSettingScriptableObject attackWaveSetting;
         [SerializeField] private WaveHintView waveHintView;
         [SerializeField] private FortressView fortressView;
         [SerializeField] private float fortressHp;
@@ -51,7 +50,6 @@ namespace GameCore
             if (monsterSpawner.IsNeedCountDownToSpawnMonster())
                 timerView.StartCountDown(monsterSpawner.GetStartTimeSeconds());
         }
-
 
         private void OnFortressDestroy()
         {
