@@ -109,10 +109,25 @@ namespace GameCore
             SetPathEditorMode(isPathEditorMode);
         }
         
+        [EnableIf("isPathEditorMode")]
         [HorizontalGroup("split", 0.5f)]
         [Button("RefreshDrawPathHint")]
         private void RefreshDrawPathHintButton()
         {
+            for (int i = 0; i < pathHintObjectList.Count; i++)
+            {
+                if (pathPointList.Count > i)
+                {
+                    pathPointList[i] = pathHintObjectList[i].Transform.position;
+                }    
+            }
+            
+            if (pathHintObjectList.Count != pathPointList.Count)
+            {
+                ResetPathHint();
+                CreatePathHints();
+            }
+            
             RefreshDrawPathHint();
         }
     }
