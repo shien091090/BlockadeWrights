@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace GameCore
 {
+    [System.Serializable]
     public class AttackWave
     {
         private float currentTimer;
@@ -58,5 +60,6 @@ namespace GameCore
 
             return pathInfo;
         }
+
     }
 }

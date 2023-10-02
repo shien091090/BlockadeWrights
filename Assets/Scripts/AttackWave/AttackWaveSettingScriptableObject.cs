@@ -1,11 +1,12 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace GameCore
 {
-    public class AttackWaveSettingScriptableObject : ScriptableObject, IAttackWaveSetting
+    public class AttackWaveSettingScriptableObject : SerializedScriptableObject, IAttackWaveSetting
     {
         [SerializeField] private AttackWaveSetting[] attackWaveSettings;
-
+        
         public AttackWave[] GetAttackWaves()
         {
             AttackWave[] attackWaves = new AttackWave[attackWaveSettings.Length];
@@ -21,6 +22,5 @@ namespace GameCore
 
             return attackWaves;
         }
-
     }
 }

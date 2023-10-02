@@ -650,7 +650,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0c36cd5f038433aaab0b6a7ed768fae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackWaveSetting: {fileID: 11400000, guid: 8afaf3249fb2a9046b8ca9110c9b4017, type: 2}
   waveHintView: {fileID: 272142549}
   fortressView: {fileID: 900968239009750113}
   fortressHp: 3
