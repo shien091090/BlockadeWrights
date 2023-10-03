@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: MonsterA
   m_EditorClassIdentifier: 
   hp: 20
+  moveSpeed: 2

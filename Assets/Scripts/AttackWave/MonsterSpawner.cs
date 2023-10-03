@@ -65,8 +65,7 @@ namespace GameCore
 
                 IMonsterSetting monsterSetting = attackWave.GetCurrentSpawnMonsterSetting;
                 attackWave.AddSpawnCount(1);
-                MonsterModel monsterModel = new MonsterModel(attackWave.GetAttackPath);
-                monsterModel.InitHp(monsterSetting.GetHp);
+                IMonsterModel monsterModel = new MonsterModel(attackWave.GetAttackPath, monsterSetting);
                 OnSpawnMonster?.Invoke(monsterModel);
             }
         }

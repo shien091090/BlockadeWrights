@@ -7,6 +7,9 @@ namespace GameCore.Tests.Monster
 {
     public class MonsterModelTest
     {
+        private const float DEFAULT_MOVE_SPEED = 5;
+        private const float DEFAULT_HP = 100;
+
         private MonsterModel monsterModel;
         private Action onDamageFort;
         private Action monsterDeadEvent;
@@ -15,7 +18,7 @@ namespace GameCore.Tests.Monster
         public void Setup()
         {
             onDamageFort = Substitute.For<Action>();
-            monsterDeadEvent = null;
+            monsterDeadEvent = Substitute.For<Action>();
         }
 
         [Test]
@@ -36,6 +39,8 @@ namespace GameCore.Tests.Monster
         public void move_path_start_to_end()
         {
             GivenInitModel(
+                DEFAULT_HP,
+                DEFAULT_MOVE_SPEED,
                 new Vector2(0, 0),
                 new Vector2(10, -10));
 
@@ -51,6 +56,8 @@ namespace GameCore.Tests.Monster
         public void move_path_middle_to_next()
         {
             GivenInitModel(
+                DEFAULT_HP,
+                DEFAULT_MOVE_SPEED,
                 new Vector2(0, 0),
                 new Vector2(10, -10),
                 new Vector2(10, 0),
@@ -72,6 +79,8 @@ namespace GameCore.Tests.Monster
         public void move_to_next_point_when_arrived(int startIndex, float currentPosX, float currentPosY)
         {
             GivenInitModel(
+                DEFAULT_HP,
+                DEFAULT_MOVE_SPEED,
                 new Vector2(0, 0),
                 new Vector2(10, -10),
                 new Vector2(10, 0),
@@ -91,6 +100,8 @@ namespace GameCore.Tests.Monster
         public void move_to_end_point_and_destroy_main_castle()
         {
             GivenInitModel(
+                DEFAULT_HP,
+                DEFAULT_MOVE_SPEED,
                 new Vector2(0, 0),
                 new Vector2(10, -10));
 
@@ -105,6 +116,8 @@ namespace GameCore.Tests.Monster
         public void move_to_end_point_and_no_move()
         {
             GivenInitModel(
+                DEFAULT_HP,
+                DEFAULT_MOVE_SPEED,
                 new Vector2(0, 0),
                 new Vector2(10, -10));
 
@@ -118,23 +131,10 @@ namespace GameCore.Tests.Monster
         }
 
         [Test]
-        //攻擊怪物但怪物沒有HP
-        public void attack_monster_but_monster_no_hp()
-        {
-            GivenInitModel();
-
-            monsterModel.Damage(999);
-
-            ShouldMonsterDead(false);
-            ShouldReceiveDeadEvent(0);
-        }
-
-        [Test]
         //攻擊怪物並且怪物死亡
         public void attack_monster_and_monster_dead()
         {
-            GivenInitModel();
-            GivenHp(10);
+            GivenInitModel(10);
 
             monsterModel.Damage(11);
 
@@ -142,21 +142,17 @@ namespace GameCore.Tests.Monster
             ShouldReceiveDeadEvent(1);
         }
 
-        private void GivenHp(float maxHp)
-        {
-            monsterModel.InitHp(maxHp);
-
-            monsterDeadEvent = Substitute.For<Action>();
-            monsterModel.OnDead += monsterDeadEvent;
-        }
-
         private void GivenTargetPathIndex(int index)
         {
             monsterModel.SetTargetPathIndex(index);
         }
 
-        private void GivenInitModel(params Vector2[] pathPoints)
+        private void GivenInitModel(float hp = 100, float moveSpeed = 5, params Vector2[] pathPoints)
         {
+            IMonsterSetting monsterSetting = Substitute.For<IMonsterSetting>();
+            monsterSetting.GetHp.Returns(hp);
+            monsterSetting.GetMoveSpeed.Returns(moveSpeed);
+
             MonsterMovementPath path = new MonsterMovementPath();
             if (pathPoints != null && pathPoints.Length > 0)
             {
@@ -166,8 +162,9 @@ namespace GameCore.Tests.Monster
                 }
             }
 
-            monsterModel = new MonsterModel(path);
+            monsterModel = new MonsterModel(path, monsterSetting);
             monsterModel.OnDamageFort += onDamageFort;
+            monsterModel.OnDead += monsterDeadEvent;
         }
 
         private void ShouldReceiveDeadEvent(int triggerTimes)

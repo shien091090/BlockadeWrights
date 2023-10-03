@@ -4,8 +4,6 @@ namespace GameCore
 {
     public class MonsterView : MonoBehaviour, IAttackTarget
     {
-        [SerializeField] private float moveSpeed;
-
         public ITransform GetTransform
         {
             get
@@ -57,7 +55,7 @@ namespace GameCore
             if (monsterModel == null)
                 return;
 
-            transform.Translate(monsterModel.UpdateMove(transform.position, moveSpeed, Time.deltaTime));
+            transform.Translate(monsterModel.UpdateMove(transform.position, monsterModel.MoveSpeed, Time.deltaTime));
         }
 
         public void Init(IMonsterModel monsterModel)
