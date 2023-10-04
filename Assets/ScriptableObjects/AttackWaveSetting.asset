@@ -35,10 +35,10 @@ MonoBehaviour:
     - {x: 5.47, y: 3.45}
     - {x: 5.47, y: -3.08}
     monsterSpawnOrderSetting:
-    - spawnCount: 3
-      monsterSetting: {fileID: 11400000, guid: f51bb0e5b3ed448489a6d5604cea5c88, type: 2}
-    - spawnCount: 3
-      monsterSetting: {fileID: 11400000, guid: 60287131df6a3ac4abf430586539d080, type: 2}
+    - monsterSetting: {fileID: 11400000, guid: f51bb0e5b3ed448489a6d5604cea5c88, type: 2}
+      spawnCount: 3
+    - monsterSetting: {fileID: 11400000, guid: 60287131df6a3ac4abf430586539d080, type: 2}
+      spawnCount: 3
   - startTimeSecond: 10
     spawnIntervalSecond: 0.5
     pathPointList:
@@ -49,5 +49,5 @@ MonoBehaviour:
     - {x: 5.43, y: 3.15}
     - {x: 5.43, y: -3}
     monsterSpawnOrderSetting:
-    - spawnCount: 5
-      monsterSetting: {fileID: 11400000, guid: f51bb0e5b3ed448489a6d5604cea5c88, type: 2}
+    - monsterSetting: {fileID: 11400000, guid: f51bb0e5b3ed448489a6d5604cea5c88, type: 2}
+      spawnCount: 5

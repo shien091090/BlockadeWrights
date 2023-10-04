@@ -10,7 +10,9 @@ namespace GameCore
         [SerializeField] private float startTimeSecond;
         [SerializeField] private float spawnIntervalSecond;
         [SerializeField] private List<Vector2> pathPointList;
-        [SerializeField] private List<MonsterOrderSetting> monsterSpawnOrderSetting;
+
+        [TableList(DrawScrollView = true, MaxScrollViewHeight = 600, MinScrollViewHeight = 230)]
+        public List<MonsterOrderSetting> monsterSpawnOrderSetting;
 
         private bool isPathEditorMode;
         private List<EditorPathHint> pathHintObjectList;
@@ -48,6 +50,28 @@ namespace GameCore
             {
                 pathHintObject.RefreshDrawPathHint();
             }
+        }
+
+        [EnableIf("isPathEditorMode")]
+        [HorizontalGroup("split", 0.5f)]
+        [Button("RefreshDrawPathHint")]
+        private void RefreshDrawPathHintButton()
+        {
+            for (int i = 0; i < pathHintObjectList.Count; i++)
+            {
+                if (pathPointList.Count > i)
+                {
+                    pathPointList[i] = pathHintObjectList[i].Transform.position;
+                }
+            }
+
+            if (pathHintObjectList.Count != pathPointList.Count)
+            {
+                ResetPathHint();
+                CreatePathHints();
+            }
+
+            RefreshDrawPathHint();
         }
 
         private void ResetPathHint()
@@ -107,28 +131,6 @@ namespace GameCore
         {
             isPathEditorMode = !isPathEditorMode;
             SetPathEditorMode(isPathEditorMode);
-        }
-        
-        [EnableIf("isPathEditorMode")]
-        [HorizontalGroup("split", 0.5f)]
-        [Button("RefreshDrawPathHint")]
-        private void RefreshDrawPathHintButton()
-        {
-            for (int i = 0; i < pathHintObjectList.Count; i++)
-            {
-                if (pathPointList.Count > i)
-                {
-                    pathPointList[i] = pathHintObjectList[i].Transform.position;
-                }    
-            }
-            
-            if (pathHintObjectList.Count != pathPointList.Count)
-            {
-                ResetPathHint();
-                CreatePathHints();
-            }
-            
-            RefreshDrawPathHint();
         }
     }
 }
