@@ -4,6 +4,9 @@ namespace GameCore
 {
     public class MonsterView : MonoBehaviour, IAttackTarget
     {
+        [SerializeField] private SpriteRenderer sp_frontSide;
+        [SerializeField] private SpriteRenderer sp_backSide;
+
         public ITransform GetTransform
         {
             get
@@ -62,6 +65,8 @@ namespace GameCore
         {
             this.monsterModel = monsterModel;
             GetHpComponent.Setup(monsterModel.HpModel);
+            sp_frontSide.sprite = monsterModel.GetFrontSideSprite;
+            sp_backSide.sprite = monsterModel.GetBackSideSprite;
             RegisterEvent();
         }
 

@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: 100
   moveSpeed: 4
-  sprite: {fileID: 21300000, guid: ea2992c51326f4942a14cc6a8a85e063, type: 3}
+  frontSideSprite: {fileID: 21300000, guid: d6eb508d2823d8d448e2204650724e3b, type: 3}
+  backSideSprite: {fileID: 21300000, guid: d6eb508d2823d8d448e2204650724e3b, type: 3}

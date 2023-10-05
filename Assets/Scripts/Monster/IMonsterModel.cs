@@ -11,6 +11,8 @@ namespace GameCore
         HealthPointModel HpModel { get; }
         FaceDirection LookFaceDirection { get; }
         float MoveSpeed { get; }
+        Sprite GetFrontSideSprite { get; }
+        Sprite GetBackSideSprite { get; }
         Vector2 UpdateMove(Vector2 currentPos, float speed, float deltaTime);
     }
 }

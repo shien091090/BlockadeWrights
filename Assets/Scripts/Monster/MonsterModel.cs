@@ -13,6 +13,8 @@ namespace GameCore
             Vector2.zero;
 
         public float MoveSpeed { get; }
+        public Sprite GetFrontSideSprite { get; }
+        public Sprite GetBackSideSprite { get; }
         private readonly MonsterMovementPath path;
         public int CurrentTargetPathIndex { get; private set; }
         public bool IsArrivedGoal => !path.IsEmpty && CurrentTargetPathIndex > path.GetLastPointIndex;
@@ -28,6 +30,8 @@ namespace GameCore
             MoveSpeed = setting.GetMoveSpeed;
             LookFaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
             HpModel = new HealthPointModel(setting.GetHp);
+            GetFrontSideSprite = setting.GetFrontSideSprite;
+            GetBackSideSprite = setting.GetBackSideSprite;
         }
 
         public event Action OnDamageFort;
