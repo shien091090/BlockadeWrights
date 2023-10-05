@@ -1,13 +1,18 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace GameCore
 {
-    public class MonsterScriptableObject : ScriptableObject, IMonsterSetting
+    public class MonsterScriptableObject : SerializedScriptableObject, IMonsterSetting
     {
         [SerializeField] private float hp;
         [SerializeField] private float moveSpeed;
-        [SerializeField] private Sprite frontSideSprite;
-        [SerializeField] private Sprite backSideSprite;
+
+        [SerializeField] [PreviewField] [HorizontalGroup("MonsterSprite")]
+        private Sprite frontSideSprite;
+
+        [SerializeField] [PreviewField] [HorizontalGroup("MonsterSprite")]
+        private Sprite backSideSprite;
 
         public float GetHp => hp;
         public float GetMoveSpeed => moveSpeed;

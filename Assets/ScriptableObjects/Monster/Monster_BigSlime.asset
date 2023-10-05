@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1638b2b805f04342a1c2c7717f79bdda, type: 3}
-  m_Name: MonsterB
+  m_Name: Monster_BigSlime
   m_EditorClassIdentifier: 
   hp: 100
   moveSpeed: 4
