@@ -102,12 +102,31 @@ namespace GameCore.Tests.HealthPoint
             ShouldReceiveHpChangeEvent(1, expectedHpRate);
         }
 
+        [Test]
+        //判斷此次攻擊是否會死亡
+        public void is_dead_when_this_time_attack()
+        {
+            GivenInitModel(10);
+
+            ShouldDieWhenDamage(5, false);
+
+            healthPointModel.Damage(5);
+
+            ShouldBeDead(false);
+            ShouldDieWhenDamage(5, true);
+        }
+
         private void GivenInitModel(float maxHp)
         {
             healthPointModel = new HealthPointModel(maxHp);
 
             refreshHealthPointEvent = Substitute.For<Action<HealthPointChangeInfo>>();
             healthPointModel.OnRefreshHealthPoint += refreshHealthPointEvent;
+        }
+
+        private void ShouldDieWhenDamage(float damageValue, bool expectedIsDead)
+        {
+            Assert.AreEqual(expectedIsDead, healthPointModel.WellDieWhenDamage(damageValue));
         }
 
         private void ShouldReceiveHpChangeEvent(int triggerTimes, float expectedHpRate = 0)

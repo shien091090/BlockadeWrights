@@ -28,5 +28,10 @@ namespace GameCore
             CurrentHp = Math.Min(maxHp, CurrentHp + healValue);
             OnRefreshHealthPoint?.Invoke(new HealthPointChangeInfo(CurrentHp / maxHp));
         }
+
+        public bool WellDieWhenDamage(float damageValue)
+        {
+            return CurrentHp - damageValue <= 0;
+        }
     }
 }
