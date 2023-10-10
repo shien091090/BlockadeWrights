@@ -4,8 +4,7 @@ namespace GameCore
     {
         ITransform GetTransform { get; }
         string Id { get; }
-        bool IsDead { get; }
-        bool IsGoingToDie { get; }
+        EntityState GetEntityState { get; }
         void Damage(float damageValue);
         void PreDamage(float damageValue);
     }

@@ -74,14 +74,16 @@ namespace GameCore
                 nearestTarget.PreDamage(attackPower);
             }
 
-            if (nearestTarget != null && (nearestTarget.IsDead || nearestTarget.IsGoingToDie))
+            if (nearestTarget != null &&
+                (nearestTarget.GetEntityState == EntityState.PreDie || nearestTarget.GetEntityState == EntityState.Dead))
                 RemoveAttackTarget(nearestTarget);
         }
 
         private void TryAddAttackTarget(IAttackTarget attackTarget)
         {
             if (AttackTargets.Exists(x => x.Id == attackTarget.Id) == false &&
-                attackTarget.IsGoingToDie == false)
+                attackTarget.GetEntityState != EntityState.PreDie &&
+                attackTarget.GetEntityState != EntityState.Dead)
                 AttackTargets.Add(attackTarget);
         }
 

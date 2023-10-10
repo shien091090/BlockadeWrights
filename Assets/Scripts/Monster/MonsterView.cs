@@ -19,8 +19,8 @@ namespace GameCore
         }
 
         public string Id => gameObject.GetInstanceID().ToString();
-        public bool IsDead => monsterModel.IsDead;
-        public bool IsGoingToDie => monsterModel.IsGoingToDie;
+
+        public EntityState GetEntityState => monsterModel.GetEntityState;
 
         private ITransform transformAdapter;
         private HealthPointComponent hpComponent;

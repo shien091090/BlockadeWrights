@@ -186,7 +186,7 @@ namespace GameCore.Tests.AutoAttack
 
             AttackTargetCountShouldBe(1);
 
-            GivenAttackTargetIsDead(attackTarget, true);
+            GivenAttackTargetState(attackTarget, EntityState.Dead);
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
             ShouldLaunchAttack(attackTarget.Id, DEFAULT_ATTACK_POWER, 1);
@@ -211,7 +211,7 @@ namespace GameCore.Tests.AutoAttack
 
             AttackTargetCountShouldBe(2);
 
-            attackTarget2.IsGoingToDie.Returns(true);
+            GivenAttackTargetState(attackTarget2, EntityState.PreDie);
 
             autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
 
@@ -311,9 +311,9 @@ namespace GameCore.Tests.AutoAttack
             ShouldLaunchAttack(attackTarget.Id, DEFAULT_ATTACK_POWER);
         }
 
-        private void GivenAttackTargetIsDead(IAttackTarget attackTarget, bool isDead)
+        private void GivenAttackTargetState(IAttackTarget attackTarget, EntityState targetState)
         {
-            attackTarget.IsDead.Returns(isDead);
+            attackTarget.GetEntityState.Returns(targetState);
         }
 
         private void GivenAttackTargetId(IAttackTarget attackTarget, string id)
@@ -363,7 +363,7 @@ namespace GameCore.Tests.AutoAttack
             IAttackTarget attackTarget = Substitute.For<IAttackTarget>();
             GivenAttackTargetId(attackTarget, id);
             GivenAttackTargetPos(attackTarget, pos);
-            GivenAttackTargetIsDead(attackTarget, false);
+            GivenAttackTargetState(attackTarget, EntityState.Normal);
 
             return attackTarget;
         }
