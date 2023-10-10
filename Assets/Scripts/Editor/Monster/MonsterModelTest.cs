@@ -153,6 +153,24 @@ namespace GameCore.Tests.Monster
             MonsterStateShouldBe(EntityState.PreDie);
             ShouldReceiveDeadEvent(0);
         }
+        
+        [Test]
+        //怪物死亡後, 再PreDamage仍為死亡狀態
+        public void attack_monster_after_dead()
+        {
+            GivenInitModel(10);
+
+            monsterModel.PreDamage(11);
+            MonsterStateShouldBe(EntityState.PreDie);
+            
+            monsterModel.Damage(11);
+            MonsterStateShouldBe(EntityState.Dead);
+            
+            monsterModel.PreDamage(11);
+            MonsterStateShouldBe(EntityState.Dead);
+
+            ShouldReceiveDeadEvent(1);
+        }
 
         private void GivenTargetPathIndex(int index)
         {
