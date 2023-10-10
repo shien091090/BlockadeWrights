@@ -16,5 +16,7 @@ namespace GameCore
         bool IsDead { get; }
         Vector2 UpdateMove(Vector2 currentPos, float speed, float deltaTime);
         void Damage(float damageValue);
+        void PreDamage(float damageValue);
+        bool IsGoingToDie { get; }
     }
 }

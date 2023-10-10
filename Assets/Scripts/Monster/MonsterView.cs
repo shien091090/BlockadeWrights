@@ -20,6 +20,7 @@ namespace GameCore
 
         public string Id => gameObject.GetInstanceID().ToString();
         public bool IsDead => monsterModel.IsDead;
+        public bool IsGoingToDie => monsterModel.IsGoingToDie;
 
         private ITransform transformAdapter;
         private HealthPointComponent hpComponent;
@@ -51,6 +52,11 @@ namespace GameCore
         public void Damage(float damageValue)
         {
             monsterModel.Damage(damageValue);
+        }
+
+        public void PreDamage(float damageValue)
+        {
+            monsterModel.PreDamage(damageValue);
         }
 
         private void Update()

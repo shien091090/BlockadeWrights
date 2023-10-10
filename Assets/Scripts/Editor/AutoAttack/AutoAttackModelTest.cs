@@ -198,6 +198,39 @@ namespace GameCore.Tests.AutoAttack
         }
 
         [Test]
+        //攻擊時對象已即將死亡, 下次攻擊將會忽略此對象
+        public void attack_when_target_is_about_to_dead()
+        {
+            autoAttackModel = new AutoAttackModel(DEFAULT_ATTACK_RANGE, DEFAULT_ATTACK_FREQUENCY, Vector2.zero, DEFAULT_ATTACK_POWER, buildingAttackView);
+
+            IAttackTarget attackTarget1 = CreateAttackTarget("1", new Vector2(2, 2));
+            IAttackTarget attackTarget2 = CreateAttackTarget("2", new Vector2(2, 1));
+
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget1));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget2));
+
+            AttackTargetCountShouldBe(2);
+
+            attackTarget2.IsGoingToDie.Returns(true);
+
+            autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
+
+            AttackTargetCountShouldBe(1);
+            ShouldPreDamageAttackTarget(attackTarget1, 0);
+            ShouldPreDamageAttackTarget(attackTarget2, 1);
+            ShouldLaunchAttack(attackTarget2.Id, DEFAULT_ATTACK_POWER, 1);
+
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget1));
+            autoAttackModel.ColliderTriggerStay(CreateTriggerCollider(attackTarget2));
+            autoAttackModel.UpdateAttackTimer(DEFAULT_ATTACK_FREQUENCY);
+
+            AttackTargetCountShouldBe(1);
+            ShouldPreDamageAttackTarget(attackTarget1, 1);
+            ShouldPreDamageAttackTarget(attackTarget2, 1);
+            ShouldLaunchAttack(attackTarget1.Id, DEFAULT_ATTACK_POWER, 1);
+        }
+
+        [Test]
         //攻擊範圍中有多個目標, 攻擊距離最近的對象
         public void multiple_targets_in_attack_range()
         {
@@ -293,6 +326,14 @@ namespace GameCore.Tests.AutoAttack
             ITransform transform = Substitute.For<ITransform>();
             transform.Position.Returns(targetPos);
             attackTarget.GetTransform.Returns(transform);
+        }
+
+        private void ShouldPreDamageAttackTarget(IAttackTarget attackTarget, int callTimes)
+        {
+            if (callTimes == 0)
+                attackTarget.DidNotReceive().PreDamage(Arg.Any<float>());
+            else
+                attackTarget.Received(callTimes).PreDamage(Arg.Any<float>());
         }
 
         private void ShouldNotLaunchAttack()

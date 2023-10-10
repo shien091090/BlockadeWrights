@@ -38,7 +38,7 @@ namespace GameCore
         {
             IAttackTarget attackTarget = col.GetComponent<IAttackTarget>();
             if (attackTarget != null)
-                AddAttackTarget(attackTarget);
+                TryAddAttackTarget(attackTarget);
         }
 
         public void CollisionEnter(ICollision col)
@@ -69,10 +69,20 @@ namespace GameCore
             CheckRemoveOverDistanceTarget();
             IAttackTarget nearestTarget = CheckNearestTarget();
             if (nearestTarget != null)
+            {
                 buildingAttackView.LaunchAttack(nearestTarget, attackPower);
+                nearestTarget.PreDamage(attackPower);
+            }
 
-            if (nearestTarget != null && nearestTarget.IsDead)
+            if (nearestTarget != null && (nearestTarget.IsDead || nearestTarget.IsGoingToDie))
                 RemoveAttackTarget(nearestTarget);
+        }
+
+        private void TryAddAttackTarget(IAttackTarget attackTarget)
+        {
+            if (AttackTargets.Exists(x => x.Id == attackTarget.Id) == false &&
+                attackTarget.IsGoingToDie == false)
+                AttackTargets.Add(attackTarget);
         }
 
         private void CheckRemoveOverDistanceTarget()
@@ -102,12 +112,6 @@ namespace GameCore
             }
 
             return nearestTarget;
-        }
-
-        private void AddAttackTarget(IAttackTarget attackTarget)
-        {
-            if (AttackTargets.Exists(x => x.Id == attackTarget.Id) == false)
-                AttackTargets.Add(attackTarget);
         }
 
         private void RemoveAttackTarget(IAttackTarget attackTarget)
