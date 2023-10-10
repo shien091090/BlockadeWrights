@@ -13,10 +13,9 @@ namespace GameCore
         float MoveSpeed { get; }
         Sprite GetFrontSideSprite { get; }
         Sprite GetBackSideSprite { get; }
-        bool IsDead { get; }
+        EntityState GetEntityState { get; }
         Vector2 UpdateMove(Vector2 currentPos, float speed, float deltaTime);
         void Damage(float damageValue);
         void PreDamage(float damageValue);
-        bool IsGoingToDie { get; }
     }
 }

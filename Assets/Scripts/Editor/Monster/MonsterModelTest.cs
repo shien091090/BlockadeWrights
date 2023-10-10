@@ -138,8 +138,20 @@ namespace GameCore.Tests.Monster
 
             monsterModel.Damage(11);
 
-            ShouldMonsterDead(true);
+            MonsterStateShouldBe(EntityState.Dead);
             ShouldReceiveDeadEvent(1);
+        }
+        
+        [Test]
+        //此次攻擊後怪物會死亡, 驗證怪物狀態為PreDie
+        public void attack_monster_and_monster_will_dead()
+        {
+            GivenInitModel(10);
+
+            monsterModel.PreDamage(11);
+
+            MonsterStateShouldBe(EntityState.PreDie);
+            ShouldReceiveDeadEvent(0);
         }
 
         private void GivenTargetPathIndex(int index)
@@ -180,9 +192,9 @@ namespace GameCore.Tests.Monster
                 monsterDeadEvent.Received(triggerTimes).Invoke();
         }
 
-        private void ShouldMonsterDead(bool expectedIsDead)
+        private void MonsterStateShouldBe(EntityState expectedState)
         {
-            Assert.AreEqual(expectedIsDead, monsterModel.IsDead);
+            Assert.AreEqual(expectedState, monsterModel.GetEntityState);
         }
 
         private void ShouldBeTriggerDamageFortEvent(int triggerTimes)

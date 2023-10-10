@@ -15,9 +15,24 @@ namespace GameCore
         public float MoveSpeed { get; }
         public Sprite GetFrontSideSprite { get; }
         public Sprite GetBackSideSprite { get; }
-        public bool IsDead => HpModel != null && HpModel.IsDead;
-        public bool IsGoingToDie { get; private set; }
+
+        public EntityState GetEntityState
+        {
+            get
+            {
+                if (HpModel == null || HpModel.IsDead)
+                {
+                    entityState = EntityState.Dead;
+                    return EntityState.Dead;
+                }
+
+                return entityState;
+            }
+        }
+
         private readonly MonsterMovementPath path;
+        private EntityState entityState;
+
         public int CurrentTargetPathIndex { get; private set; }
         public bool IsArrivedGoal => !path.IsEmpty && CurrentTargetPathIndex > path.GetLastPointIndex;
 
@@ -60,9 +75,6 @@ namespace GameCore
 
         public void Damage(float damageValue)
         {
-            if (HpModel == null)
-                return;
-
             HpModel.Damage(damageValue);
 
             if (HpModel.IsDead)
@@ -71,8 +83,8 @@ namespace GameCore
 
         public void PreDamage(float damageValue)
         {
-            if (HpModel != null && HpModel.WellDieWhenDamage(damageValue))
-                IsGoingToDie = true;
+            if (HpModel.WellDieWhenDamage(damageValue) && HpModel.IsDead == false)
+                entityState = EntityState.PreDie;
         }
 
         public void SetTargetPathIndex(int index)
