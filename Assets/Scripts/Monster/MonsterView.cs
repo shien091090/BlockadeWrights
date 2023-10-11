@@ -2,10 +2,12 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public class MonsterView : MonoBehaviour, IAttackTarget
+    public class MonsterView : MonoBehaviour, IAttackTargetProvider, IMonsterView
     {
         [SerializeField] private SpriteRenderer sp_frontSide;
         [SerializeField] private SpriteRenderer sp_backSide;
+
+        public IAttackTarget GetAttackTarget => monsterModel;
 
         public ITransform GetTransform
         {
@@ -18,9 +20,7 @@ namespace GameCore
             }
         }
 
-        public string Id => gameObject.GetInstanceID().ToString();
-
-        public EntityState GetEntityState => monsterModel.GetEntityState;
+        public string GetId => gameObject.GetInstanceID().ToString();
 
         private ITransform transformAdapter;
         private HealthPointComponent hpComponent;
@@ -49,45 +49,35 @@ namespace GameCore
             }
         }
 
-        public void Damage(float damageValue)
+        public void InitSprite(Sprite frontSide, Sprite backSide)
         {
-            monsterModel.Damage(damageValue);
+            sp_frontSide.sprite = frontSide;
+            sp_backSide.sprite = backSide;
         }
 
-        public void PreDamage(float damageValue)
+        public void SetupHp(HealthPointModel monsterModelHpModel)
         {
-            monsterModel.PreDamage(damageValue);
+            GetHpComponent.Setup(monsterModelHpModel);
+        }
+
+        public void RefreshFaceDirection(FaceDirectionState faceDirectionState)
+        {
+            FaceDirection.RefreshFaceDirection(faceDirectionState);
+        }
+
+        public void Bind(MonsterModel model)
+        {
+            monsterModel = model;
+        }
+
+        public void SetActive(bool isActive)
+        {
+            gameObject.SetActive(isActive);
         }
 
         private void Update()
         {
-            if (monsterModel == null)
-                return;
-
-            transform.Translate(monsterModel.UpdateMove(transform.position, monsterModel.MoveSpeed, Time.deltaTime));
-        }
-
-        public void Init(IMonsterModel monsterModel)
-        {
-            this.monsterModel = monsterModel;
-            GetHpComponent.Setup(monsterModel.HpModel);
-            sp_frontSide.sprite = monsterModel.GetFrontSideSprite;
-            sp_backSide.sprite = monsterModel.GetBackSideSprite;
-            RegisterEvent();
-        }
-
-        private void RegisterEvent()
-        {
-            monsterModel.LookFaceDirection.OnFaceDirectionChanged -= FaceDirection.RefreshFaceDirection;
-            monsterModel.LookFaceDirection.OnFaceDirectionChanged += FaceDirection.RefreshFaceDirection;
-
-            monsterModel.OnDead -= OnDead;
-            monsterModel.OnDead += OnDead;
-        }
-
-        private void OnDead()
-        {
-            gameObject.SetActive(false);
+            monsterModel?.Update();
         }
     }
 }

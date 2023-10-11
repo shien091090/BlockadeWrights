@@ -5,22 +5,18 @@ namespace GameCore
 {
     public class MonsterModel : IMonsterModel
     {
-        public FaceDirection LookFaceDirection { get; }
-        public HealthPointModel HpModel { get; }
+        public ITransform GetTransform => monsterView.GetTransform;
+        public string Id => monsterView.GetId;
 
         public Vector2 GetStartPoint => path != null && path.IsEmpty == false ?
             path.GetPoint(0) :
             Vector2.zero;
 
-        public float MoveSpeed { get; }
-        public Sprite GetFrontSideSprite { get; }
-        public Sprite GetBackSideSprite { get; }
-
         public EntityState GetEntityState
         {
             get
             {
-                if (HpModel == null || HpModel.IsDead)
+                if (hpModel == null || hpModel.IsDead)
                 {
                     entityState = EntityState.Dead;
                     return EntityState.Dead;
@@ -30,61 +26,68 @@ namespace GameCore
             }
         }
 
+        private readonly HealthPointModel hpModel;
         private readonly MonsterMovementPath path;
+        private readonly ITimeManager timeAdapter;
         private EntityState entityState;
+        private IMonsterView monsterView;
+
+        public float MoveSpeed { get; }
+        public FaceDirection LookFaceDirection { get; }
+        public Sprite GetFrontSideSprite { get; }
+        public Sprite GetBackSideSprite { get; }
 
         public int CurrentTargetPathIndex { get; private set; }
         public bool IsArrivedGoal => !path.IsEmpty && CurrentTargetPathIndex > path.GetLastPointIndex;
 
-        public MonsterModel(MonsterMovementPath path, IMonsterSetting setting)
+        public MonsterModel(MonsterMovementPath path, IMonsterSetting setting, ITimeManager timeAdapter)
         {
             this.path = path;
+            this.timeAdapter = timeAdapter;
 
             if (path.IsEmpty == false)
                 CurrentTargetPathIndex = 1;
 
             MoveSpeed = setting.GetMoveSpeed;
             LookFaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
-            HpModel = new HealthPointModel(setting.GetHp);
+            hpModel = new HealthPointModel(setting.GetHp);
             GetFrontSideSprite = setting.GetFrontSideSprite;
             GetBackSideSprite = setting.GetBackSideSprite;
         }
 
         public event Action OnDamageFort;
-        public event Action OnDead;
 
-        public Vector2 UpdateMove(Vector2 currentPos, float speed, float deltaTime)
+        public void Update()
         {
-            if (path.IsEmpty || IsArrivedGoal)
-                return Vector2.zero;
-
-            Vector2 end = path.GetPoint(CurrentTargetPathIndex);
-            Vector2 moveVector = (end - currentPos).normalized * speed * deltaTime;
-            LookFaceDirection.MoveToChangeFaceDirection(moveVector);
-
-            if (IsArriveTarget(currentPos, end, moveVector) == false)
-                return moveVector;
-
-            CurrentTargetPathIndex++;
-
-            if (IsArrivedGoal)
-                OnDamageFort?.Invoke();
-
-            return moveVector;
+            Vector2 translationVector = UpdateMove(monsterView.GetTransform.Position, MoveSpeed, timeAdapter.DeltaTime);
+            if (translationVector != default)
+                monsterView.GetTransform.Translate(translationVector);
         }
 
         public void Damage(float damageValue)
         {
-            HpModel.Damage(damageValue);
+            hpModel.Damage(damageValue);
 
-            if (HpModel.IsDead)
-                OnDead?.Invoke();
+            if (hpModel.IsDead)
+                monsterView.SetActive(false);
         }
 
         public void PreDamage(float damageValue)
         {
-            if (HpModel.WellDieWhenDamage(damageValue) && HpModel.IsDead == false)
+            if (hpModel.WellDieWhenDamage(damageValue) && hpModel.IsDead == false)
                 entityState = EntityState.PreDie;
+        }
+
+        public void Bind(IMonsterView view)
+        {
+            monsterView = view;
+            monsterView.SetupHp(hpModel);
+            monsterView.InitSprite(GetFrontSideSprite, GetBackSideSprite);
+
+            LookFaceDirection.OnFaceDirectionChanged -= monsterView.RefreshFaceDirection;
+            LookFaceDirection.OnFaceDirectionChanged += monsterView.RefreshFaceDirection;
+
+            monsterView.Bind(this);
         }
 
         public void SetTargetPathIndex(int index)
@@ -106,6 +109,26 @@ namespace GameCore
                 currentPos.y + moveVector.y <= end.y;
 
             return arriveX && arriveY;
+        }
+
+        private Vector2 UpdateMove(Vector2 currentPos, float speed, float deltaTime)
+        {
+            if (path.IsEmpty || IsArrivedGoal)
+                return Vector2.zero;
+
+            Vector2 end = path.GetPoint(CurrentTargetPathIndex);
+            Vector2 moveVector = (end - currentPos).normalized * speed * deltaTime;
+            LookFaceDirection.MoveToChangeFaceDirection(moveVector);
+
+            if (IsArriveTarget(currentPos, end, moveVector) == false)
+                return moveVector;
+
+            CurrentTargetPathIndex++;
+
+            if (IsArrivedGoal)
+                OnDamageFort?.Invoke();
+
+            return moveVector;
         }
     }
 }

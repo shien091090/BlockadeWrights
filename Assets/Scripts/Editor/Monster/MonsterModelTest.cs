@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NSubstitute;
+using NSubstitute.Core;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -11,14 +14,22 @@ namespace GameCore.Tests.Monster
         private const float DEFAULT_HP = 100;
 
         private MonsterModel monsterModel;
+        private ITimeManager timeManager;
+
         private Action onDamageFort;
-        private Action monsterDeadEvent;
+        private IMonsterView monsterView;
+        private ITransform transformAdapter;
 
         [SetUp]
         public void Setup()
         {
+            timeManager = Substitute.For<ITimeManager>();
+            GivenDeltaTime(1);
+            monsterView = Substitute.For<IMonsterView>();
+            transformAdapter = Substitute.For<ITransform>();
+            GivenCurrentPosition(Vector2.zero);
+            monsterView.GetTransform.Returns(transformAdapter);
             onDamageFort = Substitute.For<Action>();
-            monsterDeadEvent = Substitute.For<Action>();
         }
 
         [Test]
@@ -27,9 +38,9 @@ namespace GameCore.Tests.Monster
         {
             GivenInitModel();
 
-            Vector2 moveVector = monsterModel.UpdateMove(new Vector2(0, 0), 1, 1);
+            monsterModel.Update();
 
-            ShouldNoMove(moveVector);
+            ShouldNoMove();
             ShouldBeArrivedGoal(false);
             ShouldBeTriggerDamageFortEvent(0);
         }
@@ -44,9 +55,9 @@ namespace GameCore.Tests.Monster
                 new Vector2(0, 0),
                 new Vector2(10, -10));
 
-            Vector2 moveVector = monsterModel.UpdateMove(new Vector2(0, 0), 1, 1);
+            monsterModel.Update();
 
-            ShouldMoveRightAndDown(moveVector);
+            ShouldMoveRightAndDown();
             ShouldBeArrivedGoal(false);
             ShouldBeTriggerDamageFortEvent(0);
         }
@@ -64,10 +75,11 @@ namespace GameCore.Tests.Monster
                 new Vector2(50, 50));
 
             GivenTargetPathIndex(2);
+            GivenCurrentPosition(new Vector2(10, -10));
 
-            Vector2 moveVector = monsterModel.UpdateMove(new Vector2(10, -10), 1, 1);
+            monsterModel.Update();
 
-            ShouldMoveUp(moveVector);
+            ShouldMoveUp();
             ShouldBeArrivedGoal(false);
             ShouldBeTriggerDamageFortEvent(0);
         }
@@ -80,15 +92,16 @@ namespace GameCore.Tests.Monster
         {
             GivenInitModel(
                 DEFAULT_HP,
-                DEFAULT_MOVE_SPEED,
+                1.5f,
                 new Vector2(0, 0),
                 new Vector2(10, -10),
                 new Vector2(10, 0),
                 new Vector2(50, 50));
 
             GivenTargetPathIndex(startIndex);
+            GivenCurrentPosition(new Vector2(currentPosX, currentPosY));
 
-            monsterModel.UpdateMove(new Vector2(currentPosX, currentPosY), 1.5f, 1);
+            monsterModel.Update();
 
             CurrentTargetPathIndexShouldBe(startIndex + 1);
             ShouldBeArrivedGoal(false);
@@ -97,7 +110,7 @@ namespace GameCore.Tests.Monster
 
         [Test]
         //移動至終點, 破壞主堡
-        public void move_to_end_point_and_destroy_main_castle()
+        public void move_to_end_point_and_destroy_fortress()
         {
             GivenInitModel(
                 DEFAULT_HP,
@@ -105,7 +118,9 @@ namespace GameCore.Tests.Monster
                 new Vector2(0, 0),
                 new Vector2(10, -10));
 
-            monsterModel.UpdateMove(new Vector2(9.9f, -9.9f), 1, 1);
+            GivenCurrentPosition(new Vector2(9.9f, -9.9f));
+
+            monsterModel.Update();
 
             ShouldBeArrivedGoal(true);
             ShouldBeTriggerDamageFortEvent(1);
@@ -122,10 +137,11 @@ namespace GameCore.Tests.Monster
                 new Vector2(10, -10));
 
             GivenTargetPathIndex(2);
+            GivenCurrentPosition(new Vector2(10, -10));
 
-            Vector2 moveVector = monsterModel.UpdateMove(new Vector2(10, -10), 1, 1);
+            monsterModel.Update();
 
-            ShouldNoMove(moveVector);
+            ShouldNoMove();
             ShouldBeArrivedGoal(true);
             ShouldBeTriggerDamageFortEvent(0);
         }
@@ -139,9 +155,9 @@ namespace GameCore.Tests.Monster
             monsterModel.Damage(11);
 
             MonsterStateShouldBe(EntityState.Dead);
-            ShouldReceiveDeadEvent(1);
+            ShouldSetActive(false);
         }
-        
+
         [Test]
         //此次攻擊後怪物會死亡, 驗證怪物狀態為PreDie
         public void attack_monster_and_monster_will_dead()
@@ -151,9 +167,9 @@ namespace GameCore.Tests.Monster
             monsterModel.PreDamage(11);
 
             MonsterStateShouldBe(EntityState.PreDie);
-            ShouldReceiveDeadEvent(0);
+            ShouldNotCallSetActive();
         }
-        
+
         [Test]
         //怪物死亡後, 再PreDamage仍為死亡狀態
         public void attack_monster_after_dead()
@@ -162,14 +178,24 @@ namespace GameCore.Tests.Monster
 
             monsterModel.PreDamage(11);
             MonsterStateShouldBe(EntityState.PreDie);
-            
+
             monsterModel.Damage(11);
             MonsterStateShouldBe(EntityState.Dead);
-            
+
             monsterModel.PreDamage(11);
             MonsterStateShouldBe(EntityState.Dead);
 
-            ShouldReceiveDeadEvent(1);
+            ShouldSetActive(false);
+        }
+
+        private void GivenDeltaTime(int deltaTime)
+        {
+            timeManager.DeltaTime.Returns(deltaTime);
+        }
+
+        private void GivenCurrentPosition(Vector2 position)
+        {
+            transformAdapter.Position.Returns(position);
         }
 
         private void GivenTargetPathIndex(int index)
@@ -192,22 +218,21 @@ namespace GameCore.Tests.Monster
                 }
             }
 
-            monsterModel = new MonsterModel(path, monsterSetting);
+            monsterModel = new MonsterModel(path, monsterSetting, timeManager);
             monsterModel.OnDamageFort += onDamageFort;
-            monsterModel.OnDead += monsterDeadEvent;
+
+            monsterModel.Bind(monsterView);
         }
 
-        private void ShouldReceiveDeadEvent(int triggerTimes)
+        private void ShouldNotCallSetActive()
         {
-            if (triggerTimes == 0)
-            {
-                if (monsterDeadEvent == null)
-                    return;
+            monsterView.DidNotReceive().SetActive(Arg.Any<bool>());
+        }
 
-                monsterDeadEvent.DidNotReceive().Invoke();
-            }
-            else
-                monsterDeadEvent.Received(triggerTimes).Invoke();
+        private void ShouldSetActive(bool expectedActive)
+        {
+            bool argument = (bool)monsterView.ReceivedCalls().Last(x => x.GetMethodInfo().Name == "SetActive").GetArguments()[0];
+            Assert.AreEqual(expectedActive, argument);
         }
 
         private void MonsterStateShouldBe(EntityState expectedState)
@@ -233,22 +258,23 @@ namespace GameCore.Tests.Monster
             Assert.AreEqual(expectedIndex, monsterModel.CurrentTargetPathIndex);
         }
 
-        private void ShouldMoveUp(Vector2 moveVector)
+        private void ShouldMoveUp()
         {
-            Assert.IsTrue(moveVector.y > 0);
-            Assert.IsTrue(moveVector.x == 0);
+            Vector2 argument = (Vector2)transformAdapter.ReceivedCalls().Last(x => x.GetMethodInfo().Name == "Translate").GetArguments()[0];
+            Assert.IsTrue(argument.x == 0);
+            Assert.IsTrue(argument.y > 0);
         }
 
-        private void ShouldMoveRightAndDown(Vector2 moveVector)
+        private void ShouldMoveRightAndDown()
         {
-            Assert.IsTrue(moveVector.x > 0);
-            Assert.IsTrue(moveVector.y < 0);
+            Vector2 argument = (Vector2)transformAdapter.ReceivedCalls().Last().GetArguments()[0];
+            Assert.IsTrue(argument.x > 0);
+            Assert.IsTrue(argument.y < 0);
         }
 
-        private void ShouldNoMove(Vector2 moveVector)
+        private void ShouldNoMove()
         {
-            Assert.AreEqual(0, moveVector.x);
-            Assert.AreEqual(0, moveVector.y);
+            transformAdapter.DidNotReceive().Translate(Arg.Any<Vector2>());
         }
     }
 }
