@@ -33,6 +33,21 @@ namespace GameCore.Tests.Monster
         }
 
         [Test]
+        //初始化綁定時, 執行基本設定
+        public void init_bind_view()
+        {
+            monsterModel = new MonsterModel(
+                CreateMovementPath(null),
+                CreateMonsterSetting(100, 1),
+                timeManager);
+
+            monsterModel.Bind(monsterView);
+
+            ShouldSetupHp(100);
+            ShouldInitSprite();
+        }
+
+        [Test]
         //無行走路線, 不移動
         public void move_no_path()
         {
@@ -205,23 +220,23 @@ namespace GameCore.Tests.Monster
 
         private void GivenInitModel(float hp = 100, float moveSpeed = 5, params Vector2[] pathPoints)
         {
-            IMonsterSetting monsterSetting = Substitute.For<IMonsterSetting>();
-            monsterSetting.GetHp.Returns(hp);
-            monsterSetting.GetMoveSpeed.Returns(moveSpeed);
-
-            MonsterMovementPath path = new MonsterMovementPath();
-            if (pathPoints != null && pathPoints.Length > 0)
-            {
-                foreach (Vector2 pathPoint in pathPoints)
-                {
-                    path.AddPoint(pathPoint);
-                }
-            }
+            IMonsterSetting monsterSetting = CreateMonsterSetting(hp, moveSpeed);
+            MonsterMovementPath path = CreateMovementPath(pathPoints);
 
             monsterModel = new MonsterModel(path, monsterSetting, timeManager);
             monsterModel.OnDamageFort += onDamageFort;
 
             monsterModel.Bind(monsterView);
+        }
+
+        private void ShouldInitSprite(int callTimes = 1)
+        {
+            monsterView.Received(callTimes).InitSprite(Arg.Any<Sprite>(), Arg.Any<Sprite>());
+        }
+
+        private void ShouldSetupHp(int expectedHp, int callTimes = 1)
+        {
+            monsterView.Received(callTimes).SetupHp(Arg.Is<HealthPointModel>(hpModel => hpModel.CurrentHp == expectedHp));
         }
 
         private void ShouldNotCallSetActive()
@@ -275,6 +290,29 @@ namespace GameCore.Tests.Monster
         private void ShouldNoMove()
         {
             transformAdapter.DidNotReceive().Translate(Arg.Any<Vector2>());
+        }
+
+        private MonsterMovementPath CreateMovementPath(Vector2[] pathPoints)
+        {
+            MonsterMovementPath path;
+            path = new MonsterMovementPath();
+            if (pathPoints != null && pathPoints.Length > 0)
+            {
+                foreach (Vector2 pathPoint in pathPoints)
+                {
+                    path.AddPoint(pathPoint);
+                }
+            }
+
+            return path;
+        }
+
+        private IMonsterSetting CreateMonsterSetting(float hp, float moveSpeed)
+        {
+            IMonsterSetting monsterSetting = Substitute.For<IMonsterSetting>();
+            monsterSetting.GetHp.Returns(hp);
+            monsterSetting.GetMoveSpeed.Returns(moveSpeed);
+            return monsterSetting;
         }
     }
 }
