@@ -8,13 +8,13 @@ namespace GameCore.Tests.Player.FaceDirection
     public class QuadrantFaceDirectionTest
     {
         private GameCore.FaceDirection faceDirection;
-        private Action<FaceDirectionState> faceDirectionChanged;
+        private IFaceDirectionView faceDirectionView;
 
         [SetUp]
         public void Setup()
         {
             faceDirection = null;
-            faceDirectionChanged = Substitute.For<Action<FaceDirectionState>>();
+            faceDirectionView = Substitute.For<IFaceDirectionView>();
         }
 
         [Test]
@@ -24,10 +24,9 @@ namespace GameCore.Tests.Player.FaceDirection
         public void face_down_right_when_init(FaceDirectionState startFaceDir)
         {
             faceDirection = new GameCore.FaceDirection(new QuadrantDirectionStrategy(), startFaceDir);
-            faceDirection.OnFaceDirectionChanged += faceDirectionChanged;
 
             FaceDirectionShouldBe(startFaceDir);
-            ShouldBeTriggerChangeFaceDirEvent(0);
+            ShouldNotRefreshFaceDirectionView();
         }
 
         [Test]
@@ -39,12 +38,11 @@ namespace GameCore.Tests.Player.FaceDirection
         public void face_direction_when_move(float vectorX, float vectorY, FaceDirectionState expectedFaceDir)
         {
             faceDirection = new GameCore.FaceDirection(new QuadrantDirectionStrategy());
-            faceDirection.OnFaceDirectionChanged += faceDirectionChanged;
-
+            faceDirection.BindView(faceDirectionView);
             faceDirection.MoveToChangeFaceDirection(new Vector2(vectorX, vectorY));
 
             FaceDirectionShouldBe(expectedFaceDir);
-            ShouldBeTriggerChangeFaceDirEvent(1, expectedFaceDir);
+            ShouldRefreshFaceDirectionView(expectedFaceDir);
         }
 
         [Test]
@@ -64,12 +62,11 @@ namespace GameCore.Tests.Player.FaceDirection
         public void face_direction_is_no_change_when_move_direction_is_same_or_partially_same(float moveVectorX, float moveVectorY, FaceDirectionState expectedFaceDir)
         {
             faceDirection = new GameCore.FaceDirection(new QuadrantDirectionStrategy(), expectedFaceDir);
-            faceDirection.OnFaceDirectionChanged += faceDirectionChanged;
-
+            faceDirection.BindView(faceDirectionView);
             faceDirection.MoveToChangeFaceDirection(new Vector2(moveVectorX, moveVectorY));
 
             FaceDirectionShouldBe(expectedFaceDir);
-            ShouldBeTriggerChangeFaceDirEvent(0);
+            ShouldNotRefreshFaceDirectionView();
         }
 
         [Test]
@@ -86,25 +83,21 @@ namespace GameCore.Tests.Player.FaceDirection
             FaceDirectionState expectedFaceDir)
         {
             faceDirection = new GameCore.FaceDirection(new QuadrantDirectionStrategy(), startFaceDir);
-            faceDirection.OnFaceDirectionChanged += faceDirectionChanged;
-
+            faceDirection.BindView(faceDirectionView);
             faceDirection.MoveToChangeFaceDirection(new Vector2(moveVectorX, moveVectorY));
 
             FaceDirectionShouldBe(expectedFaceDir);
-            ShouldBeTriggerChangeFaceDirEvent(1, expectedFaceDir);
+            ShouldRefreshFaceDirectionView(expectedFaceDir);
         }
 
-        private void ShouldBeTriggerChangeFaceDirEvent(int triggerTimes, FaceDirectionState expectedFaceDir = FaceDirectionState.None)
+        private void ShouldNotRefreshFaceDirectionView()
         {
-            if (triggerTimes == 0)
-            {
-                if (expectedFaceDir == FaceDirectionState.None)
-                    faceDirectionChanged.DidNotReceive().Invoke(Arg.Any<FaceDirectionState>());
-                else
-                    faceDirectionChanged.DidNotReceive().Invoke(expectedFaceDir);
-            }
-            else
-                faceDirectionChanged.Received(triggerTimes).Invoke(expectedFaceDir);
+            faceDirectionView.DidNotReceive().RefreshFaceDirection(Arg.Any<FaceDirectionState>());
+        }
+
+        private void ShouldRefreshFaceDirectionView(FaceDirectionState expectedFaceDir, int callTimes = 1)
+        {
+            faceDirectionView.Received(callTimes).RefreshFaceDirection(expectedFaceDir);
         }
 
         private void FaceDirectionShouldBe(FaceDirectionState expectedFaceDir)

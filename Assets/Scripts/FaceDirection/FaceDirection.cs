@@ -5,9 +5,10 @@ namespace GameCore
 {
     public class FaceDirection
     {
-        public event Action<FaceDirectionState> OnFaceDirectionChanged;
+        private IFaceDirectionView faceDirectionView;
+        private readonly IDirectionStrategy directionStrategy;
+
         public FaceDirectionState CurrentFaceDirectionState { get; private set; }
-        private IDirectionStrategy directionStrategy { get; }
 
         public FaceDirection(IDirectionStrategy directionStrategy, FaceDirectionState startFaceDir = FaceDirectionState.None)
         {
@@ -22,7 +23,12 @@ namespace GameCore
                 return;
 
             CurrentFaceDirectionState = afterFaceDirectionState;
-            OnFaceDirectionChanged?.Invoke(CurrentFaceDirectionState);
+            faceDirectionView?.RefreshFaceDirection(CurrentFaceDirectionState);
+        }
+
+        public void BindView(IFaceDirectionView faceDirectionView)
+        {
+            this.faceDirectionView = faceDirectionView;
         }
     }
 }
