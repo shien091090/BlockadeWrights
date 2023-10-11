@@ -1,9 +1,10 @@
+using System;
 using UnityEngine;
 using Zenject;
 
 namespace GameCore
 {
-    public class PlayerView : MonoBehaviour
+    public class PlayerView : MonoBehaviour, IPlayerView
     {
         [SerializeField] private float moveSpeed;
         [SerializeField] private Vector2 touchRange;
@@ -14,20 +15,14 @@ namespace GameCore
 
         private FaceDirectionComponent faceDirection;
 
-        private FaceDirectionComponent FaceDirection
+        public void RefreshFaceDirection(FaceDirectionState faceDirectionState)
         {
-            get
-            {
-                if (faceDirection == null)
-                    faceDirection = GetComponent<FaceDirectionComponent>();
-
-                return faceDirection;
-            }
+            faceDirection.RefreshFaceDirection(faceDirectionState);
         }
 
         private void Start()
         {
-            RegisterEvent();
+            playerModel.Bind(this);
         }
 
         private void Update()
@@ -47,10 +42,9 @@ namespace GameCore
                 cellHint.position = cell.CenterPosition;
         }
 
-        private void RegisterEvent()
+        private void Awake()
         {
-            playerModel.LookFaceDirection.OnFaceDirectionChanged -= FaceDirection.RefreshFaceDirection;
-            playerModel.LookFaceDirection.OnFaceDirectionChanged += FaceDirection.RefreshFaceDirection;
+            faceDirection = GetComponent<FaceDirectionComponent>();
         }
     }
 }

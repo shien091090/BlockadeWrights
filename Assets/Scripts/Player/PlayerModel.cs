@@ -7,17 +7,23 @@ namespace GameCore
         private readonly IInputAxisController inputAxisController;
         private readonly IInGameMapModel inGameMapModel;
         private readonly MovementProcessor movementProcessor;
-        public FaceDirection LookFaceDirection { get; }
-        public FaceDirection GridFaceDirection { get; }
+        private readonly FaceDirection lookFaceDirection;
+        private readonly FaceDirection gridFaceDirection;
 
         public PlayerModel(IInputAxisController inputAxisController, IInGameMapModel inGameMapModel)
         {
             this.inputAxisController = inputAxisController;
             this.inGameMapModel = inGameMapModel;
 
-            LookFaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
-            GridFaceDirection = new FaceDirection(new OctagonalDirectionStrategy(), FaceDirectionState.Right);
+            lookFaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
+            gridFaceDirection = new FaceDirection(new OctagonalDirectionStrategy(), FaceDirectionState.Right);
             movementProcessor = new MovementProcessor();
+        }
+
+        public InGameMapCell GetCurrentFaceCell(Vector2 pos, Vector2 touchRange)
+        {
+            InGameMapCell cell = inGameMapModel.GetCellInfo(pos, gridFaceDirection.CurrentFaceDirectionState, touchRange);
+            return cell;
         }
 
         public Vector2 UpdateMove(float speed, float deltaTime)
@@ -25,16 +31,15 @@ namespace GameCore
             Vector2 moveVector = movementProcessor.GetMoveVector(new Vector2(inputAxisController.GetHorizontalAxis(), inputAxisController.GetVerticalAxis()), speed,
                 deltaTime);
 
-            LookFaceDirection.MoveToChangeFaceDirection(moveVector);
-            GridFaceDirection.MoveToChangeFaceDirection(moveVector);
+            lookFaceDirection.MoveToChangeFaceDirection(moveVector);
+            gridFaceDirection.MoveToChangeFaceDirection(moveVector);
 
             return moveVector;
         }
 
-        public InGameMapCell GetCurrentFaceCell(Vector2 pos, Vector2 touchRange)
+        public void Bind(IPlayerView playerView)
         {
-            InGameMapCell cell = inGameMapModel.GetCellInfo(pos, GridFaceDirection.CurrentFaceDirectionState, touchRange);
-            return cell;
+            lookFaceDirection.BindView(playerView);
         }
     }
 }

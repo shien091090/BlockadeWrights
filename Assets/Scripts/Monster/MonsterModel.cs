@@ -26,6 +26,7 @@ namespace GameCore
             }
         }
 
+        private readonly FaceDirection lookFaceDirection;
         private readonly HealthPointModel hpModel;
         private readonly MonsterMovementPath path;
         private readonly ITimeManager timeAdapter;
@@ -33,7 +34,6 @@ namespace GameCore
         private IMonsterView monsterView;
 
         public float MoveSpeed { get; }
-        public FaceDirection LookFaceDirection { get; }
         public Sprite GetFrontSideSprite { get; }
         public Sprite GetBackSideSprite { get; }
 
@@ -49,7 +49,7 @@ namespace GameCore
                 CurrentTargetPathIndex = 1;
 
             MoveSpeed = setting.GetMoveSpeed;
-            LookFaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
+            lookFaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
             hpModel = new HealthPointModel(setting.GetHp);
             GetFrontSideSprite = setting.GetFrontSideSprite;
             GetBackSideSprite = setting.GetBackSideSprite;
@@ -83,10 +83,8 @@ namespace GameCore
             monsterView = view;
             monsterView.SetupHp(hpModel);
             monsterView.InitSprite(GetFrontSideSprite, GetBackSideSprite);
-
-            LookFaceDirection.OnFaceDirectionChanged -= monsterView.RefreshFaceDirection;
-            LookFaceDirection.OnFaceDirectionChanged += monsterView.RefreshFaceDirection;
-
+            lookFaceDirection.BindView(monsterView);
+            
             monsterView.Bind(this);
         }
 
@@ -118,7 +116,7 @@ namespace GameCore
 
             Vector2 end = path.GetPoint(CurrentTargetPathIndex);
             Vector2 moveVector = (end - currentPos).normalized * speed * deltaTime;
-            LookFaceDirection.MoveToChangeFaceDirection(moveVector);
+            lookFaceDirection.MoveToChangeFaceDirection(moveVector);
 
             if (IsArriveTarget(currentPos, end, moveVector) == false)
                 return moveVector;

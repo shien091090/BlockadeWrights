@@ -78,6 +78,21 @@ namespace GameCore.Tests.Monster
         }
 
         [Test]
+        //移動時, 面向改變
+        public void move_change_face_direction()
+        {
+            GivenInitModel(
+                DEFAULT_HP,
+                DEFAULT_MOVE_SPEED,
+                new Vector2(0, 0),
+                new Vector2(-10, 10));
+
+            monsterModel.Update();
+
+            ShouldFaceDirection(FaceDirectionState.UpAndLeft);
+        }
+
+        [Test]
         //行走路徑有多個點, 從中間點往下一個點移動
         public void move_path_middle_to_next()
         {
@@ -227,6 +242,16 @@ namespace GameCore.Tests.Monster
             monsterModel.OnDamageFort += onDamageFort;
 
             monsterModel.Bind(monsterView);
+        }
+
+        private void ShouldFaceDirection(FaceDirectionState expectedFaceDirectionState)
+        {
+            FaceDirectionState faceDirectionState = (FaceDirectionState)monsterView
+                .ReceivedCalls()
+                .Last(x => x.GetMethodInfo().Name == "RefreshFaceDirection")
+                .GetArguments()[0];
+
+            Assert.AreEqual(expectedFaceDirectionState, faceDirectionState);
         }
 
         private void ShouldInitSprite(int callTimes = 1)

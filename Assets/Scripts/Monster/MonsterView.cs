@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace GameCore
@@ -23,31 +24,9 @@ namespace GameCore
         public string GetId => gameObject.GetInstanceID().ToString();
 
         private ITransform transformAdapter;
-        private HealthPointComponent hpComponent;
         private IMonsterModel monsterModel;
+        private HealthPointComponent hpComponent;
         private FaceDirectionComponent faceDirection;
-
-        private FaceDirectionComponent FaceDirection
-        {
-            get
-            {
-                if (faceDirection == null)
-                    faceDirection = GetComponent<FaceDirectionComponent>();
-
-                return faceDirection;
-            }
-        }
-
-        private HealthPointComponent GetHpComponent
-        {
-            get
-            {
-                if (hpComponent == null)
-                    hpComponent = GetComponent<HealthPointComponent>();
-
-                return hpComponent;
-            }
-        }
 
         public void InitSprite(Sprite frontSide, Sprite backSide)
         {
@@ -57,12 +36,12 @@ namespace GameCore
 
         public void SetupHp(HealthPointModel monsterModelHpModel)
         {
-            GetHpComponent.Setup(monsterModelHpModel);
+            hpComponent.Setup(monsterModelHpModel);
         }
 
         public void RefreshFaceDirection(FaceDirectionState faceDirectionState)
         {
-            FaceDirection.RefreshFaceDirection(faceDirectionState);
+            faceDirection.RefreshFaceDirection(faceDirectionState);
         }
 
         public void Bind(MonsterModel model)
@@ -78,6 +57,12 @@ namespace GameCore
         private void Update()
         {
             monsterModel?.Update();
+        }
+
+        private void Awake()
+        {
+            hpComponent = GetComponent<HealthPointComponent>();
+            faceDirection = GetComponent<FaceDirectionComponent>();
         }
     }
 }
