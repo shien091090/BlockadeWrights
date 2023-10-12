@@ -79,6 +79,33 @@ namespace GameCore.Tests.Player
             ShouldMoveLeftAndDown();
         }
 
+        [Test]
+        //角色面對格子可建造建築, 顯示格子提示
+        public void face_cell_can_build()
+        {
+            GivenMoveAxis(1, 0);
+            GivenCurrentPosition(new Vector2(5, 5));
+            GivenTouchRange(new Vector2(1, 1));
+            GivenCellInfo(6, 5, new Vector2(10, 10));
+
+            playerModel.Update();
+
+            ShouldCallGetCellInfo(new Vector2(5, 5), FaceDirectionState.Right, new Vector2(1, 1));
+            ShouldSetCellHintActive(true);
+            ShouldSetCellHintPosition(new Vector2(1.5f, 0.5f));
+        }
+
+        private void GivenCellInfo(int gridX, int gridY, Vector2 fullMapSize)
+        {
+            InGameMapCell cell = new InGameMapCell(gridX, gridY, Vector2.one, fullMapSize);
+            inGameMapModel.GetCellInfo(Arg.Any<Vector2>(), Arg.Any<FaceDirectionState>(), Arg.Any<Vector2>()).Returns(cell);
+        }
+
+        private void GivenCurrentPosition(Vector2 pos)
+        {
+            transformAdapter.Position.Returns(pos);
+        }
+
         private void GivenTouchRange(Vector2 touchRange)
         {
             playerView.TouchRange.Returns(touchRange);
@@ -98,6 +125,21 @@ namespace GameCore.Tests.Player
         {
             inputAxisController.GetHorizontalAxis().Returns(horizontalAxis);
             inputAxisController.GetVerticalAxis().Returns(verticalAxis);
+        }
+
+        private void ShouldSetCellHintPosition(Vector2 expectedPos)
+        {
+            playerView.Received(1).SetCellHintPosition(expectedPos);
+        }
+
+        private void ShouldSetCellHintActive(bool expectedIsActive)
+        {
+            playerView.Received(1).SetCellHintActive(expectedIsActive);
+        }
+
+        private void ShouldCallGetCellInfo(Vector2 expectedPos, FaceDirectionState expectedFaceDirectionType, Vector2 expectedTouchRange)
+        {
+            inGameMapModel.Received(1).GetCellInfo(expectedPos, expectedFaceDirectionType, expectedTouchRange);
         }
 
         private void ShouldMoveLeftAndDown()
