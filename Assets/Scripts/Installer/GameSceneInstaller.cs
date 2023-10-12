@@ -8,6 +8,7 @@ namespace GameCore
         {
             Container.Bind<IInputAxisController>().To<InputAxisController>().AsSingle();
             Container.Bind<IInputKeyController>().To<InputKeyController>().AsSingle();
+            Container.Bind<ITimeManager>().To<TimeManager>().AsSingle();
             Container.Bind<IPlayerOperationModel>().To<PlayerOperationModel>().AsSingle();
             Container.Bind<IInGameMapModel>().To<InGameMapModel>().AsSingle();
             Container.Bind<PlayerModel>().AsSingle();

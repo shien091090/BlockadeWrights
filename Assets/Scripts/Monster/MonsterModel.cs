@@ -12,6 +12,8 @@ namespace GameCore
             path.GetPoint(0) :
             Vector2.zero;
 
+        public float GetHp => hpModel.CurrentHp;
+
         public EntityState GetEntityState
         {
             get
@@ -84,7 +86,7 @@ namespace GameCore
             monsterView.SetupHp(hpModel);
             monsterView.InitSprite(GetFrontSideSprite, GetBackSideSprite);
             lookFaceDirection.BindView(monsterView);
-            
+
             monsterView.Bind(this);
         }
 

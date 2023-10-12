@@ -36,9 +36,9 @@ namespace GameCore
 
         public void ColliderTriggerStay(ITriggerCollider col)
         {
-            IAttackTarget attackTarget = col.GetComponent<IAttackTarget>();
+            IAttackTargetProvider attackTarget = col.GetComponent<IAttackTargetProvider>();
             if (attackTarget != null)
-                TryAddAttackTarget(attackTarget);
+                TryAddAttackTarget(attackTarget.GetAttackTarget);
         }
 
         public void CollisionEnter(ICollision col)
@@ -121,4 +121,5 @@ namespace GameCore
             AttackTargets.RemoveAll(x => x.Id == attackTarget.Id);
         }
     }
+
 }

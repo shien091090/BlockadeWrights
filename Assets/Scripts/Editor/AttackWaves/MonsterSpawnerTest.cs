@@ -216,7 +216,7 @@ namespace GameCore.Tests.AttackWaves
 
         private void ShouldTriggerSpawnEvent(float expectedHp, int triggerTimes = 1)
         {
-            spawnMonsterEvent.Received(triggerTimes).Invoke(Arg.Is<IMonsterModel>(monster => monster.HpModel.CurrentHp == expectedHp));
+            spawnMonsterEvent.Received(triggerTimes).Invoke(Arg.Is<IMonsterModel>(m => m.GetHp == expectedHp));
         }
 
         private void WaveHintShouldBe(string expectedWaveHint)

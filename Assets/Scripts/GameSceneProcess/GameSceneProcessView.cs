@@ -64,7 +64,7 @@ namespace GameCore
         private void OnSpawnMonster(IMonsterModel monsterModel)
         {
             MonsterView monsterView = monsterObjectPool.SpawnGameObject<MonsterView>(monsterModel.GetStartPoint);
-            monsterView.Init(monsterModel);
+            monsterModel.Bind(monsterView);
         }
     }
 }

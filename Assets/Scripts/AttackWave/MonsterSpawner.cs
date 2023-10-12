@@ -1,10 +1,13 @@
 using System;
 using System.Linq;
+using Zenject;
 
 namespace GameCore
 {
     public class MonsterSpawner : IMonsterSpawner
     {
+        [Inject] private ITimeManager timeManager;
+
         public string GetWaveHint => attackWaves == null ?
             string.Empty :
             $"{GetCurrentWaveIndex + 1}/{attackWaves.Length}";
@@ -65,7 +68,7 @@ namespace GameCore
 
                 IMonsterSetting monsterSetting = attackWave.GetCurrentSpawnMonsterSetting;
                 attackWave.AddSpawnCount(1);
-                IMonsterModel monsterModel = new MonsterModel(attackWave.GetAttackPath, monsterSetting);
+                IMonsterModel monsterModel = new MonsterModel(attackWave.GetAttackPath, monsterSetting, timeManager);
                 OnSpawnMonster?.Invoke(monsterModel);
             }
         }

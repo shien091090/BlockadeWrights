@@ -7,6 +7,7 @@ namespace GameCore
     {
         event Action OnDamageFort;
         Vector2 GetStartPoint { get; }
+        float GetHp { get; }
         void Update();
         void Bind(IMonsterView monsterView);
     }
