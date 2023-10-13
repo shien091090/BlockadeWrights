@@ -14,7 +14,6 @@ namespace GameCore
         private IPlayerView playerView;
         private float moveSpeed;
 
-
         public PlayerModel(IInputAxisController inputAxisController, IInGameMapModel inGameMapModel, IPlayerOperationModel playerOperationModel, ITimeManager timeAdapter)
         {
             this.inputAxisController = inputAxisController;

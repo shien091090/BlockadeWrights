@@ -10,7 +10,6 @@ namespace GameCore
         [SerializeField] private Transform cellHint;
 
         [Inject] private PlayerModel playerModel;
-        [Inject] private IPlayerOperationModel playerOperationModel;
 
         public ITransform GetTransform
         {
