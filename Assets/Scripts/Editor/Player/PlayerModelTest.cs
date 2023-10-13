@@ -95,6 +95,28 @@ namespace GameCore.Tests.Player
             ShouldSetCellHintPosition(new Vector2(1.5f, 0.5f));
         }
 
+        [Test]
+        //角色面對格子不可建造建築, 不顯示格子提示且不設定位置
+        public void face_cell_cannot_build()
+        {
+            GivenMoveAxis(1, 0);
+            GivenCurrentPosition(new Vector2(5, 5));
+            GivenTouchRange(new Vector2(1, 1));
+            GivenEmptyCellInfo();
+
+            playerModel.Update();
+
+            ShouldCallGetCellInfo(new Vector2(5, 5), FaceDirectionState.Right, new Vector2(1, 1));
+            ShouldSetCellHintActive(false);
+            ShouldNotSetCellHintPosition();
+        }
+
+        private void GivenEmptyCellInfo()
+        {
+            InGameMapCell cell = InGameMapCell.GetEmptyCell();
+            inGameMapModel.GetCellInfo(Arg.Any<Vector2>(), Arg.Any<FaceDirectionState>(), Arg.Any<Vector2>()).Returns(cell);
+        }
+
         private void GivenCellInfo(int gridX, int gridY, Vector2 fullMapSize)
         {
             InGameMapCell cell = new InGameMapCell(gridX, gridY, Vector2.one, fullMapSize);
@@ -125,6 +147,11 @@ namespace GameCore.Tests.Player
         {
             inputAxisController.GetHorizontalAxis().Returns(horizontalAxis);
             inputAxisController.GetVerticalAxis().Returns(verticalAxis);
+        }
+
+        private void ShouldNotSetCellHintPosition()
+        {
+            playerView.DidNotReceive().SetCellHintPosition(Arg.Any<Vector2>());
         }
 
         private void ShouldSetCellHintPosition(Vector2 expectedPos)
