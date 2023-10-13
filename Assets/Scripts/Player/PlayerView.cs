@@ -46,8 +46,8 @@ namespace GameCore
 
         private void Awake()
         {
-            playerModel.Bind(this);
             faceDirection = GetComponent<FaceDirectionComponent>();
+            playerModel.Bind(this);
         }
     }
 }
