@@ -24,7 +24,7 @@ namespace GameCore
         {
             waveHintView.SetWaveHint(monsterSpawner.GetWaveHint);
 
-            fortressModel = new FortressModel(fortressHp, monsterSpawner);
+            fortressModel = new FortressModel(fortressHp);
             fortressView.Init(fortressModel);
 
             monsterObjectPool.InitPreSpawn();
@@ -65,6 +65,7 @@ namespace GameCore
         {
             MonsterView monsterView = monsterObjectPool.SpawnGameObject<MonsterView>(monsterModel.GetStartPoint);
             monsterModel.Bind(monsterView);
+            monsterModel.SetAttackTarget(fortressModel);
         }
     }
 }

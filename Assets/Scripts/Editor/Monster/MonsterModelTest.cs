@@ -15,21 +15,22 @@ namespace GameCore.Tests.Monster
 
         private MonsterModel monsterModel;
         private ITimeManager timeManager;
-
-        private Action onDamageFort;
         private IMonsterView monsterView;
         private ITransform transformAdapter;
+        private IFortressModel fortressModel;
 
         [SetUp]
         public void Setup()
         {
             timeManager = Substitute.For<ITimeManager>();
             GivenDeltaTime(1);
+
             monsterView = Substitute.For<IMonsterView>();
             transformAdapter = Substitute.For<ITransform>();
             GivenCurrentPosition(Vector2.zero);
             monsterView.GetTransform.Returns(transformAdapter);
-            onDamageFort = Substitute.For<Action>();
+
+            fortressModel = Substitute.For<IFortressModel>();
         }
 
         [Test]
@@ -57,7 +58,7 @@ namespace GameCore.Tests.Monster
 
             ShouldNoMove();
             ShouldBeArrivedGoal(false);
-            ShouldBeTriggerDamageFortEvent(0);
+            ShouldDamageFortress(0);
         }
 
         [Test]
@@ -74,7 +75,7 @@ namespace GameCore.Tests.Monster
 
             ShouldMoveRightAndDown();
             ShouldBeArrivedGoal(false);
-            ShouldBeTriggerDamageFortEvent(0);
+            ShouldDamageFortress(0);
         }
 
         [Test]
@@ -111,7 +112,7 @@ namespace GameCore.Tests.Monster
 
             ShouldMoveUp();
             ShouldBeArrivedGoal(false);
-            ShouldBeTriggerDamageFortEvent(0);
+            ShouldDamageFortress(0);
         }
 
         [Test]
@@ -135,7 +136,7 @@ namespace GameCore.Tests.Monster
 
             CurrentTargetPathIndexShouldBe(startIndex + 1);
             ShouldBeArrivedGoal(false);
-            ShouldBeTriggerDamageFortEvent(0);
+            ShouldDamageFortress(0);
         }
 
         [Test]
@@ -153,7 +154,7 @@ namespace GameCore.Tests.Monster
             monsterModel.Update();
 
             ShouldBeArrivedGoal(true);
-            ShouldBeTriggerDamageFortEvent(1);
+            ShouldDamageFortress(1);
         }
 
         [Test]
@@ -173,7 +174,7 @@ namespace GameCore.Tests.Monster
 
             ShouldNoMove();
             ShouldBeArrivedGoal(true);
-            ShouldBeTriggerDamageFortEvent(0);
+            ShouldDamageFortress(0);
         }
 
         [Test]
@@ -239,9 +240,9 @@ namespace GameCore.Tests.Monster
             MonsterMovementPath path = CreateMovementPath(pathPoints);
 
             monsterModel = new MonsterModel(path, monsterSetting, timeManager);
-            monsterModel.OnDamageFort += onDamageFort;
 
             monsterModel.Bind(monsterView);
+            monsterModel.SetAttackTarget(fortressModel);
         }
 
         private void ShouldFaceDirection(FaceDirectionState expectedFaceDirectionState)
@@ -280,12 +281,12 @@ namespace GameCore.Tests.Monster
             Assert.AreEqual(expectedState, monsterModel.GetEntityState);
         }
 
-        private void ShouldBeTriggerDamageFortEvent(int triggerTimes)
+        private void ShouldDamageFortress(int triggerTimes)
         {
             if (triggerTimes == 0)
-                onDamageFort.DidNotReceive().Invoke();
+                fortressModel.DidNotReceive().Damage();
             else
-                onDamageFort.Received(triggerTimes).Invoke();
+                fortressModel.Received(triggerTimes).Damage();
         }
 
         private void ShouldBeArrivedGoal(bool expectedArrived)

@@ -8,6 +8,7 @@ namespace GameCore
         public ITransform GetTransform => monsterView.GetTransform;
         public string Id => monsterView.GetId;
 
+
         public Vector2 GetStartPoint => path != null && path.IsEmpty == false ?
             path.GetPoint(0) :
             Vector2.zero;
@@ -34,13 +35,14 @@ namespace GameCore
         private readonly ITimeManager timeAdapter;
         private EntityState entityState;
         private IMonsterView monsterView;
-
-        public float MoveSpeed { get; }
-        public Sprite GetFrontSideSprite { get; }
-        public Sprite GetBackSideSprite { get; }
+        private IFortressModel fortressModel;
 
         public int CurrentTargetPathIndex { get; private set; }
         public bool IsArrivedGoal => !path.IsEmpty && CurrentTargetPathIndex > path.GetLastPointIndex;
+
+        private float MoveSpeed { get; }
+        private Sprite GetFrontSideSprite { get; }
+        private Sprite GetBackSideSprite { get; }
 
         public MonsterModel(MonsterMovementPath path, IMonsterSetting setting, ITimeManager timeAdapter)
         {
@@ -57,13 +59,16 @@ namespace GameCore
             GetBackSideSprite = setting.GetBackSideSprite;
         }
 
-        public event Action OnDamageFort;
-
         public void Update()
         {
             Vector2 translationVector = UpdateMove(monsterView.GetTransform.Position, MoveSpeed, timeAdapter.DeltaTime);
             if (translationVector != default)
                 monsterView.GetTransform.Translate(translationVector);
+        }
+
+        public void SetAttackTarget(IFortressModel fortressModel)
+        {
+            this.fortressModel = fortressModel;
         }
 
         public void Damage(float damageValue)
@@ -126,7 +131,7 @@ namespace GameCore
             CurrentTargetPathIndex++;
 
             if (IsArrivedGoal)
-                OnDamageFort?.Invoke();
+                fortressModel?.Damage();
 
             return moveVector;
         }

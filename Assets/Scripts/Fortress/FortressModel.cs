@@ -2,41 +2,25 @@ using System;
 
 namespace GameCore
 {
-    public class FortressModel
+    public class FortressModel : IFortressModel
     {
-        private readonly IMonsterSpawner monsterSpawner;
-
         public event Action OnFortressDestroy;
         public HealthPointModel HpModel { get; }
 
         public bool IsInValid => HpModel.IsInValid;
         public float CurrentHp => HpModel.CurrentHp;
 
-        public FortressModel(float mapHp, IMonsterSpawner monsterSpawner)
+        public FortressModel(float mapHp)
         {
             HpModel = new HealthPointModel(mapHp);
-            this.monsterSpawner = monsterSpawner;
-            RegisterEvent();
         }
 
-        private void RegisterEvent()
-        {
-            monsterSpawner.OnSpawnMonster -= OnSpawnMonster;
-            monsterSpawner.OnSpawnMonster += OnSpawnMonster;
-        }
-
-        private void Damage()
+        public void Damage()
         {
             HpModel.Damage(1);
 
             if (HpModel.IsDead)
                 OnFortressDestroy?.Invoke();
-        }
-
-        private void OnSpawnMonster(IMonsterModel monsterModel)
-        {
-            monsterModel.OnDamageFort -= Damage;
-            monsterModel.OnDamageFort += Damage;
         }
     }
 }

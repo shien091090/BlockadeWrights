@@ -8,15 +8,11 @@ namespace GameCore.Tests.Fortress
     {
         private Action fortressDestroyEvent;
         private FortressModel fortressModel;
-        private IMonsterSpawner monsterSpawner;
-        private IMonsterModel monsterModel;
 
         [SetUp]
         public void Setup()
         {
             fortressDestroyEvent = Substitute.For<Action>();
-            monsterSpawner = Substitute.For<IMonsterSpawner>();
-            monsterModel = Substitute.For<IMonsterModel>();
         }
 
         [Test]
@@ -35,10 +31,10 @@ namespace GameCore.Tests.Fortress
             GivenInitModel(3);
             ShouldModelInvalid(false);
 
-            CallSpawnMonsterEvent();
-            CallDamageFortEvent();
-            CallDamageFortEvent();
+            fortressModel.Damage();
+            fortressModel.Damage();
 
+            FortressHpShouldBe(1);
             ShouldTriggerFortressDestroyEvent(0);
         }
 
@@ -48,32 +44,21 @@ namespace GameCore.Tests.Fortress
         {
             GivenInitModel(3);
 
-            CallSpawnMonsterEvent();
-            CallDamageFortEvent();
-            CallDamageFortEvent();
-            CallDamageFortEvent();
+            fortressModel.Damage();
+            fortressModel.Damage();
+            fortressModel.Damage();
 
-            ShouldFortressHpShouldBe(0);
+            FortressHpShouldBe(0);
             ShouldTriggerFortressDestroyEvent(1);
         }
 
         private void GivenInitModel(int mapHp)
         {
-            fortressModel = new FortressModel(mapHp, monsterSpawner);
+            fortressModel = new FortressModel(mapHp);
             fortressModel.OnFortressDestroy += fortressDestroyEvent;
         }
 
-        private void CallDamageFortEvent()
-        {
-            monsterModel.OnDamageFort += Raise.Event<Action>();
-        }
-
-        private void CallSpawnMonsterEvent()
-        {
-            monsterSpawner.OnSpawnMonster += Raise.Event<Action<IMonsterModel>>(monsterModel);
-        }
-
-        private void ShouldFortressHpShouldBe(int expectedHp)
+        private void FortressHpShouldBe(int expectedHp)
         {
             Assert.AreEqual(expectedHp, fortressModel.CurrentHp);
         }
