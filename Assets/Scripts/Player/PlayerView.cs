@@ -5,8 +5,6 @@ namespace GameCore
 {
     public class PlayerView : MonoBehaviour, IPlayerView
     {
-        [SerializeField] private float moveSpeed;
-        [SerializeField] private Vector2 touchRange;
         [SerializeField] private Transform cellHint;
 
         [Inject] private PlayerModel playerModel;
@@ -22,11 +20,9 @@ namespace GameCore
             }
         }
 
-        public float MoveSpeed => moveSpeed;
-        public Vector2 TouchRange => touchRange;
-
         private FaceDirectionComponent faceDirection;
         private TransformComponent transformAdapter;
+
 
         public void SetCellHintActive(bool isActive)
         {

@@ -14,6 +14,7 @@ namespace GameCore.Tests.Player
         private ITimeManager timeAdapter;
         private IPlayerView playerView;
         private ITransform transformAdapter;
+        private IPlayerSetting playerSetting;
 
         [SetUp]
         public void Setup()
@@ -28,10 +29,12 @@ namespace GameCore.Tests.Player
 
             playerView = Substitute.For<IPlayerView>();
             playerView.GetTransform.Returns(transformAdapter);
+
+            playerSetting = Substitute.For<IPlayerSetting>();
             GivenMoveSpeed(1);
             GivenTouchRange(new Vector2(1, 1));
 
-            playerModel = new PlayerModel(inputAxisController, inGameMapModel, playerOperationModel, timeAdapter);
+            playerModel = new PlayerModel(inputAxisController, inGameMapModel, playerOperationModel, timeAdapter, playerSetting);
             playerModel.Bind(playerView);
         }
 
@@ -130,12 +133,12 @@ namespace GameCore.Tests.Player
 
         private void GivenTouchRange(Vector2 touchRange)
         {
-            playerView.TouchRange.Returns(touchRange);
+            playerSetting.TouchRange.Returns(touchRange);
         }
 
         private void GivenMoveSpeed(int moveSpeed)
         {
-            playerView.MoveSpeed.Returns(moveSpeed);
+            playerSetting.MoveSpeed.Returns(moveSpeed);
         }
 
         private void GivenDeltaTime(int deltaTime)

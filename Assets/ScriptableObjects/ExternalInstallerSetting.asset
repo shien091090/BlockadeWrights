@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inGameMapSetting: {fileID: 11400000, guid: a35c071b0863e1043b13d358ab12f57f, type: 2}
   attackWaveSetting: {fileID: 11400000, guid: 8afaf3249fb2a9046b8ca9110c9b4017, type: 2}
+  playerSetting: {fileID: 11400000, guid: 3d425117de592aa4a893b83658f00584, type: 2}

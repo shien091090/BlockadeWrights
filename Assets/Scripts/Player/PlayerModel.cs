@@ -11,15 +11,18 @@ namespace GameCore
         private readonly FaceDirection gridFaceDirection;
         private readonly IPlayerOperationModel playerOperationModel;
         private readonly ITimeManager timeAdapter;
+        private readonly IPlayerSetting playerSetting;
         private IPlayerView playerView;
         private float moveSpeed;
 
-        public PlayerModel(IInputAxisController inputAxisController, IInGameMapModel inGameMapModel, IPlayerOperationModel playerOperationModel, ITimeManager timeAdapter)
+        public PlayerModel(IInputAxisController inputAxisController, IInGameMapModel inGameMapModel, IPlayerOperationModel playerOperationModel, ITimeManager timeAdapter,
+            IPlayerSetting playerSetting)
         {
             this.inputAxisController = inputAxisController;
             this.inGameMapModel = inGameMapModel;
             this.playerOperationModel = playerOperationModel;
             this.timeAdapter = timeAdapter;
+            this.playerSetting = playerSetting;
 
             lookFaceDirection = new FaceDirection(new QuadrantDirectionStrategy(), FaceDirectionState.DownAndRight);
             gridFaceDirection = new FaceDirection(new OctagonalDirectionStrategy(), FaceDirectionState.Right);
@@ -32,7 +35,7 @@ namespace GameCore
             if (translationVector != default)
                 playerView.GetTransform.Translate(translationVector);
 
-            InGameMapCell cell = GetCurrentFaceCell(playerView.GetTransform.Position, playerView.TouchRange);
+            InGameMapCell cell = GetCurrentFaceCell(playerView.GetTransform.Position, playerSetting.TouchRange);
             playerOperationModel.UpdateCheckBuild(cell);
             playerView.SetCellHintActive(cell.IsEmpty == false);
 
@@ -43,7 +46,7 @@ namespace GameCore
         public void Bind(IPlayerView playerView)
         {
             this.playerView = playerView;
-            moveSpeed = playerView.MoveSpeed;
+            moveSpeed = playerSetting.MoveSpeed;
             lookFaceDirection.BindView(playerView);
         }
 
