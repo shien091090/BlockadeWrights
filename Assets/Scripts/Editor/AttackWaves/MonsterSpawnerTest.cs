@@ -205,6 +205,18 @@ namespace GameCore.Tests.AttackWaves
             SpawnMonsterStartPosShouldBe(new Vector2(1, 1));
         }
 
+        [Test]
+        //第一波產怪時間非等待, 需有倒數計時
+        public void spawn_monster_countdown()
+        {
+            GivenModel(new AttackWave(1, CreateMonsterOrderList(1), 0.5f));
+
+            monsterSpawner.CheckUpdateSpawn(1);
+
+            ShouldTriggerSpawnEvent(1);
+            ShouldNeedCountDownToSpawnMonster(true);
+        }
+
         private void GivenModel(params AttackWave[] waves)
         {
             attackWaveSetting.GetAttackWaves().Returns(waves);
@@ -212,6 +224,11 @@ namespace GameCore.Tests.AttackWaves
 
             monsterSpawner.OnSpawnMonster += spawnMonsterEvent;
             monsterSpawner.OnStartNextWave += startNextWaveEvent;
+        }
+
+        private void ShouldNeedCountDownToSpawnMonster(bool expectedNeedCountDown)
+        {
+            Assert.AreEqual(expectedNeedCountDown, monsterSpawner.IsNeedCountDownToSpawnMonster());
         }
 
         private void ShouldTriggerSpawnEvent(float expectedHp, int triggerTimes = 1)
