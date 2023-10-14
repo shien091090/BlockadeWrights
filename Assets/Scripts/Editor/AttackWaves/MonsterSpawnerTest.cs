@@ -216,6 +216,19 @@ namespace GameCore.Tests.AttackWaves
             ShouldTriggerSpawnEvent(1);
             ShouldNeedCountDownToSpawnMonster(true);
         }
+        
+        [Test]
+        //第一波產怪時間為立即, 不需有倒數計時
+        public void spawn_monster_no_countdown()
+        {
+            GivenModel(new AttackWave(1, CreateMonsterOrderList(1), 0));
+
+            monsterSpawner.CheckUpdateSpawn(0.5f);
+            monsterSpawner.CheckUpdateSpawn(0.5f);
+
+            ShouldTriggerSpawnEvent(1);
+            ShouldNeedCountDownToSpawnMonster(false);
+        }
 
         private void GivenModel(params AttackWave[] waves)
         {
