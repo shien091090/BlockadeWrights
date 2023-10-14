@@ -22,21 +22,17 @@ namespace GameCore
         }
 
         public string GetId => gameObject.GetInstanceID().ToString();
+        public IHealthPointView GetHealthPointView => healthPointView;
 
         private ITransform transformAdapter;
         private IMonsterModel monsterModel;
-        private HealthPointComponent hpComponent;
         private FaceDirectionComponent faceDirection;
+        private IHealthPointView healthPointView;
 
         public void InitSprite(Sprite frontSide, Sprite backSide)
         {
             sp_frontSide.sprite = frontSide;
             sp_backSide.sprite = backSide;
-        }
-
-        public void SetupHp(HealthPointModel monsterModelHpModel)
-        {
-            hpComponent.BindModel(monsterModelHpModel);
         }
 
         public void RefreshFaceDirection(FaceDirectionState faceDirectionState)
@@ -61,7 +57,7 @@ namespace GameCore
 
         private void Awake()
         {
-            hpComponent = GetComponent<HealthPointComponent>();
+            healthPointView = GetComponent<HealthPointComponent>();
             faceDirection = GetComponent<FaceDirectionComponent>();
         }
     }

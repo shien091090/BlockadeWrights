@@ -6,8 +6,8 @@ namespace GameCore
     {
         ITransform GetTransform { get; }
         string GetId { get; }
+        IHealthPointView GetHealthPointView { get; }
         void InitSprite(Sprite frontSide, Sprite backSide);
-        void SetupHp(HealthPointModel monsterModelHpModel);
         void SetActive(bool isActive);
         void Bind(MonsterModel model);
     }

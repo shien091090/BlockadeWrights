@@ -18,6 +18,7 @@ namespace GameCore.Tests.Monster
         private IMonsterView monsterView;
         private ITransform transformAdapter;
         private IFortressModel fortressModel;
+        private IHealthPointView healthPointView;
 
         [SetUp]
         public void Setup()
@@ -29,6 +30,9 @@ namespace GameCore.Tests.Monster
             transformAdapter = Substitute.For<ITransform>();
             GivenCurrentPosition(Vector2.zero);
             monsterView.GetTransform.Returns(transformAdapter);
+
+            healthPointView = Substitute.For<IHealthPointView>();
+            monsterView.GetHealthPointView.Returns(healthPointView);
 
             fortressModel = Substitute.For<IFortressModel>();
         }
@@ -48,7 +52,7 @@ namespace GameCore.Tests.Monster
             ShouldInitSprite();
             MonsterStateShouldBe(EntityState.Normal);
         }
-        
+
         [Test]
         //無行走路線, 不移動
         public void move_no_path()
@@ -263,7 +267,7 @@ namespace GameCore.Tests.Monster
 
         private void ShouldSetupHp(int expectedHp, int callTimes = 1)
         {
-            monsterView.Received(callTimes).SetupHp(Arg.Is<HealthPointModel>(hpModel => hpModel.CurrentHp == expectedHp));
+            healthPointView.Received(callTimes).BindModel(Arg.Is<HealthPointModel>(hpModel => hpModel.CurrentHp == expectedHp));
         }
 
         private void ShouldNotCallSetActive()
