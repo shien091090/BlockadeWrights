@@ -76,7 +76,10 @@ namespace GameCore
             hpModel.Damage(damageValue);
 
             if (hpModel.IsDead)
+            {
+                entityState = EntityState.Dead;
                 monsterView.SetActive(false);
+            }
         }
 
         public void PreDamage(float damageValue)
