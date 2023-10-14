@@ -88,6 +88,8 @@ namespace GameCore
         public void Bind(IMonsterView view)
         {
             monsterView = view;
+            entityState = EntityState.Normal;
+            
             monsterView.SetupHp(hpModel);
             monsterView.InitSprite(GetFrontSideSprite, GetBackSideSprite);
             lookFaceDirection.BindView(monsterView);

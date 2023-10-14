@@ -46,6 +46,7 @@ namespace GameCore.Tests.Monster
 
             ShouldSetupHp(100);
             ShouldInitSprite();
+            MonsterStateShouldBe(EntityState.Normal);
         }
 
         [Test]
