@@ -36,7 +36,7 @@ namespace GameCore
 
         public void SetupHp(HealthPointModel monsterModelHpModel)
         {
-            hpComponent.Setup(monsterModelHpModel);
+            hpComponent.BindModel(monsterModelHpModel);
         }
 
         public void RefreshFaceDirection(FaceDirectionState faceDirectionState)

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -7,7 +8,7 @@ namespace GameCore.Tests.HealthPoint
     public class HealthPointModelTest
     {
         private HealthPointModel healthPointModel;
-        private Action<HealthPointChangeInfo> refreshHealthPointEvent;
+        private IHealthPointView healthPointView;
 
         [Test]
         //HP上限為0
@@ -15,6 +16,15 @@ namespace GameCore.Tests.HealthPoint
         {
             GivenInitModel(0);
             ShouldBeInvalid(true);
+        }
+
+        [Test]
+        //初始化時會先更新一次血量
+        public void init_hp()
+        {
+            GivenInitModel(10);
+            ShouldRefreshHealthPointSlider(1);
+            HealthPointSliderValueShouldBe(1);
         }
 
         [Test]
@@ -31,7 +41,7 @@ namespace GameCore.Tests.HealthPoint
             ShouldBeInvalid(false);
             CurrentHpShouldBe(expectedRemainHp);
             ShouldBeDead(false);
-            ShouldReceiveHpChangeEvent(1);
+            ShouldRefreshHealthPointSlider(2);
         }
 
         [Test]
@@ -71,7 +81,7 @@ namespace GameCore.Tests.HealthPoint
 
             CurrentHpShouldBe(8);
             ShouldBeDead(false);
-            ShouldReceiveHpChangeEvent(2);
+            ShouldRefreshHealthPointSlider(3);
         }
 
         [Test]
@@ -99,7 +109,7 @@ namespace GameCore.Tests.HealthPoint
 
             healthPointModel.Damage(damageValue);
 
-            ShouldReceiveHpChangeEvent(1, expectedHpRate);
+            HealthPointSliderValueShouldBe(expectedHpRate);
         }
 
         [Test]
@@ -119,9 +129,8 @@ namespace GameCore.Tests.HealthPoint
         private void GivenInitModel(float maxHp)
         {
             healthPointModel = new HealthPointModel(maxHp);
-
-            refreshHealthPointEvent = Substitute.For<Action<HealthPointChangeInfo>>();
-            healthPointModel.OnRefreshHealthPoint += refreshHealthPointEvent;
+            healthPointView = Substitute.For<IHealthPointView>();
+            healthPointModel.Bind(healthPointView);
         }
 
         private void ShouldDieWhenDamage(float damageValue, bool expectedIsDead)
@@ -129,16 +138,22 @@ namespace GameCore.Tests.HealthPoint
             Assert.AreEqual(expectedIsDead, healthPointModel.WellDieWhenDamage(damageValue));
         }
 
-        private void ShouldReceiveHpChangeEvent(int triggerTimes, float expectedHpRate = 0)
+        private void HealthPointSliderValueShouldBe(float expectedHpRate)
+        {
+            HealthPointChangeInfo argument = (HealthPointChangeInfo)healthPointView
+                .ReceivedCalls()
+                .Last(x => x.GetMethodInfo().Name == "RefreshHealthPointSlider")
+                .GetArguments()[0];
+
+            Assert.AreEqual(expectedHpRate, argument.CurrentHealthPointRate);
+        }
+
+        private void ShouldRefreshHealthPointSlider(int triggerTimes)
         {
             if (triggerTimes == 0)
-                refreshHealthPointEvent.DidNotReceive().Invoke(Arg.Any<HealthPointChangeInfo>());
+                healthPointView.DidNotReceive().RefreshHealthPointSlider(Arg.Any<HealthPointChangeInfo>());
             else
-            {
-                refreshHealthPointEvent.Received(triggerTimes).Invoke(expectedHpRate == 0 ?
-                    Arg.Any<HealthPointChangeInfo>() :
-                    Arg.Is<HealthPointChangeInfo>(h => h.CurrentHealthPointRate == expectedHpRate));
-            }
+                healthPointView.Received(triggerTimes).RefreshHealthPointSlider(Arg.Any<HealthPointChangeInfo>());
         }
 
         private void ShouldBeDead(bool expectedIsDead)

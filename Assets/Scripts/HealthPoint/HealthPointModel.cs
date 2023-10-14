@@ -5,7 +5,8 @@ namespace GameCore
     public class HealthPointModel
     {
         private readonly float maxHp;
-        public event Action<HealthPointChangeInfo> OnRefreshHealthPoint;
+
+        private IHealthPointView healthPointView;
 
         public bool IsInValid => maxHp <= 0;
         public float CurrentHp { private set; get; }
@@ -20,18 +21,29 @@ namespace GameCore
         public void Damage(float damageValue)
         {
             CurrentHp = Math.Max(0, CurrentHp - damageValue);
-            OnRefreshHealthPoint?.Invoke(new HealthPointChangeInfo(CurrentHp / maxHp));
+            healthPointView?.RefreshHealthPointSlider(GetCurrentHealthPointChangeInfo());
         }
 
         public void Heal(int healValue)
         {
             CurrentHp = Math.Min(maxHp, CurrentHp + healValue);
-            OnRefreshHealthPoint?.Invoke(new HealthPointChangeInfo(CurrentHp / maxHp));
+            healthPointView?.RefreshHealthPointSlider(GetCurrentHealthPointChangeInfo());
         }
 
         public bool WellDieWhenDamage(float damageValue)
         {
             return CurrentHp - damageValue <= 0;
+        }
+
+        public void Bind(IHealthPointView healthPointView)
+        {
+            this.healthPointView = healthPointView;
+            healthPointView?.RefreshHealthPointSlider(GetCurrentHealthPointChangeInfo());
+        }
+
+        private HealthPointChangeInfo GetCurrentHealthPointChangeInfo()
+        {
+            return new HealthPointChangeInfo(CurrentHp / maxHp);
         }
     }
 }

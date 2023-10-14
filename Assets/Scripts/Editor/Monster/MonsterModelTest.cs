@@ -48,7 +48,7 @@ namespace GameCore.Tests.Monster
             ShouldInitSprite();
             MonsterStateShouldBe(EntityState.Normal);
         }
-
+        
         [Test]
         //無行走路線, 不移動
         public void move_no_path()

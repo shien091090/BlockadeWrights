@@ -3,27 +3,18 @@ using UnityEngine.UI;
 
 namespace GameCore
 {
-    public class HealthPointComponent : MonoBehaviour
+    public class HealthPointComponent : MonoBehaviour, IHealthPointView
     {
         [SerializeField] private Slider sld_healthPoint;
-        
-        private HealthPointModel healthPointModel;
 
-        public void Setup(HealthPointModel healthPointModel)
-        {
-            this.healthPointModel = healthPointModel;
-            SetEventRegister();
-        }
-
-        private void SetEventRegister()
-        {
-            healthPointModel.OnRefreshHealthPoint -= RefreshHealthPointSlider;
-            healthPointModel.OnRefreshHealthPoint += RefreshHealthPointSlider;
-        }
-
-        private void RefreshHealthPointSlider(HealthPointChangeInfo healthPointChangeInfo)
+        public void RefreshHealthPointSlider(HealthPointChangeInfo healthPointChangeInfo)
         {
             sld_healthPoint.value = healthPointChangeInfo.CurrentHealthPointRate;
+        }
+
+        public void BindModel(HealthPointModel healthPointModel)
+        {
+            healthPointModel.Bind(this);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace GameCore
 
         public void Init(FortressModel fortressModel)
         {
-            HpComponent.Setup(fortressModel.HpModel);
+            HpComponent.BindModel(fortressModel.HpModel);
             SetDestroyHintActive(false);
         }
 
