@@ -96,6 +96,7 @@ namespace GameCore.Tests.AttackWaves
 
             ShouldTriggerSpawnEvent(0);
             ShouldTriggerStartNextWaveEvent(0);
+            StartTimeSecondsShouldBe(10);
         }
 
         [Test]
@@ -112,7 +113,7 @@ namespace GameCore.Tests.AttackWaves
             ShouldAllWavesSpawnFinished(false);
             ShouldTriggerSpawnEvent(2);
         }
-        
+
         [Test]
         //產怪開始時間到時不等待間隔時間, 會直接先產一次
         public void spawn_monster_when_start_but_not_wait_for_interval_time()
@@ -121,11 +122,11 @@ namespace GameCore.Tests.AttackWaves
 
             monsterSpawner.CheckUpdateSpawn(0.1f);
             ShouldTriggerSpawnEvent(0);
-            
+
             monsterSpawner.CheckUpdateSpawn(0.1f);
             ShouldTriggerSpawnEvent(1);
         }
-        
+
         [Test]
         //第一波時間到, 開始第二波產怪
         public void spawn_monster_next_wave()
@@ -135,6 +136,8 @@ namespace GameCore.Tests.AttackWaves
             GivenModel(
                 wave1,
                 wave2);
+            
+            StartTimeSecondsShouldBe(0);
 
             monsterSpawner.CheckUpdateSpawn(1);
             monsterSpawner.CheckUpdateSpawn(1);
@@ -229,7 +232,7 @@ namespace GameCore.Tests.AttackWaves
             ShouldTriggerSpawnEvent(1);
             ShouldNeedCountDownToSpawnMonster(true);
         }
-        
+
         [Test]
         //第一波產怪時間為立即, 不需有倒數計時
         public void spawn_monster_no_countdown()
@@ -250,6 +253,11 @@ namespace GameCore.Tests.AttackWaves
 
             monsterSpawner.OnSpawnMonster += spawnMonsterEvent;
             monsterSpawner.OnStartNextWave += startNextWaveEvent;
+        }
+
+        private void StartTimeSecondsShouldBe(int expectedStartTimeSeconds)
+        {
+            Assert.AreEqual(expectedStartTimeSeconds, monsterSpawner.GetStartTimeSeconds());
         }
 
         private void ShouldNeedCountDownToSpawnMonster(bool expectedNeedCountDown)
