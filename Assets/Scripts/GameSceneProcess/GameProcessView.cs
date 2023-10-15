@@ -14,6 +14,7 @@ namespace GameCore
         [Inject] private IMonsterSpawner monsterSpawner;
 
         public ITimerView GetTimerView => timerView;
+        public IWaveHintView GetWaveHintView => waveHintView;
 
         private FortressModel fortressModel;
 
@@ -30,30 +31,12 @@ namespace GameCore
             fortressView.Init(fortressModel);
 
             monsterObjectPool.InitPreSpawn();
-
-            SetEventRegister();
         }
 
-        private void SetEventRegister()
-        {
-            monsterSpawner.OnSpawnMonster -= OnSpawnMonster;
-            monsterSpawner.OnSpawnMonster += OnSpawnMonster;
-
-            monsterSpawner.OnStartNextWave -= OnStartNextWave;
-            monsterSpawner.OnStartNextWave += OnStartNextWave;
-
-            fortressModel.OnFortressDestroy -= OnFortressDestroy;
-            fortressModel.OnFortressDestroy += OnFortressDestroy;
-        }
 
         private void OnFortressDestroy()
         {
             fortressView.SetDestroyHintActive(true);
-        }
-
-        private void OnStartNextWave()
-        {
-            waveHintView.SetWaveHint(monsterSpawner.GetWaveHint);
         }
 
         private void OnSpawnMonster(IMonsterModel monsterModel)

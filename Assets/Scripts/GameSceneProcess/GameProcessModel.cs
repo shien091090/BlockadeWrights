@@ -16,13 +16,32 @@ namespace GameCore
         {
             this.gameProcessView = gameProcessView;
             gameProcessView.GetTimerView.BindModel(timerModel);
+            gameProcessView.GetWaveHintView.SetWaveHint(monsterSpawner.GetWaveHint);
             CheckStartTimer();
+            SetEventRegister();
+        }
+
+        private void SetEventRegister()
+        {
+            // monsterSpawner.OnSpawnMonster -= OnSpawnMonster;
+            // monsterSpawner.OnSpawnMonster += OnSpawnMonster;
+
+            monsterSpawner.OnStartNextWave -= OnStartNextWave;
+            monsterSpawner.OnStartNextWave += OnStartNextWave;
+
+            // fortressModel.OnFortressDestroy -= OnFortressDestroy;
+            // fortressModel.OnFortressDestroy += OnFortressDestroy;
         }
 
         private void CheckStartTimer()
         {
             if (monsterSpawner.IsNeedCountDownToSpawnMonster())
                 timerModel.StartCountDown(monsterSpawner.GetStartTimeSeconds());
+        }
+
+        private void OnStartNextWave()
+        {
+            gameProcessView.GetWaveHintView.SetWaveHint(monsterSpawner.GetWaveHint);
         }
     }
 }

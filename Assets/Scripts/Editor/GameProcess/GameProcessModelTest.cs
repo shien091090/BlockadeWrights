@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -10,6 +12,7 @@ namespace GameCore.Tests.GameProcess
         private ITimeManager timeManager;
         private TimerModel timerModel;
         private GameProcessModel gameProcessModel;
+        private IWaveHintView waveHintView;
 
         [SetUp]
         public void Setup()
@@ -27,6 +30,9 @@ namespace GameCore.Tests.GameProcess
                 timerModel = model;
             });
 
+            waveHintView = Substitute.For<IWaveHintView>();
+            gameProcessView.GetWaveHintView.Returns(waveHintView);
+
             monsterSpawner = Substitute.For<IMonsterSpawner>();
             gameProcessModel = new GameProcessModel(monsterSpawner, timeManager);
         }
@@ -42,17 +48,25 @@ namespace GameCore.Tests.GameProcess
 
             CurrentTimeShouldBe("00:10");
         }
-        
+
         [Test]
         //第一波產怪開始時, 波次從0變1
         public void first_wave_spawn_monster_start_then_wave_change_from_0_to_1()
         {
-            GivenIsNeedCountDown(true);
-            GivenStartTimeSeconds(10);
+            GivenIsNeedCountDown(false);
+            GivenStartTimeSeconds(0);
+            GivenWaveHint("1/5");
 
             gameProcessModel.Bind(gameProcessView);
-            
-            
+
+            CallStartNextWaveEvent();
+
+            ShouldSetWaveHint("1/5");
+        }
+
+        private void GivenWaveHint(string waveHint)
+        {
+            monsterSpawner.GetWaveHint.Returns(waveHint);
         }
 
         private void GivenStartTimeSeconds(int startTimeSeconds)
@@ -68,6 +82,17 @@ namespace GameCore.Tests.GameProcess
         private void GivenDeltaTime(int deltaTime)
         {
             timeManager.DeltaTime.Returns(deltaTime);
+        }
+
+        private void CallStartNextWaveEvent()
+        {
+            monsterSpawner.OnStartNextWave += Raise.Event<Action>();
+        }
+
+        private void ShouldSetWaveHint(string expectedWaveHint)
+        {
+            string argument = (string)waveHintView.ReceivedCalls().Last(x => x.GetMethodInfo().Name == "SetWaveHint").GetArguments()[0];
+            Assert.AreEqual(expectedWaveHint, argument);
         }
 
         private void CurrentTimeShouldBe(string expectedTimeText)

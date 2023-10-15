@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public class WaveHintView : MonoBehaviour
+    public class WaveHintView : MonoBehaviour, IWaveHintView
     {
         [SerializeField] private TextMeshProUGUI tmp_waveHint;
 
@@ -11,6 +11,5 @@ namespace GameCore
         {
             tmp_waveHint.text = waveHint;
         }
-
     }
 }
