@@ -1,53 +1,36 @@
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace GameCore
 {
-    public class TimerView : MonoBehaviour
+    public class TimerView : MonoBehaviour, ITimerView
     {
         [SerializeField] private TextMeshProUGUI tmp_timer;
 
+        [Inject] private ITimeManager timeManager;
+
         private TimerModel timerModel;
 
-        private void Update()
-        {
-            if (timerModel.IsTimerPlaying)
-                timerModel.UpdateCountDownTime(Time.deltaTime);
-        }
-
-        public void StartCountDown(float countDownSeconds)
-        {
-            timerModel.StartCountDown(countDownSeconds, OnTimeUp);
-            SetTimerActive(true);
-        }
-
-        private void SetTimerActive(bool isActive)
-        {
-            tmp_timer.gameObject.SetActive(isActive);
-        }
-
-        private void SetTimeText(string timeText)
+        public void SetTimeText(string timeText)
         {
             tmp_timer.text = timeText;
         }
 
+        public void SetTimerActive(bool isActive)
+        {
+            tmp_timer.gameObject.SetActive(isActive);
+        }
+
+        private void Update()
+        {
+            timerModel.Update();
+        }
+
         private void Awake()
         {
-            timerModel = new TimerModel();
-
-            RegisterEvent();
-            SetTimerActive(false);
-        }
-
-        private void RegisterEvent()
-        {
-            timerModel.onUpdateTimeText -= SetTimeText;
-            timerModel.onUpdateTimeText += SetTimeText;
-        }
-
-        private void OnTimeUp()
-        {
-            // SetTimerActive(false);
+            timerModel = new TimerModel(timeManager);
+            timerModel.Bind(this);
         }
     }
 }

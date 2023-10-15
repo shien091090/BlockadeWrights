@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -7,28 +8,31 @@ namespace GameCore.Tests.Timer
     public class TimerModelTest
     {
         private TimerModel timerModel;
-        private Action onTimeUpCallback;
-        private Action<string> onUpdateTimeText;
+        private ITimeManager timeManager;
+        private ITimerView timerView;
 
         [SetUp]
         public void Setup()
         {
-            timerModel = new TimerModel();
+            timeManager = Substitute.For<ITimeManager>();
+            GivenDeltaTime(1);
+            timerModel = new TimerModel(timeManager);
 
-            onTimeUpCallback = Substitute.For<Action>();
-
-            onUpdateTimeText = Substitute.For<Action<string>>();
-            timerModel.onUpdateTimeText += onUpdateTimeText;
+            timerView = Substitute.For<ITimerView>();
+            timerModel.Bind(timerView);
         }
 
         [Test]
         //計時器未設置時限
         public void no_count_down_time_setting()
         {
-            timerModel.StartCountDown(0, onTimeUpCallback);
-            timerModel.UpdateCountDownTime(1);
+            GivenDeltaTime(1);
+
+            timerModel.StartCountDown(0);
+            timerModel.Update();
 
             ShouldTimerPlaying(false);
+            ShouldSetTimerActive(false);
             CurrentTimeShouldBe(0);
         }
 
@@ -36,10 +40,13 @@ namespace GameCore.Tests.Timer
         //時限設置為負數
         public void count_down_time_setting_is_negative()
         {
-            timerModel.StartCountDown(-1, onTimeUpCallback);
-            timerModel.UpdateCountDownTime(1);
+            GivenDeltaTime(1);
+
+            timerModel.StartCountDown(-1);
+            timerModel.Update();
 
             ShouldTimerPlaying(false);
+            ShouldSetTimerActive(false);
             CurrentTimeShouldBe(0);
         }
 
@@ -47,10 +54,13 @@ namespace GameCore.Tests.Timer
         //刷新倒數時間
         public void update_count_down_time()
         {
-            timerModel.StartCountDown(10, onTimeUpCallback);
-            timerModel.UpdateCountDownTime(0.5f);
+            GivenDeltaTime(0.5f);
+
+            timerModel.StartCountDown(10);
+            timerModel.Update();
 
             ShouldTimerPlaying(true);
+            ShouldSetTimerActive(true);
             CurrentTimeShouldBe(9.5f);
         }
 
@@ -58,37 +68,41 @@ namespace GameCore.Tests.Timer
         //刷新倒數時間結束
         public void update_count_down_time_to_end()
         {
-            timerModel.StartCountDown(10, onTimeUpCallback);
-            timerModel.UpdateCountDownTime(3);
-            timerModel.UpdateCountDownTime(3);
-            timerModel.UpdateCountDownTime(3);
+            GivenDeltaTime(3);
+
+            timerModel.StartCountDown(10);
+            timerModel.Update();
+            timerModel.Update();
+            timerModel.Update();
 
             ShouldTimerPlaying(true);
             CurrentTimeShouldBe(1);
 
-            timerModel.UpdateCountDownTime(3);
+            timerModel.Update();
 
             ShouldTimerPlaying(false);
             CurrentTimeShouldBe(0);
-            ShouldTriggerTimeUpEvent();
+            ShouldSetTimerActive(false);
         }
 
         [Test]
         //倒數到一半時重新開始倒數
         public void restart_count_down_time()
         {
-            timerModel.StartCountDown(10, onTimeUpCallback);
-            timerModel.UpdateCountDownTime(1);
-            timerModel.UpdateCountDownTime(1);
-            timerModel.UpdateCountDownTime(1);
+            GivenDeltaTime(1);
+
+            timerModel.StartCountDown(10);
+            timerModel.Update();
+            timerModel.Update();
+            timerModel.Update();
 
             ShouldTimerPlaying(true);
             CurrentTimeShouldBe(7);
 
-            timerModel.StartCountDown(15, onTimeUpCallback);
-            timerModel.UpdateCountDownTime(1);
-            timerModel.UpdateCountDownTime(1);
-            timerModel.UpdateCountDownTime(1);
+            timerModel.StartCountDown(15);
+            timerModel.Update();
+            timerModel.Update();
+            timerModel.Update();
 
             ShouldTimerPlaying(true);
             CurrentTimeShouldBe(12);
@@ -98,15 +112,16 @@ namespace GameCore.Tests.Timer
         //設置倒數時間, 驗證尚未刷新時的顯示時間文字
         public void update_count_down_time_text_before_update()
         {
-            timerModel.StartCountDown(155, onTimeUpCallback);
+            timerModel.StartCountDown(155);
 
             TimerTextShouldBe("02:35");
         }
-        
+
         [Test]
-        //尚未設置倒數時間, 顯示文字為"00:00"
-        public void update_count_down_time_text_before_setting()
+        //尚未設置倒數時間, 顯示預設文字&不顯示面板
+        public void update_count_down_time_text_and_set_active_before_setting()
         {
+            ShouldSetTimerActive(false);
             TimerTextShouldBe("00:00");
         }
 
@@ -114,55 +129,74 @@ namespace GameCore.Tests.Timer
         //設置倒數時間, 驗證刷新後顯示時間文字
         public void update_count_down_time_text()
         {
-            timerModel.StartCountDown(62, onTimeUpCallback);
-            timerModel.UpdateCountDownTime(1);
+            GivenDeltaTime(1);
 
-            ShouldReceiveUpdateTimeTextEvent("01:01");
+            timerModel.StartCountDown(62);
+            timerModel.Update();
 
-            timerModel.UpdateCountDownTime(1);
+            ShouldSetTimeText("01:01");
 
-            ShouldReceiveUpdateTimeTextEvent("01:00");
+            timerModel.Update();
 
-            timerModel.UpdateCountDownTime(1);
+            ShouldSetTimeText("01:00");
 
-            ShouldReceiveUpdateTimeTextEvent("00:59");
+            timerModel.Update();
+
+            ShouldSetTimeText("00:59");
         }
 
         [Test]
         //設置倒數時間, 驗證刷新間隔為小數點時的顯示時間文字
         public void update_count_down_time_text_with_decimal()
         {
-            timerModel.StartCountDown(61, onTimeUpCallback);
-            timerModel.UpdateCountDownTime(0.5f);
+            GivenDeltaTime(0.5f);
 
-            ShouldReceiveUpdateTimeTextEvent("01:01");
+            timerModel.StartCountDown(61);
+            timerModel.Update();
 
-            timerModel.UpdateCountDownTime(0.5f);
+            ShouldSetTimeText("01:01");
 
-            ShouldReceiveUpdateTimeTextEvent("01:00");
+            timerModel.Update();
 
-            timerModel.UpdateCountDownTime(0.5f);
+            ShouldSetTimeText("01:00");
 
-            ShouldReceiveUpdateTimeTextEvent("01:00");
+            timerModel.Update();
 
-            timerModel.UpdateCountDownTime(0.5f);
+            ShouldSetTimeText("01:00");
 
-            ShouldReceiveUpdateTimeTextEvent("00:59");
+            timerModel.Update();
+
+            ShouldSetTimeText("00:59");
         }
 
-        private void ShouldReceiveUpdateTimeTextEvent(string expectedTimeText)
+        private void GivenDeltaTime(float deltaTime)
         {
-            onUpdateTimeText.Received(1).Invoke(expectedTimeText);
+            timeManager.DeltaTime.Returns(deltaTime);
+        }
+
+        private void ShouldSetTimerActive(bool expectedActive)
+        {
+            bool argument = (bool)timerView
+                .ReceivedCalls()
+                .Last(x => x.GetMethodInfo().Name == "SetTimerActive")
+                .GetArguments()[0];
+
+            Assert.AreEqual(expectedActive, argument);
+        }
+
+        private void ShouldSetTimeText(string expectedTimeText)
+        {
+            string argument = (string)timerView
+                .ReceivedCalls()
+                .Last(x => x.GetMethodInfo().Name == "SetTimeText")
+                .GetArguments()[0];
+
+            Assert.AreEqual(expectedTimeText, argument);
         }
 
         private void TimerTextShouldBe(string expectedTimeText)
         {
             Assert.AreEqual(expectedTimeText, timerModel.CurrentTimeText);
-        }
-
-        private void ShouldTriggerTimeUpEvent()
-        {
-            onTimeUpCallback.Received(1).Invoke();
         }
 
         private void CurrentTimeShouldBe(float expectedCurrentTime)

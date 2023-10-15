@@ -1,31 +1,57 @@
 using System;
+using UnityEngine;
 
 namespace GameCore
 {
     public class TimerModel
     {
-        private Action onTimeUpCallback;
-        public event Action<string> onUpdateTimeText;
+        private readonly ITimeManager timeAdapter;
+        private ITimerView timerView;
+        
         public bool IsTimerPlaying { get; private set; }
         public float CurrentTime { get; private set; }
         public string CurrentTimeText => ConvertTimeText(CurrentTime);
 
-        public void StartCountDown(float countDownTime, Action callback)
+        public TimerModel(ITimeManager timeAdapter)
+        {
+            this.timeAdapter = timeAdapter;
+        }
+
+        public void Update()
+        {
+            if (IsTimerPlaying)
+                UpdateCountDownTime(timeAdapter.DeltaTime);
+        }
+
+        public void StartCountDown(float countDownTime)
         {
             if (countDownTime <= 0)
             {
                 CurrentTime = 0;
-                onTimeUpCallback = null;
                 IsTimerPlaying = false;
                 return;
             }
 
             CurrentTime = countDownTime;
-            onTimeUpCallback = callback;
             IsTimerPlaying = true;
+            timerView?.SetTimerActive(true);
         }
 
-        public void UpdateCountDownTime(float deltaTime)
+        public void Bind(ITimerView timerView)
+        {
+            this.timerView = timerView;
+            timerView.SetTimerActive(false);
+        }
+
+        private string ConvertTimeText(float currentTime)
+        {
+            int ceilingTime = (int)Math.Ceiling(currentTime);
+            int minute = ceilingTime / 60;
+            int second = ceilingTime % 60;
+            return $"{minute:00}:{second:00}";
+        }
+
+        private void UpdateCountDownTime(float deltaTime)
         {
             if (IsTimerPlaying == false)
                 return;
@@ -33,21 +59,14 @@ namespace GameCore
             CurrentTime -= deltaTime;
 
             string timeText = ConvertTimeText(CurrentTime);
-            onUpdateTimeText?.Invoke(timeText);
+            timerView?.SetTimeText(timeText);
 
             if (CurrentTime > 0)
                 return;
 
             CurrentTime = 0;
             IsTimerPlaying = false;
-            onTimeUpCallback?.Invoke();
-        }
-
-        private string ConvertTimeText(float currentTime)
-        {
-            int minute = (int)currentTime / 60;
-            int second = (int)Math.Ceiling(currentTime % 60f);
-            return $"{minute:00}:{second:00}";
+            timerView?.SetTimerActive(false);
         }
     }
 }
