@@ -13,7 +13,7 @@ namespace GameCore
         public bool CanSpawnNext => GetCurrentSpawnCount < MaxSpawnCount;
         public float StartTimeSecond { get; }
         public IMonsterSetting GetCurrentSpawnMonsterSetting => spawnMonsterOrderList[GetCurrentSpawnCount];
-        private int GetCurrentSpawnCount { get; set; }
+        public int GetCurrentSpawnCount { get; set; }
         private int MaxSpawnCount { get; }
         private float SpawnIntervalSecond { get; }
 
@@ -60,6 +60,5 @@ namespace GameCore
 
             return pathInfo;
         }
-
     }
 }

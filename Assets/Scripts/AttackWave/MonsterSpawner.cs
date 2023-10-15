@@ -63,7 +63,7 @@ namespace GameCore
                 if (attackWave.CanSpawnNext == false)
                     continue;
 
-                if (attackWave.UpdateTimerAndCheckSpawn(deltaTime) == false)
+                if (attackWave.GetCurrentSpawnCount > 0 && attackWave.UpdateTimerAndCheckSpawn(deltaTime) == false)
                     continue;
 
                 IMonsterSetting monsterSetting = attackWave.GetCurrentSpawnMonsterSetting;

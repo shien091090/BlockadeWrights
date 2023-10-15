@@ -102,17 +102,30 @@ namespace GameCore.Tests.AttackWaves
         //產怪後等待一段時間，再產怪
         public void spawn_monster_wait_time()
         {
-            GivenModel(new AttackWave(1, CreateMonsterOrderList(3)));
+            GivenModel(new AttackWave(1, CreateMonsterOrderList(3), 0.5f));
 
             monsterSpawner.CheckUpdateSpawn(0.5f);
-            ShouldTriggerSpawnEvent(0);
+            ShouldTriggerSpawnEvent(1);
             ShouldTriggerStartNextWaveEvent(1);
 
-            monsterSpawner.CheckUpdateSpawn(0.5f);
+            monsterSpawner.CheckUpdateSpawn(1);
             ShouldAllWavesSpawnFinished(false);
+            ShouldTriggerSpawnEvent(2);
+        }
+        
+        [Test]
+        //產怪開始時間到時不等待間隔時間, 會直接先產一次
+        public void spawn_monster_when_start_but_not_wait_for_interval_time()
+        {
+            GivenModel(new AttackWave(1, CreateMonsterOrderList(3), 0.2f));
+
+            monsterSpawner.CheckUpdateSpawn(0.1f);
+            ShouldTriggerSpawnEvent(0);
+            
+            monsterSpawner.CheckUpdateSpawn(0.1f);
             ShouldTriggerSpawnEvent(1);
         }
-
+        
         [Test]
         //第一波時間到, 開始第二波產怪
         public void spawn_monster_next_wave()
