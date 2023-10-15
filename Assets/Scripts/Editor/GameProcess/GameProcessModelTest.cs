@@ -42,6 +42,18 @@ namespace GameCore.Tests.GameProcess
 
             CurrentTimeShouldBe("00:10");
         }
+        
+        [Test]
+        //第一波產怪開始時, 波次從0變1
+        public void first_wave_spawn_monster_start_then_wave_change_from_0_to_1()
+        {
+            GivenIsNeedCountDown(true);
+            GivenStartTimeSeconds(10);
+
+            gameProcessModel.Bind(gameProcessView);
+            
+            
+        }
 
         private void GivenStartTimeSeconds(int startTimeSeconds)
         {
@@ -63,7 +75,6 @@ namespace GameCore.Tests.GameProcess
             Assert.AreEqual(expectedTimeText, timerModel.CurrentTimeText);
         }
 
-        //第一波產怪開始時, 波次從0變1
         //等待第二波產怪, 不顯示倒數計時
         //第二波產怪開始時, 波次從1變2
         //所有怪物死亡, 顯示勝利畫面

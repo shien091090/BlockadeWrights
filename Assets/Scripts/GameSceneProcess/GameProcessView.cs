@@ -3,7 +3,7 @@ using Zenject;
 
 namespace GameCore
 {
-    public class GameSceneProcessView : MonoBehaviour
+    public class GameProcessView : MonoBehaviour, IGameProcessView
     {
         [SerializeField] private WaveHintView waveHintView;
         [SerializeField] private FortressView fortressView;
@@ -12,6 +12,8 @@ namespace GameCore
         [SerializeField] private TimerView timerView;
 
         [Inject] private IMonsterSpawner monsterSpawner;
+
+        public ITimerView GetTimerView => timerView;
 
         private FortressModel fortressModel;
 
