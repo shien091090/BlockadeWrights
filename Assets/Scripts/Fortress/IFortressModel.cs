@@ -4,7 +4,8 @@ namespace GameCore
 {
     public interface IFortressModel
     {
-        void Damage();
         event Action OnFortressDestroy;
+        float CurrentHp { get; }
+        void Damage();
     }
 }

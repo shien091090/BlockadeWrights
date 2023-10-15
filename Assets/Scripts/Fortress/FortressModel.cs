@@ -4,10 +4,10 @@ namespace GameCore
 {
     public class FortressModel : IFortressModel
     {
+        public float CurrentHp => HpModel.CurrentHp;
         public HealthPointModel HpModel { get; }
 
         public bool IsInValid => HpModel.IsInValid;
-        public float CurrentHp => HpModel.CurrentHp;
 
         public FortressModel(float mapHp)
         {

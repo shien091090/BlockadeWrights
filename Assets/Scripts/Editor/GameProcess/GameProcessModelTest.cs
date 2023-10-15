@@ -16,6 +16,7 @@ namespace GameCore.Tests.GameProcess
         private IPlayerSetting playerSetting;
         private IFortressModel fortressModel;
         private IFortressView fortressView;
+        private ITimerView timerView;
 
         [SetUp]
         public void Setup()
@@ -24,7 +25,7 @@ namespace GameCore.Tests.GameProcess
             GivenDeltaTime(1);
 
             gameProcessView = Substitute.For<IGameProcessView>();
-            ITimerView timerView = Substitute.For<ITimerView>();
+            timerView = Substitute.For<ITimerView>();
             gameProcessView.GetTimerView.Returns(timerView);
 
             timerView.When(x => x.BindModel(Arg.Any<TimerModel>())).Do((bindModelFunc) =>
@@ -51,6 +52,23 @@ namespace GameCore.Tests.GameProcess
         }
 
         [Test]
+        //初始化綁定流程
+        public void init_bind_process()
+        {
+            GivenFortressHp(5);
+            GivenWaveHint("0/5");
+            GivenStartTimeSeconds(5);
+            GivenIsNeedCountDown(true);
+
+            gameProcessModel.Bind(gameProcessView);
+
+            ShouldTimerViewCallBindModel();
+            WaveHintShouldBe("0/5");
+            ShouldFortressViewCallBindModel(5);
+            ShouldTimerPlaying(false);
+        }
+
+        [Test]
         //第一波產怪需等待時間, 顯示倒數計時
         public void first_wave_spawn_monster_need_wait_time_then_show_count_down()
         {
@@ -58,8 +76,10 @@ namespace GameCore.Tests.GameProcess
             GivenStartTimeSeconds(10);
 
             gameProcessModel.Bind(gameProcessView);
+            gameProcessModel.Init();
 
             CurrentTimeShouldBe("00:10");
+            ShouldTimerPlaying(true);
         }
 
         [Test]
@@ -72,7 +92,7 @@ namespace GameCore.Tests.GameProcess
 
             gameProcessModel.Bind(gameProcessView);
 
-            ShouldSetWaveHint("0/5");
+            WaveHintShouldBe("0/5");
         }
 
         [Test]
@@ -89,7 +109,7 @@ namespace GameCore.Tests.GameProcess
             CallStartNextWaveEvent();
 
             ShouldCallSetWaveHint(2);
-            ShouldSetWaveHint("1/5");
+            WaveHintShouldBe("1/5");
         }
 
         [Test]
@@ -100,6 +120,8 @@ namespace GameCore.Tests.GameProcess
             GivenStartTimeSeconds(1);
 
             gameProcessModel.Bind(gameProcessView);
+            gameProcessModel.Init();
+            
             timerModel.Update();
             timerModel.Update();
             timerModel.Update();
@@ -172,6 +194,16 @@ namespace GameCore.Tests.GameProcess
             monsterSpawner.OnStartNextWave += Raise.Event<Action>();
         }
 
+        private void ShouldFortressViewCallBindModel(float expectedFortressHp)
+        {
+            fortressView.Received().BindModel(Arg.Is<IFortressModel>(fortressModel => fortressModel.CurrentHp == expectedFortressHp));
+        }
+
+        private void ShouldTimerViewCallBindModel()
+        {
+            timerView.Received().BindModel(Arg.Any<TimerModel>());
+        }
+
         private void ShouldDestroyHintActive(bool expectedActive)
         {
             bool argument = (bool)fortressView
@@ -208,7 +240,7 @@ namespace GameCore.Tests.GameProcess
             waveHintView.Received(callTimes).SetWaveHint(Arg.Any<string>());
         }
 
-        private void ShouldSetWaveHint(string expectedWaveHint)
+        private void WaveHintShouldBe(string expectedWaveHint)
         {
             string argument = (string)waveHintView.ReceivedCalls().Last(x => x.GetMethodInfo().Name == "SetWaveHint").GetArguments()[0];
             Assert.AreEqual(expectedWaveHint, argument);

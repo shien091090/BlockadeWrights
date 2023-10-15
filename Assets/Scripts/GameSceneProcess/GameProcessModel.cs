@@ -17,16 +17,20 @@ namespace GameCore
             timerModel = new TimerModel(timeManager);
         }
 
+        public void Init()
+        {
+            CheckStartTimer();
+        }
+
         public void Bind(IGameProcessView gameProcessView)
         {
             this.gameProcessView = gameProcessView;
             fortressModel = new FortressModel(playerSetting.FortressHp);
-            
+
             gameProcessView.GetTimerView.BindModel(timerModel);
             gameProcessView.GetWaveHintView.SetWaveHint(monsterSpawner.GetWaveHint);
             gameProcessView.GetFortressView.BindModel(fortressModel);
 
-            CheckStartTimer();
             SetEventRegister();
         }
 
