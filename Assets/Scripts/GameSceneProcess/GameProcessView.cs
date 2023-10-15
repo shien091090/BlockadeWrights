@@ -10,11 +10,10 @@ namespace GameCore
         [SerializeField] private GameObjectPoolComponent monsterObjectPool;
         [SerializeField] private TimerView timerView;
 
-        [Inject] private IMonsterSpawner monsterSpawner;
-
         public ITimerView GetTimerView => timerView;
         public IWaveHintView GetWaveHintView => waveHintView;
         public IFortressView GetFortressView => fortressView;
+        private GameProcessModel gameProcessModel;
 
         public IMonsterView SpawnMonsterView(IMonsterModel monsterModel)
         {
@@ -24,7 +23,7 @@ namespace GameCore
 
         private void Update()
         {
-            monsterSpawner.CheckUpdateSpawn(Time.deltaTime);
+            gameProcessModel.Update();
         }
 
         public void Start()

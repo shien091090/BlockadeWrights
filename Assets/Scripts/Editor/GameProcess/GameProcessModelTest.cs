@@ -66,6 +66,29 @@ namespace GameCore.Tests.GameProcess
             WaveHintShouldBe("0/5");
             ShouldFortressViewCallBindModel(5);
             ShouldTimerPlaying(false);
+            ShouldIsStartGame(false);
+        }
+
+        [Test]
+        //遊戲開始後才會開始產怪倒數計時
+        public void start_game_then_start_spawn_monster_count_down()
+        {
+            GivenIsNeedCountDown(true);
+            GivenStartTimeSeconds(5);
+
+            gameProcessModel.Bind(gameProcessView);
+            gameProcessModel.Update();
+
+            ShouldIsStartGame(false);
+            ShouldTimerPlaying(false);
+            ShouldNotUpdateToSpawnMonster();
+
+            gameProcessModel.StartGame();
+            gameProcessModel.Update();
+
+            ShouldIsStartGame(true);
+            ShouldTimerPlaying(true);
+            ShouldUpdateToSpawnMonster();
         }
 
         [Test]
@@ -76,7 +99,7 @@ namespace GameCore.Tests.GameProcess
             GivenStartTimeSeconds(10);
 
             gameProcessModel.Bind(gameProcessView);
-            gameProcessModel.Init();
+            gameProcessModel.StartGame();
 
             CurrentTimeShouldBe("00:10");
             ShouldTimerPlaying(true);
@@ -120,8 +143,8 @@ namespace GameCore.Tests.GameProcess
             GivenStartTimeSeconds(1);
 
             gameProcessModel.Bind(gameProcessView);
-            gameProcessModel.Init();
-            
+            gameProcessModel.StartGame();
+
             timerModel.Update();
             timerModel.Update();
             timerModel.Update();
@@ -192,6 +215,21 @@ namespace GameCore.Tests.GameProcess
         private void CallStartNextWaveEvent()
         {
             monsterSpawner.OnStartNextWave += Raise.Event<Action>();
+        }
+
+        private void ShouldUpdateToSpawnMonster()
+        {
+            monsterSpawner.Received().CheckUpdateSpawn(Arg.Any<float>());
+        }
+
+        private void ShouldNotUpdateToSpawnMonster()
+        {
+            monsterSpawner.DidNotReceive().CheckUpdateSpawn(Arg.Any<float>());
+        }
+
+        private void ShouldIsStartGame(bool expectedStartGame)
+        {
+            Assert.AreEqual(expectedStartGame, gameProcessModel.IsStartGame);
         }
 
         private void ShouldFortressViewCallBindModel(float expectedFortressHp)

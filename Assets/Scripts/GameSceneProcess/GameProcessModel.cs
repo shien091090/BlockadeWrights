@@ -1,30 +1,46 @@
-using UnityEngine;
-
 namespace GameCore
 {
     public class GameProcessModel
     {
         private readonly IMonsterSpawner monsterSpawner;
+        private readonly ITimeManager timeManager;
         private readonly TimerModel timerModel;
         private readonly IPlayerSetting playerSetting;
         private IFortressModel fortressModel;
         private IGameProcessView gameProcessView;
 
+        public bool IsStartGame { get; private set; }
+
         public GameProcessModel(IMonsterSpawner monsterSpawner, ITimeManager timeManager, IPlayerSetting playerSetting)
         {
+            IsStartGame = false;
+
             this.monsterSpawner = monsterSpawner;
+            this.timeManager = timeManager;
             this.playerSetting = playerSetting;
+
             timerModel = new TimerModel(timeManager);
         }
 
-        public void Init()
+        public void Update()
         {
+            if (IsStartGame == false)
+                return;
+
+            monsterSpawner.CheckUpdateSpawn(timeManager.DeltaTime);
+        }
+
+        public void StartGame()
+        {
+            IsStartGame = true;
             CheckStartTimer();
         }
 
         public void Bind(IGameProcessView gameProcessView)
         {
             this.gameProcessView = gameProcessView;
+            IsStartGame = false;
+
             fortressModel = new FortressModel(playerSetting.FortressHp);
 
             gameProcessView.GetTimerView.BindModel(timerModel);
