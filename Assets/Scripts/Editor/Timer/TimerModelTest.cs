@@ -10,10 +10,13 @@ namespace GameCore.Tests.Timer
         private TimerModel timerModel;
         private ITimeManager timeManager;
         private ITimerView timerView;
+        private Action onTimeUpEvent;
 
         [SetUp]
         public void Setup()
         {
+            onTimeUpEvent = Substitute.For<Action>();
+
             timeManager = Substitute.For<ITimeManager>();
             GivenDeltaTime(1);
             timerModel = new TimerModel(timeManager);
@@ -70,7 +73,7 @@ namespace GameCore.Tests.Timer
         {
             GivenDeltaTime(3);
 
-            timerModel.StartCountDown(10);
+            timerModel.StartCountDown(10, onTimeUpEvent);
             timerModel.Update();
             timerModel.Update();
             timerModel.Update();
@@ -83,6 +86,7 @@ namespace GameCore.Tests.Timer
             ShouldTimerPlaying(false);
             CurrentTimeShouldBe(0);
             ShouldSetTimerActive(false);
+            ShouldTriggerTimeUpEvent();
         }
 
         [Test]
@@ -172,6 +176,11 @@ namespace GameCore.Tests.Timer
         private void GivenDeltaTime(float deltaTime)
         {
             timeManager.DeltaTime.Returns(deltaTime);
+        }
+
+        private void ShouldTriggerTimeUpEvent()
+        {
+            onTimeUpEvent.Received().Invoke();
         }
 
         private void ShouldSetTimerActive(bool expectedActive)

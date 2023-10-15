@@ -6,6 +6,8 @@ namespace GameCore
     {
         private readonly ITimeManager timeAdapter;
         private ITimerView timerView;
+        
+        private Action onTimeUp;
 
         public bool IsTimerPlaying { get; private set; }
         public float CurrentTime { get; private set; }
@@ -22,7 +24,7 @@ namespace GameCore
                 UpdateCountDownTime(timeAdapter.DeltaTime);
         }
 
-        public void StartCountDown(float countDownTime)
+        public void StartCountDown(float countDownTime, Action onCountDownFinished = null)
         {
             if (countDownTime <= 0)
             {
@@ -34,6 +36,7 @@ namespace GameCore
             CurrentTime = countDownTime;
             IsTimerPlaying = true;
             timerView?.SetTimerActive(true);
+            onTimeUp = onCountDownFinished;
         }
 
         public void Bind(ITimerView timerView)
@@ -66,6 +69,7 @@ namespace GameCore
             CurrentTime = 0;
             IsTimerPlaying = false;
             timerView?.SetTimerActive(false);
+            onTimeUp?.Invoke();
         }
     }
 }
