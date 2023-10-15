@@ -1,14 +1,11 @@
 using TMPro;
 using UnityEngine;
-using Zenject;
 
 namespace GameCore
 {
     public class TimerView : MonoBehaviour, ITimerView
     {
         [SerializeField] private TextMeshProUGUI tmp_timer;
-
-        [Inject] private ITimeManager timeManager;
 
         private TimerModel timerModel;
 
@@ -22,15 +19,14 @@ namespace GameCore
             tmp_timer.gameObject.SetActive(isActive);
         }
 
+        public void BindModel(TimerModel timerModel)
+        {
+            timerModel.Bind(this);
+        }
+
         private void Update()
         {
             timerModel.Update();
-        }
-
-        private void Awake()
-        {
-            timerModel = new TimerModel(timeManager);
-            timerModel.Bind(this);
         }
     }
 }

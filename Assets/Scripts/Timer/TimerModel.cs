@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace GameCore
 {
@@ -7,7 +6,7 @@ namespace GameCore
     {
         private readonly ITimeManager timeAdapter;
         private ITimerView timerView;
-        
+
         public bool IsTimerPlaying { get; private set; }
         public float CurrentTime { get; private set; }
         public string CurrentTimeText => ConvertTimeText(CurrentTime);

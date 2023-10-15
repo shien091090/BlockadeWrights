@@ -4,5 +4,6 @@ namespace GameCore
     {
         void SetTimeText(string timeText);
         void SetTimerActive(bool isActive);
+        void BindModel(TimerModel timerModel);
     }
 }

@@ -30,7 +30,6 @@ namespace GameCore
             monsterObjectPool.InitPreSpawn();
 
             SetEventRegister();
-            CheckStartTimer();
         }
 
         private void SetEventRegister()
@@ -43,12 +42,6 @@ namespace GameCore
 
             fortressModel.OnFortressDestroy -= OnFortressDestroy;
             fortressModel.OnFortressDestroy += OnFortressDestroy;
-        }
-
-        private void CheckStartTimer()
-        {
-            if (monsterSpawner.IsNeedCountDownToSpawnMonster())
-                timerView.StartCountDown(monsterSpawner.GetStartTimeSeconds());
         }
 
         private void OnFortressDestroy()
