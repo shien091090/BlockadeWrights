@@ -4,7 +4,6 @@ namespace GameCore
 {
     public class FortressModel : IFortressModel
     {
-        public event Action OnFortressDestroy;
         public HealthPointModel HpModel { get; }
 
         public bool IsInValid => HpModel.IsInValid;
@@ -14,6 +13,8 @@ namespace GameCore
         {
             HpModel = new HealthPointModel(mapHp);
         }
+
+        public event Action OnFortressDestroy;
 
         public void Damage()
         {

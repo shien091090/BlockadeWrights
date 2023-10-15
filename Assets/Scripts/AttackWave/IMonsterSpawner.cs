@@ -5,10 +5,10 @@ namespace GameCore
     public interface IMonsterSpawner
     {
         event Action<IMonsterModel> OnSpawnMonster;
-        string GetWaveHint { get; }
-        void CheckUpdateSpawn(float deltaTime);
         event Action OnStartNextWave;
+        string GetWaveHint { get; }
         bool IsNeedCountDownToSpawnMonster();
         float GetStartTimeSeconds();
+        void CheckUpdateSpawn(float deltaTime);
     }
 }

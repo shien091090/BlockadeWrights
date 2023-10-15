@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public class FortressView : MonoBehaviour
+    public class FortressView : MonoBehaviour, IFortressView
     {
         [SerializeField] private GameObject go_destroyHint;
 
@@ -19,15 +19,15 @@ namespace GameCore
             }
         }
 
-        public void Init(FortressModel fortressModel)
-        {
-            HpComponent.BindModel(fortressModel.HpModel);
-            SetDestroyHintActive(false);
-        }
-
         public void SetDestroyHintActive(bool isDestroy)
         {
             go_destroyHint.SetActive(isDestroy);
+        }
+
+        public void BindModel(IFortressModel fortressModel)
+        {
+            // HpComponent.BindModel(fortressModel.HpModel);
+            // SetDestroyHintActive(false);
         }
     }
 }

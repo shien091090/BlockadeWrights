@@ -13,6 +13,9 @@ namespace GameCore.Tests.GameProcess
         private TimerModel timerModel;
         private GameProcessModel gameProcessModel;
         private IWaveHintView waveHintView;
+        private IPlayerSetting playerSetting;
+        private IFortressModel fortressModel;
+        private IFortressView fortressView;
 
         [SetUp]
         public void Setup()
@@ -30,11 +33,21 @@ namespace GameCore.Tests.GameProcess
                 timerModel = model;
             });
 
+            fortressView = Substitute.For<IFortressView>();
+            gameProcessView.GetFortressView.Returns(fortressView);
+
+            fortressView.When(x => x.BindModel(Arg.Any<IFortressModel>())).Do((bindModelFunc) =>
+            {
+                IFortressModel model = bindModelFunc.Arg<IFortressModel>();
+                fortressModel = model;
+            });
+
             waveHintView = Substitute.For<IWaveHintView>();
             gameProcessView.GetWaveHintView.Returns(waveHintView);
 
             monsterSpawner = Substitute.For<IMonsterSpawner>();
-            gameProcessModel = new GameProcessModel(monsterSpawner, timeManager);
+            playerSetting = Substitute.For<IPlayerSetting>();
+            gameProcessModel = new GameProcessModel(monsterSpawner, timeManager, playerSetting);
         }
 
         [Test]
@@ -109,6 +122,26 @@ namespace GameCore.Tests.GameProcess
             ShouldMonsterSetAttackTarget(monsterModel);
         }
 
+        [Test]
+        //主堡被破壞, 顯示失敗畫面
+        public void fortress_destroyed_then_show_game_over()
+        {
+            GivenFortressHp(3);
+
+            gameProcessModel.Bind(gameProcessView);
+
+            fortressModel.Damage();
+            fortressModel.Damage();
+            fortressModel.Damage();
+
+            ShouldDestroyHintActive(true);
+        }
+
+        private void GivenFortressHp(int hp)
+        {
+            playerSetting.FortressHp.Returns(hp);
+        }
+
         private void GivenWaveHint(string waveHint)
         {
             monsterSpawner.GetWaveHint.Returns(waveHint);
@@ -137,6 +170,16 @@ namespace GameCore.Tests.GameProcess
         private void CallStartNextWaveEvent()
         {
             monsterSpawner.OnStartNextWave += Raise.Event<Action>();
+        }
+
+        private void ShouldDestroyHintActive(bool expectedActive)
+        {
+            bool argument = (bool)fortressView
+                .ReceivedCalls()
+                .Last(x => x.GetMethodInfo().Name == "SetDestroyHintActive")
+                .GetArguments()[0];
+
+            Assert.AreEqual(expectedActive, argument);
         }
 
         private void ShouldMonsterSetAttackTarget(IMonsterModel monsterModel)
@@ -184,6 +227,5 @@ namespace GameCore.Tests.GameProcess
         }
 
         //所有怪物死亡, 顯示勝利畫面
-        //主堡被破壞, 顯示失敗畫面
     }
 }

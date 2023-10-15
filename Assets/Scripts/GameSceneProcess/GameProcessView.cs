@@ -7,7 +7,6 @@ namespace GameCore
     {
         [SerializeField] private WaveHintView waveHintView;
         [SerializeField] private FortressView fortressView;
-        [SerializeField] private float fortressHp;
         [SerializeField] private GameObjectPoolComponent monsterObjectPool;
         [SerializeField] private TimerView timerView;
 
@@ -15,8 +14,7 @@ namespace GameCore
 
         public ITimerView GetTimerView => timerView;
         public IWaveHintView GetWaveHintView => waveHintView;
-
-        private FortressModel fortressModel;
+        public IFortressView GetFortressView => fortressView;
 
         public IMonsterView SpawnMonsterView(IMonsterModel monsterModel)
         {
@@ -31,16 +29,9 @@ namespace GameCore
 
         public void Start()
         {
-            fortressModel = new FortressModel(fortressHp);
-            fortressView.Init(fortressModel);
-
             monsterObjectPool.InitPreSpawn();
         }
 
 
-        private void OnFortressDestroy()
-        {
-            fortressView.SetDestroyHintActive(true);
-        }
     }
 }
