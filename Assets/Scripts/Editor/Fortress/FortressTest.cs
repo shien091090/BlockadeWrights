@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -8,11 +9,23 @@ namespace GameCore.Tests.Fortress
     {
         private Action fortressDestroyEvent;
         private FortressModel fortressModel;
+        private IFortressView fortressView;
+        private IHealthPointView healthPointView;
+        private HealthPointModel healthPointModel;
 
         [SetUp]
         public void Setup()
         {
             fortressDestroyEvent = Substitute.For<Action>();
+            fortressView = Substitute.For<IFortressView>();
+
+            healthPointView = Substitute.For<IHealthPointView>();
+            healthPointView.When(x => x.BindModel(Arg.Any<HealthPointModel>())).Do((bindModelFunc) =>
+            {
+                HealthPointModel model = bindModelFunc.Arg<HealthPointModel>();
+                healthPointModel = model;
+            });
+            fortressView.GetHealthPointView.Returns(healthPointView);
         }
 
         [Test]
@@ -22,6 +35,8 @@ namespace GameCore.Tests.Fortress
             GivenInitModel(0);
 
             ShouldModelInvalid(true);
+            ShouldDestroyHintActive(false);
+            ShouldHpIsInvalid(true);
         }
 
         [Test]
@@ -55,7 +70,24 @@ namespace GameCore.Tests.Fortress
         private void GivenInitModel(int mapHp)
         {
             fortressModel = new FortressModel(mapHp);
+            fortressModel.Bind(fortressView);
             fortressModel.OnFortressDestroy += fortressDestroyEvent;
+        }
+
+        private void ShouldHpIsInvalid(bool expectedIsInvalid)
+        {
+            Assert.AreEqual(expectedIsInvalid, healthPointModel.IsInValid);
+        }
+
+        private void HpShouldBe(int expectedHp)
+        {
+            Assert.AreEqual(expectedHp, healthPointModel.CurrentHp);
+        }
+
+        private void ShouldDestroyHintActive(bool expectedActive)
+        {
+            bool argument = (bool)fortressView.ReceivedCalls().Last(x => x.GetMethodInfo().Name == "SetDestroyHintActive").GetArguments()[0];
+            Assert.AreEqual(expectedActive, argument);
         }
 
         private void FortressHpShouldBe(int expectedHp)

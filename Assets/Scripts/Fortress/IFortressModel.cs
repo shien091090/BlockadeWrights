@@ -7,5 +7,6 @@ namespace GameCore
         event Action OnFortressDestroy;
         float CurrentHp { get; }
         void Damage();
+        void Bind(IFortressView fortressView);
     }
 }

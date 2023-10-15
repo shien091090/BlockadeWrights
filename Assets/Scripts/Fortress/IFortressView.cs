@@ -2,7 +2,8 @@ namespace GameCore
 {
     public interface IFortressView
     {
-        void BindModel(IFortressModel fortressModel);
+        IHealthPointView GetHealthPointView { get; }
         void SetDestroyHintActive(bool isDestroy);
+        void BindModel(IFortressModel fortressModel);
     }
 }
