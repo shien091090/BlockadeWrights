@@ -29,7 +29,6 @@ namespace GameCore
 
         public void Start()
         {
-            monsterObjectPool.InitPreSpawn();
             gameProcessModel.Bind(this);
             gameProcessModel.StartGame();
         }

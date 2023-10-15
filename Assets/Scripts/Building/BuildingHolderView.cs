@@ -22,7 +22,6 @@ namespace GameCore
         private void Start()
         {
             RegisterEvent();
-            GameObjectPool.InitPreSpawn();
         }
 
         private void RegisterEvent()

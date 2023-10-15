@@ -12,7 +12,12 @@ namespace GameCore
 
         private readonly List<GameObject> gameObjectList = new List<GameObject>();
 
-        public void InitPreSpawn()
+        private void Start()
+        {
+            InitPreSpawn();
+        }
+
+        private void InitPreSpawn()
         {
             for (int i = 0; i < preSpawnCount; i++)
             {

@@ -14,10 +14,5 @@ namespace GameCore
                 attackTarget.Damage(attackPower);
             });
         }
-
-        private void Start()
-        {
-            effectObjectPool.InitPreSpawn();
-        }
     }
 }
