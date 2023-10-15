@@ -71,12 +71,28 @@ namespace GameCore.Tests.GameProcess
             GivenWaveHint("0/5");
 
             gameProcessModel.Bind(gameProcessView);
-            
+
             GivenWaveHint("1/5");
             CallStartNextWaveEvent();
 
             ShouldCallSetWaveHint(2);
             ShouldSetWaveHint("1/5");
+        }
+
+        [Test]
+        //等待第二波產怪, 不顯示倒數計時
+        public void wait_second_wave_spawn_monster_then_not_show_count_down()
+        {
+            GivenIsNeedCountDown(true);
+            GivenStartTimeSeconds(1);
+
+            gameProcessModel.Bind(gameProcessView);
+            timerModel.Update();
+            timerModel.Update();
+            timerModel.Update();
+
+            CurrentTimeShouldBe("00:00");
+            ShouldTimerPlaying(false);
         }
 
         private void GivenWaveHint(string waveHint)
@@ -104,6 +120,11 @@ namespace GameCore.Tests.GameProcess
             monsterSpawner.OnStartNextWave += Raise.Event<Action>();
         }
 
+        private void ShouldTimerPlaying(bool expectedIsPlaying)
+        {
+            Assert.AreEqual(expectedIsPlaying, timerModel.IsTimerPlaying);
+        }
+
         private void ShouldCallSetWaveHint(int callTimes)
         {
             waveHintView.Received(callTimes).SetWaveHint(Arg.Any<string>());
@@ -120,7 +141,6 @@ namespace GameCore.Tests.GameProcess
             Assert.AreEqual(expectedTimeText, timerModel.CurrentTimeText);
         }
 
-        //等待第二波產怪, 不顯示倒數計時
         //第二波產怪開始時, 波次從1變2
         //所有怪物死亡, 顯示勝利畫面
         //主堡被破壞, 顯示失敗畫面
