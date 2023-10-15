@@ -48,7 +48,7 @@ namespace GameCore.Tests.GameProcess
 
             CurrentTimeShouldBe("00:10");
         }
-        
+
         [Test]
         //第一波產怪尚未開始時, 波次提示顯示為0
         public void first_wave_spawn_monster_not_start_then_wave_hint_is_0()
@@ -68,12 +68,14 @@ namespace GameCore.Tests.GameProcess
         {
             GivenIsNeedCountDown(false);
             GivenStartTimeSeconds(0);
-            GivenWaveHint("1/5");
+            GivenWaveHint("0/5");
 
             gameProcessModel.Bind(gameProcessView);
-
+            
+            GivenWaveHint("1/5");
             CallStartNextWaveEvent();
 
+            ShouldCallSetWaveHint(2);
             ShouldSetWaveHint("1/5");
         }
 
@@ -100,6 +102,11 @@ namespace GameCore.Tests.GameProcess
         private void CallStartNextWaveEvent()
         {
             monsterSpawner.OnStartNextWave += Raise.Event<Action>();
+        }
+
+        private void ShouldCallSetWaveHint(int callTimes)
+        {
+            waveHintView.Received(callTimes).SetWaveHint(Arg.Any<string>());
         }
 
         private void ShouldSetWaveHint(string expectedWaveHint)
