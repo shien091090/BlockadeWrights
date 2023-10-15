@@ -4,5 +4,6 @@ namespace GameCore
     {
         ITimerView GetTimerView { get; }
         IWaveHintView GetWaveHintView { get; }
+        IMonsterView SpawnMonsterView(IMonsterModel monsterModel);
     }
 }

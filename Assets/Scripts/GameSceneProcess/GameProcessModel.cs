@@ -5,6 +5,7 @@ namespace GameCore
         private readonly IMonsterSpawner monsterSpawner;
         private readonly TimerModel timerModel;
         private IGameProcessView gameProcessView;
+        private IFortressModel fortressModel;
 
         public GameProcessModel(IMonsterSpawner monsterSpawner, ITimeManager timeManager)
         {
@@ -23,8 +24,8 @@ namespace GameCore
 
         private void SetEventRegister()
         {
-            // monsterSpawner.OnSpawnMonster -= OnSpawnMonster;
-            // monsterSpawner.OnSpawnMonster += OnSpawnMonster;
+            monsterSpawner.OnSpawnMonster -= OnSpawnMonster;
+            monsterSpawner.OnSpawnMonster += OnSpawnMonster;
 
             monsterSpawner.OnStartNextWave -= OnStartNextWave;
             monsterSpawner.OnStartNextWave += OnStartNextWave;
@@ -37,6 +38,13 @@ namespace GameCore
         {
             if (monsterSpawner.IsNeedCountDownToSpawnMonster())
                 timerModel.StartCountDown(monsterSpawner.GetStartTimeSeconds());
+        }
+
+        private void OnSpawnMonster(IMonsterModel monsterModel)
+        {
+            IMonsterView monsterView = gameProcessView.SpawnMonsterView(monsterModel);
+            monsterModel.Bind(monsterView);
+            monsterModel.SetAttackTarget(fortressModel);
         }
 
         private void OnStartNextWave()

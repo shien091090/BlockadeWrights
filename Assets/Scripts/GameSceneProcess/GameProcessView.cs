@@ -18,6 +18,12 @@ namespace GameCore
 
         private FortressModel fortressModel;
 
+        public IMonsterView SpawnMonsterView(IMonsterModel monsterModel)
+        {
+            MonsterView monster = monsterObjectPool.SpawnGameObject<MonsterView>(monsterModel.GetStartPoint);
+            return monster;
+        }
+
         private void Update()
         {
             monsterSpawner.CheckUpdateSpawn(Time.deltaTime);
@@ -25,8 +31,6 @@ namespace GameCore
 
         public void Start()
         {
-            waveHintView.SetWaveHint(monsterSpawner.GetWaveHint);
-
             fortressModel = new FortressModel(fortressHp);
             fortressView.Init(fortressModel);
 
@@ -37,13 +41,6 @@ namespace GameCore
         private void OnFortressDestroy()
         {
             fortressView.SetDestroyHintActive(true);
-        }
-
-        private void OnSpawnMonster(IMonsterModel monsterModel)
-        {
-            MonsterView monsterView = monsterObjectPool.SpawnGameObject<MonsterView>(monsterModel.GetStartPoint);
-            monsterModel.Bind(monsterView);
-            monsterModel.SetAttackTarget(fortressModel);
         }
     }
 }

@@ -95,6 +95,20 @@ namespace GameCore.Tests.GameProcess
             ShouldTimerPlaying(false);
         }
 
+        [Test]
+        //產怪時, 產生怪物View並綁定Model
+        public void spawn_monster_then_create_monster_view_and_bind_model()
+        {
+            gameProcessModel.Bind(gameProcessView);
+
+            IMonsterModel monsterModel = CreateMonsterModel(55);
+            CallSpawnMonster(monsterModel);
+
+            ShouldSpawnMonsterView(55);
+            ShouldMonsterModelBind(monsterModel);
+            ShouldMonsterSetAttackTarget(monsterModel);
+        }
+
         private void GivenWaveHint(string waveHint)
         {
             monsterSpawner.GetWaveHint.Returns(waveHint);
@@ -115,9 +129,30 @@ namespace GameCore.Tests.GameProcess
             timeManager.DeltaTime.Returns(deltaTime);
         }
 
+        private void CallSpawnMonster(IMonsterModel monsterModel)
+        {
+            monsterSpawner.OnSpawnMonster += Raise.Event<Action<IMonsterModel>>(monsterModel);
+        }
+
         private void CallStartNextWaveEvent()
         {
             monsterSpawner.OnStartNextWave += Raise.Event<Action>();
+        }
+
+        private void ShouldMonsterSetAttackTarget(IMonsterModel monsterModel)
+        {
+            monsterModel.Received().SetAttackTarget(Arg.Any<IFortressModel>());
+        }
+
+        private void ShouldMonsterModelBind(IMonsterModel monsterModel)
+        {
+            monsterModel.Received().Bind(Arg.Any<IMonsterView>());
+        }
+
+        private void ShouldSpawnMonsterView(float expectedMonsterHp)
+        {
+            IMonsterModel argument = (IMonsterModel)gameProcessView.ReceivedCalls().Last(x => x.GetMethodInfo().Name == "SpawnMonsterView").GetArguments()[0];
+            Assert.AreEqual(expectedMonsterHp, argument.GetHp);
         }
 
         private void ShouldTimerPlaying(bool expectedIsPlaying)
@@ -141,7 +176,13 @@ namespace GameCore.Tests.GameProcess
             Assert.AreEqual(expectedTimeText, timerModel.CurrentTimeText);
         }
 
-        //第二波產怪開始時, 波次從1變2
+        private IMonsterModel CreateMonsterModel(float hp)
+        {
+            IMonsterModel monsterModel = Substitute.For<IMonsterModel>();
+            monsterModel.GetHp.Returns(hp);
+            return monsterModel;
+        }
+
         //所有怪物死亡, 顯示勝利畫面
         //主堡被破壞, 顯示失敗畫面
     }
