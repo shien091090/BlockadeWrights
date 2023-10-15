@@ -48,6 +48,19 @@ namespace GameCore.Tests.GameProcess
 
             CurrentTimeShouldBe("00:10");
         }
+        
+        [Test]
+        //第一波產怪尚未開始時, 波次提示顯示為0
+        public void first_wave_spawn_monster_not_start_then_wave_hint_is_0()
+        {
+            GivenIsNeedCountDown(true);
+            GivenStartTimeSeconds(5);
+            GivenWaveHint("0/5");
+
+            gameProcessModel.Bind(gameProcessView);
+
+            ShouldSetWaveHint("0/5");
+        }
 
         [Test]
         //第一波產怪開始時, 波次從0變1
