@@ -13,6 +13,7 @@ namespace GameCore
             Container.Bind<IInGameMapModel>().To<InGameMapModel>().AsSingle();
             Container.Bind<PlayerModel>().AsSingle();
             Container.Bind<IMonsterSpawner>().To<MonsterSpawner>().AsSingle();
+            Container.Bind<IGameProcessModel>().To<GameProcessModel>().AsSingle();
         }
     }
 }

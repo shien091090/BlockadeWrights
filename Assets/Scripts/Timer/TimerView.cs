@@ -21,12 +21,13 @@ namespace GameCore
 
         public void BindModel(TimerModel timerModel)
         {
+            this.timerModel = timerModel;
             timerModel.Bind(this);
         }
 
         private void Update()
         {
-            timerModel.Update();
+            timerModel?.Update();
         }
     }
 }

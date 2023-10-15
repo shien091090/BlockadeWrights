@@ -1,6 +1,8 @@
+using UnityEngine;
+
 namespace GameCore
 {
-    public class GameProcessModel
+    public class GameProcessModel : IGameProcessModel
     {
         private readonly IMonsterSpawner monsterSpawner;
         private readonly ITimeManager timeManager;
