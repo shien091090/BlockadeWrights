@@ -64,6 +64,7 @@ namespace GameCore.Tests.Fortress
 
             FortressHpShouldBe(0);
             ShouldTriggerFortressDestroyEvent(1);
+            ShouldDestroyHintActive(true);
         }
 
         private void GivenInitModel(int mapHp)
