@@ -179,7 +179,7 @@ namespace GameCore.Tests.GameProcess
             fortressModel.Damage();
             fortressModel.Damage();
 
-            ShouldDestroyHintActive(true);
+            ShouldGameOverPanelActive(true);
         }
 
         private void GivenFortressHp(int hp)
@@ -215,6 +215,12 @@ namespace GameCore.Tests.GameProcess
         private void CallStartNextWaveEvent()
         {
             monsterSpawner.OnStartNextWave += Raise.Event<Action>();
+        }
+
+        private void ShouldGameOverPanelActive(bool expectedActive)
+        {
+            bool argument = (bool)gameProcessView.ReceivedCalls().Last(x => x.GetMethodInfo().Name == "SetGameOverPanelActive").GetArguments()[0];
+            Assert.AreEqual(expectedActive, argument);
         }
 
         private void ShouldUpdateToSpawnMonster()

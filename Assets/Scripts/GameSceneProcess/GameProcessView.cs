@@ -9,12 +9,16 @@ namespace GameCore
         [SerializeField] private FortressView fortressView;
         [SerializeField] private GameObjectPoolComponent monsterObjectPool;
         [SerializeField] private TimerView timerView;
-        
+
         [Inject] private IGameProcessModel gameProcessModel;
 
         public ITimerView GetTimerView => timerView;
         public IWaveHintView GetWaveHintView => waveHintView;
         public IFortressView GetFortressView => fortressView;
+
+        public void SetGameOverPanelActive(bool isActive)
+        {
+        }
 
         public IMonsterView SpawnMonsterView(IMonsterModel monsterModel)
         {

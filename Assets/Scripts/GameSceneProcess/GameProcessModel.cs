@@ -72,7 +72,7 @@ namespace GameCore
 
         private void OnFortressDestroy()
         {
-            gameProcessView.GetFortressView.SetDestroyHintActive(true);
+            gameProcessView.SetGameOverPanelActive(true);
         }
 
         private void OnSpawnMonster(IMonsterModel monsterModel)
