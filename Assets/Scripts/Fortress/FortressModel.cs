@@ -4,29 +4,28 @@ namespace GameCore
 {
     public class FortressModel : IFortressModel
     {
-        public float CurrentHp => HpModel.CurrentHp;
-        public HealthPointModel HpModel { get; }
-        public bool IsInValid => HpModel.IsInValid;
+        public float CurrentHp => hpModel.CurrentHp;
+        private readonly HealthPointModel hpModel;
 
         public FortressModel(float mapHp)
         {
-            HpModel = new HealthPointModel(mapHp);
+            hpModel = new HealthPointModel(mapHp);
         }
 
         public event Action OnFortressDestroy;
 
         public void Damage()
         {
-            HpModel.Damage(1);
+            hpModel.Damage(1);
 
-            if (HpModel.IsDead)
+            if (hpModel.IsDead)
                 OnFortressDestroy?.Invoke();
         }
 
         public void Bind(IFortressView fortressView)
         {
             fortressView.SetDestroyHintActive(false);
-            fortressView.GetHealthPointView.BindModel(HpModel);
+            fortressView.GetHealthPointView.BindModel(hpModel);
         }
     }
 }

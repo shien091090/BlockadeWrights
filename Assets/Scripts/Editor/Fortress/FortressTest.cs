@@ -34,7 +34,6 @@ namespace GameCore.Tests.Fortress
         {
             GivenInitModel(0);
 
-            ShouldModelInvalid(true);
             ShouldDestroyHintActive(false);
             ShouldHpIsInvalid(true);
         }
@@ -44,7 +43,7 @@ namespace GameCore.Tests.Fortress
         public void fortress_be_attacked_but_not_destroyed()
         {
             GivenInitModel(3);
-            ShouldModelInvalid(false);
+            ShouldHpIsInvalid(false);
 
             fortressModel.Damage();
             fortressModel.Damage();
@@ -101,11 +100,6 @@ namespace GameCore.Tests.Fortress
                 fortressDestroyEvent.DidNotReceive().Invoke();
             else
                 fortressDestroyEvent.Received(triggerTimes).Invoke();
-        }
-
-        private void ShouldModelInvalid(bool expectedInvalid)
-        {
-            Assert.AreEqual(expectedInvalid, fortressModel.IsInValid);
         }
     }
 }
