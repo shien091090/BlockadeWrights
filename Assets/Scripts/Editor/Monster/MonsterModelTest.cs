@@ -48,6 +48,7 @@ namespace GameCore.Tests.Monster
             ShouldSetupHp(100);
             ShouldInitSprite();
             MonsterStateShouldBe(EntityState.Normal);
+            ShouldSetActive(true);
         }
 
         [Test]
@@ -157,6 +158,7 @@ namespace GameCore.Tests.Monster
 
             ShouldBeArrivedGoal(true);
             ShouldDamageFortress(1);
+            ShouldSetActive(false);
         }
 
         [Test]
@@ -200,7 +202,7 @@ namespace GameCore.Tests.Monster
             monsterModel.PreDamage(11);
 
             MonsterStateShouldBe(EntityState.PreDie);
-            ShouldNotCallSetActive();
+            ShouldSetActive(true);
         }
 
         [Test]

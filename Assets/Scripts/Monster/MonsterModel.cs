@@ -96,6 +96,7 @@ namespace GameCore
             monsterView.GetHealthPointView.BindModel(hpModel);
             monsterView.InitSprite(GetFrontSideSprite, GetBackSideSprite);
             lookFaceDirection.BindView(monsterView);
+            monsterView.SetActive(true);
 
             monsterView.Bind(this);
         }
@@ -136,7 +137,10 @@ namespace GameCore
             CurrentTargetPathIndex++;
 
             if (IsArrivedGoal)
+            {
                 fortressModel?.Damage();
+                monsterView.SetActive(false);
+            }
 
             return moveVector;
         }
