@@ -67,6 +67,7 @@ namespace GameCore.Tests.GameProcess
             ShouldFortressViewCallBindModel(5);
             ShouldTimerPlaying(false);
             ShouldIsStartGame(false);
+            GameOverPanelShouldBeActive(false);
         }
 
         [Test]
@@ -179,8 +180,10 @@ namespace GameCore.Tests.GameProcess
             fortressModel.Damage();
             fortressModel.Damage();
 
-            ShouldGameOverPanelActive(true);
+            GameOverPanelShouldBeActive(true);
         }
+
+        //所有怪物死亡, 顯示勝利畫面
 
         private void GivenFortressHp(int hp)
         {
@@ -217,7 +220,7 @@ namespace GameCore.Tests.GameProcess
             monsterSpawner.OnStartNextWave += Raise.Event<Action>();
         }
 
-        private void ShouldGameOverPanelActive(bool expectedActive)
+        private void GameOverPanelShouldBeActive(bool expectedActive)
         {
             bool argument = (bool)gameProcessView.ReceivedCalls().Last(x => x.GetMethodInfo().Name == "SetGameOverPanelActive").GetArguments()[0];
             Assert.AreEqual(expectedActive, argument);
@@ -301,7 +304,5 @@ namespace GameCore.Tests.GameProcess
             monsterModel.GetHp.Returns(hp);
             return monsterModel;
         }
-
-        //所有怪物死亡, 顯示勝利畫面
     }
 }

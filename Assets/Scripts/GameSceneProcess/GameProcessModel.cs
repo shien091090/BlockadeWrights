@@ -48,6 +48,7 @@ namespace GameCore
             gameProcessView.GetTimerView.BindModel(timerModel);
             gameProcessView.GetWaveHintView.SetWaveHint(monsterSpawner.GetWaveHint);
             gameProcessView.GetFortressView.BindModel(fortressModel);
+            gameProcessView.SetGameOverPanelActive(false);
 
             SetEventRegister();
         }

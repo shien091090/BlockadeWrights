@@ -9,6 +9,7 @@ namespace GameCore
         [SerializeField] private FortressView fortressView;
         [SerializeField] private GameObjectPoolComponent monsterObjectPool;
         [SerializeField] private TimerView timerView;
+        [SerializeField] private GameObject go_gameOverPanel;
 
         [Inject] private IGameProcessModel gameProcessModel;
 
@@ -18,6 +19,7 @@ namespace GameCore
 
         public void SetGameOverPanelActive(bool isActive)
         {
+            go_gameOverPanel.SetActive(isActive);
         }
 
         public IMonsterView SpawnMonsterView(IMonsterModel monsterModel)

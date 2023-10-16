@@ -21,7 +21,7 @@ namespace GameCore
 
             if (hpModel.IsDead)
             {
-                fortressView.SetDestroyHintActive(true);
+                fortressView?.SetDestroyHintActive(true);
                 OnFortressDestroy?.Invoke();
             }
         }
