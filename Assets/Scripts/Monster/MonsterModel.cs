@@ -8,7 +8,6 @@ namespace GameCore
         public ITransform GetTransform => monsterView.GetTransform;
         public string Id => monsterView.GetId;
 
-
         public Vector2 GetStartPoint => path != null && path.IsEmpty == false ?
             path.GetPoint(0) :
             Vector2.zero;
@@ -59,6 +58,8 @@ namespace GameCore
             GetBackSideSprite = setting.GetBackSideSprite;
         }
 
+        public event Action OnDead;
+
         public void Update()
         {
             Vector2 translationVector = UpdateMove(monsterView.GetTransform.Position, MoveSpeed, timeAdapter.DeltaTime);
@@ -79,6 +80,7 @@ namespace GameCore
             {
                 entityState = EntityState.Dead;
                 monsterView.SetActive(false);
+                OnDead?.Invoke();
             }
         }
 
@@ -92,7 +94,7 @@ namespace GameCore
         {
             monsterView = view;
             entityState = EntityState.Normal;
-            
+
             monsterView.GetHealthPointView.BindModel(hpModel);
             monsterView.InitSprite(GetFrontSideSprite, GetBackSideSprite);
             lookFaceDirection.BindView(monsterView);

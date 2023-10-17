@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
@@ -17,6 +18,8 @@ namespace GameCore.Tests.Monster
         private IFortressModel fortressModel;
         private IHealthPointView healthPointView;
 
+        private Action monsterDeadEvent;
+
         [SetUp]
         public void Setup()
         {
@@ -32,6 +35,8 @@ namespace GameCore.Tests.Monster
             monsterView.GetHealthPointView.Returns(healthPointView);
 
             fortressModel = Substitute.For<IFortressModel>();
+
+            monsterDeadEvent = Substitute.For<Action>();
         }
 
         [Test]
@@ -159,6 +164,7 @@ namespace GameCore.Tests.Monster
             ShouldBeArrivedGoal(true);
             ShouldDamageFortress(1);
             ShouldSetActive(false);
+            ShouldTriggerDeadEvent(0);
         }
 
         [Test]
@@ -191,6 +197,7 @@ namespace GameCore.Tests.Monster
 
             MonsterStateShouldBe(EntityState.Dead);
             ShouldSetActive(false);
+            ShouldTriggerDeadEvent(1);
         }
 
         [Test]
@@ -244,9 +251,18 @@ namespace GameCore.Tests.Monster
             MonsterMovementPath path = CreateMovementPath(pathPoints);
 
             monsterModel = new MonsterModel(path, monsterSetting, timeManager);
+            monsterModel.OnDead += monsterDeadEvent;
 
             monsterModel.Bind(monsterView);
             monsterModel.SetAttackTarget(fortressModel);
+        }
+
+        private void ShouldTriggerDeadEvent(int triggerTimes)
+        {
+            if (triggerTimes == 0)
+                monsterDeadEvent.DidNotReceive().Invoke();
+            else
+                monsterDeadEvent.Received(triggerTimes).Invoke();
         }
 
         private void ShouldFaceDirection(FaceDirectionState expectedFaceDirectionState)
