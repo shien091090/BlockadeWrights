@@ -14,7 +14,7 @@ namespace GameCore
         public float StartTimeSecond { get; }
         public IMonsterSetting GetCurrentSpawnMonsterSetting => spawnMonsterOrderList[GetCurrentSpawnCount];
         public int GetCurrentSpawnCount { get; set; }
-        private int MaxSpawnCount { get; }
+        public int MaxSpawnCount { get; }
         private float SpawnIntervalSecond { get; }
 
         public AttackWave(float spawnIntervalSecond, List<IMonsterSetting> spawnMonsterOrderList, float startTimeSecond = 0, List<Vector2> pathPointList = null)

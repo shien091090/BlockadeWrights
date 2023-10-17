@@ -12,12 +12,13 @@ namespace GameCore
             string.Empty :
             $"{GetCurrentWaveIndex + 1}/{attackWaves.Length}";
 
+        public int TotalMonsterCount => attackWaves?.Sum(x => x.MaxSpawnCount) ?? 0;
+
         private float currentTimer;
         private AttackWave[] attackWaves;
         private readonly IAttackWaveSetting attackWaveSetting;
 
         public int GetCurrentWaveIndex { get; private set; }
-        public bool HaveNextWave => GetCurrentWaveIndex < attackWaves.Length - 1;
 
         public bool IsAllWaveSpawnFinished
         {
@@ -30,6 +31,7 @@ namespace GameCore
             }
         }
 
+        private bool HaveNextWave => GetCurrentWaveIndex < attackWaves.Length - 1;
         private bool IsStartNextWave => currentTimer >= attackWaves[GetCurrentWaveIndex + 1].StartTimeSecond;
 
         public MonsterSpawner(IAttackWaveSetting attackWaveSetting)

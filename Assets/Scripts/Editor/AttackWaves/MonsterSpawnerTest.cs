@@ -136,7 +136,7 @@ namespace GameCore.Tests.AttackWaves
             GivenModel(
                 wave1,
                 wave2);
-            
+
             StartTimeSecondsShouldBe(0);
 
             monsterSpawner.CheckUpdateSpawn(1);
@@ -246,6 +246,18 @@ namespace GameCore.Tests.AttackWaves
             ShouldNeedCountDownToSpawnMonster(false);
         }
 
+        [Test]
+        //驗證所有波次怪物數量總和
+        public void spawn_monster_total_count()
+        {
+            GivenModel(
+                new AttackWave(1, CreateMonsterOrderList(1), 0),
+                new AttackWave(1, CreateMonsterOrderList(2), 0),
+                new AttackWave(1, CreateMonsterOrderList(3), 0));
+
+            TotalMonsterCountShouldBe(6);
+        }
+
         private void GivenModel(params AttackWave[] waves)
         {
             attackWaveSetting.GetAttackWaves().Returns(waves);
@@ -253,6 +265,11 @@ namespace GameCore.Tests.AttackWaves
 
             monsterSpawner.OnSpawnMonster += spawnMonsterEvent;
             monsterSpawner.OnStartNextWave += startNextWaveEvent;
+        }
+
+        private void TotalMonsterCountShouldBe(int expectedTotalMonsterCount)
+        {
+            Assert.AreEqual(expectedTotalMonsterCount, monsterSpawner.TotalMonsterCount);
         }
 
         private void StartTimeSecondsShouldBe(int expectedStartTimeSeconds)
