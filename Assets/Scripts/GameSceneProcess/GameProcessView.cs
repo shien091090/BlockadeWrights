@@ -16,6 +16,7 @@ namespace GameCore
         public ITimerView GetTimerView => timerView;
         public IWaveHintView GetWaveHintView => waveHintView;
         public IFortressView GetFortressView => fortressView;
+        public IRemainMonsterHintView GetRemainMonsterHintView { get; }
 
         public void SetGameOverPanelActive(bool isActive)
         {

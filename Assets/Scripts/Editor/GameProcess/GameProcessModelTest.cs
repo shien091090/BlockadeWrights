@@ -17,6 +17,7 @@ namespace GameCore.Tests.GameProcess
         private IFortressModel fortressModel;
         private IFortressView fortressView;
         private ITimerView timerView;
+        private IRemainMonsterHintView remainMonsterHintView;
 
         [SetUp]
         public void Setup()
@@ -45,6 +46,9 @@ namespace GameCore.Tests.GameProcess
 
             waveHintView = Substitute.For<IWaveHintView>();
             gameProcessView.GetWaveHintView.Returns(waveHintView);
+
+            remainMonsterHintView = Substitute.For<IRemainMonsterHintView>();
+            gameProcessView.GetRemainMonsterHintView.Returns(remainMonsterHintView);
 
             monsterSpawner = Substitute.For<IMonsterSpawner>();
             playerSetting = Substitute.For<IPlayerSetting>();
@@ -183,6 +187,37 @@ namespace GameCore.Tests.GameProcess
             GameOverPanelShouldBeActive(true);
         }
 
+        [Test]
+        //怪物死亡, 刷新剩餘怪物數量提示
+        public void monster_dead_then_refresh_monster_count_hint()
+        {
+            GivenTotalMonsterCount(15);
+
+            gameProcessModel.Bind(gameProcessView);
+            gameProcessModel.StartGame();
+
+            RemainMonsterHintShouldBe("15/15");
+
+            IMonsterModel monsterModel1 = CreateMonsterModel(5);
+            IMonsterModel monsterModel2 = CreateMonsterModel(5);
+            IMonsterModel monsterModel3 = CreateMonsterModel(5);
+            
+            CallSpawnMonster(monsterModel1);
+            CallSpawnMonster(monsterModel2);
+            CallSpawnMonster(monsterModel3);
+
+            CallDeadEvent(monsterModel1);
+            CallDeadEvent(monsterModel2);
+            CallDeadEvent(monsterModel3);
+
+            RemainMonsterHintShouldBe("12/15");
+        }
+
+        private void GivenTotalMonsterCount(int expectedTotalCount)
+        {
+            monsterSpawner.TotalMonsterCount.Returns(expectedTotalCount);
+        }
+
         //所有怪物死亡, 顯示勝利畫面
 
         private void GivenFortressHp(int hp)
@@ -210,6 +245,11 @@ namespace GameCore.Tests.GameProcess
             timeManager.DeltaTime.Returns(deltaTime);
         }
 
+        private void CallDeadEvent(IMonsterModel monsterModel)
+        {
+            monsterModel.OnDead += Raise.Event<Action>();
+        }
+
         private void CallSpawnMonster(IMonsterModel monsterModel)
         {
             monsterSpawner.OnSpawnMonster += Raise.Event<Action<IMonsterModel>>(monsterModel);
@@ -218,6 +258,12 @@ namespace GameCore.Tests.GameProcess
         private void CallStartNextWaveEvent()
         {
             monsterSpawner.OnStartNextWave += Raise.Event<Action>();
+        }
+
+        private void RemainMonsterHintShouldBe(string expectedHint)
+        {
+            string argument = (string)remainMonsterHintView.ReceivedCalls().Last(x => x.GetMethodInfo().Name == "SetRemainCountHint").GetArguments()[0];
+            Assert.AreEqual(expectedHint, argument);
         }
 
         private void GameOverPanelShouldBeActive(bool expectedActive)

@@ -10,6 +10,7 @@ namespace GameCore
         private readonly IPlayerSetting playerSetting;
         private IFortressModel fortressModel;
         private IGameProcessView gameProcessView;
+        private int currentRemainMonsterCount;
 
         public bool IsStartGame { get; private set; }
 
@@ -35,6 +36,9 @@ namespace GameCore
         public void StartGame()
         {
             IsStartGame = true;
+            currentRemainMonsterCount = monsterSpawner.TotalMonsterCount;
+
+            RefreshRemainMonsterCountHint();
             CheckStartTimer();
         }
 
@@ -46,8 +50,9 @@ namespace GameCore
             fortressModel = new FortressModel(playerSetting.FortressHp);
 
             gameProcessView.GetTimerView.BindModel(timerModel);
-            gameProcessView.GetWaveHintView.SetWaveHint(monsterSpawner.GetWaveHint);
             gameProcessView.GetFortressView.BindModel(fortressModel);
+            gameProcessView.GetWaveHintView.SetWaveHint(monsterSpawner.GetWaveHint);
+            gameProcessView.GetRemainMonsterHintView.SetRemainCountHint("0/0");
             gameProcessView.SetGameOverPanelActive(false);
 
             SetEventRegister();
@@ -71,6 +76,11 @@ namespace GameCore
                 timerModel.StartCountDown(monsterSpawner.GetStartTimeSeconds());
         }
 
+        private void RefreshRemainMonsterCountHint()
+        {
+            gameProcessView.GetRemainMonsterHintView.SetRemainCountHint($"{currentRemainMonsterCount}/{monsterSpawner.TotalMonsterCount}");
+        }
+
         private void OnFortressDestroy()
         {
             gameProcessView.SetGameOverPanelActive(true);
@@ -81,6 +91,15 @@ namespace GameCore
             IMonsterView monsterView = gameProcessView.SpawnMonsterView(monsterModel);
             monsterModel.Bind(monsterView);
             monsterModel.SetAttackTarget(fortressModel);
+
+            monsterModel.OnDead -= OnMonsterDead;
+            monsterModel.OnDead += OnMonsterDead;
+        }
+
+        private void OnMonsterDead()
+        {
+            currentRemainMonsterCount--;
+            RefreshRemainMonsterCountHint();
         }
 
         private void OnStartNextWave()
