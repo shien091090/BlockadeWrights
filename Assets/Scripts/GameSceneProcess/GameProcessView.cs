@@ -10,13 +10,14 @@ namespace GameCore
         [SerializeField] private GameObjectPoolComponent monsterObjectPool;
         [SerializeField] private TimerView timerView;
         [SerializeField] private GameObject go_gameOverPanel;
+        [SerializeField] private RemainMonsterHintView remainMonsterHintView;
 
         [Inject] private IGameProcessModel gameProcessModel;
 
         public ITimerView GetTimerView => timerView;
         public IWaveHintView GetWaveHintView => waveHintView;
         public IFortressView GetFortressView => fortressView;
-        public IRemainMonsterHintView GetRemainMonsterHintView { get; }
+        public IRemainMonsterHintView GetRemainMonsterHintView => remainMonsterHintView;
 
         public void SetGameOverPanelActive(bool isActive)
         {
