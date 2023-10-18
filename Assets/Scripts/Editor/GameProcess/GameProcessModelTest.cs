@@ -72,6 +72,7 @@ namespace GameCore.Tests.GameProcess
             ShouldTimerPlaying(false);
             ShouldIsStartGame(false);
             GameOverPanelShouldBeActive(false);
+            QuestCompletePanelShouldBeActive(false);
         }
 
         [Test]
@@ -201,7 +202,7 @@ namespace GameCore.Tests.GameProcess
             IMonsterModel monsterModel1 = CreateMonsterModel(5);
             IMonsterModel monsterModel2 = CreateMonsterModel(5);
             IMonsterModel monsterModel3 = CreateMonsterModel(5);
-            
+
             CallSpawnMonster(monsterModel1);
             CallSpawnMonster(monsterModel2);
             CallSpawnMonster(monsterModel3);
@@ -213,12 +214,34 @@ namespace GameCore.Tests.GameProcess
             RemainMonsterHintShouldBe("12/15");
         }
 
+        [Test]
+        //所有怪物死亡, 顯示勝利畫面
+        public void all_monster_dead_then_show_quest_complete()
+        {
+            GivenTotalMonsterCount(3);
+
+            gameProcessModel.Bind(gameProcessView);
+            gameProcessModel.StartGame();
+
+            IMonsterModel monsterModel1 = CreateMonsterModel(5);
+            IMonsterModel monsterModel2 = CreateMonsterModel(5);
+            IMonsterModel monsterModel3 = CreateMonsterModel(5);
+
+            CallSpawnMonster(monsterModel1);
+            CallSpawnMonster(monsterModel2);
+            CallSpawnMonster(monsterModel3);
+
+            CallDeadEvent(monsterModel1);
+            CallDeadEvent(monsterModel2);
+            CallDeadEvent(monsterModel3);
+
+            QuestCompletePanelShouldBeActive(true);
+        }
+
         private void GivenTotalMonsterCount(int expectedTotalCount)
         {
             monsterSpawner.TotalMonsterCount.Returns(expectedTotalCount);
         }
-
-        //所有怪物死亡, 顯示勝利畫面
 
         private void GivenFortressHp(int hp)
         {
@@ -264,6 +287,12 @@ namespace GameCore.Tests.GameProcess
         {
             string argument = (string)remainMonsterHintView.ReceivedCalls().Last(x => x.GetMethodInfo().Name == "SetRemainCountHint").GetArguments()[0];
             Assert.AreEqual(expectedHint, argument);
+        }
+
+        private void QuestCompletePanelShouldBeActive(bool expectedActive)
+        {
+            bool argument = (bool)gameProcessView.ReceivedCalls().Last(x => x.GetMethodInfo().Name == "SetQuestCompletePanelActive").GetArguments()[0];
+            Assert.AreEqual(expectedActive, argument);
         }
 
         private void GameOverPanelShouldBeActive(bool expectedActive)

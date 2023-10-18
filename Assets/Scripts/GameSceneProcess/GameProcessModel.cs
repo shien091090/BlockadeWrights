@@ -54,6 +54,7 @@ namespace GameCore
             gameProcessView.GetWaveHintView.SetWaveHint(monsterSpawner.GetWaveHint);
             gameProcessView.GetRemainMonsterHintView.SetRemainCountHint("0/0");
             gameProcessView.SetGameOverPanelActive(false);
+            gameProcessView.SetQuestCompletePanelActive(false);
 
             SetEventRegister();
         }
@@ -100,6 +101,9 @@ namespace GameCore
         {
             currentRemainMonsterCount--;
             RefreshRemainMonsterCountHint();
+
+            if (currentRemainMonsterCount <= 0)
+                gameProcessView.SetQuestCompletePanelActive(true);
         }
 
         private void OnStartNextWave()

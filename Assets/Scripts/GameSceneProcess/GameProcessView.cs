@@ -10,6 +10,7 @@ namespace GameCore
         [SerializeField] private GameObjectPoolComponent monsterObjectPool;
         [SerializeField] private TimerView timerView;
         [SerializeField] private GameObject go_gameOverPanel;
+        [SerializeField] private GameObject go_questCompletePanel;
         [SerializeField] private RemainMonsterHintView remainMonsterHintView;
 
         [Inject] private IGameProcessModel gameProcessModel;
@@ -22,6 +23,11 @@ namespace GameCore
         public void SetGameOverPanelActive(bool isActive)
         {
             go_gameOverPanel.SetActive(isActive);
+        }
+
+        public void SetQuestCompletePanelActive(bool isActive)
+        {
+            go_questCompletePanel.SetActive(isActive);
         }
 
         public IMonsterView SpawnMonsterView(IMonsterModel monsterModel)

@@ -7,6 +7,7 @@ namespace GameCore
         IFortressView GetFortressView { get; }
         IRemainMonsterHintView GetRemainMonsterHintView { get; }
         void SetGameOverPanelActive(bool isActive);
+        void SetQuestCompletePanelActive(bool isActive);
         IMonsterView SpawnMonsterView(IMonsterModel monsterModel);
     }
 
