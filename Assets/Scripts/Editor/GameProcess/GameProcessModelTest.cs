@@ -235,6 +235,34 @@ namespace GameCore.Tests.GameProcess
             CallDeadEvent(monsterModel2);
             CallDeadEvent(monsterModel3);
 
+            RemainMonsterHintShouldBe("0/3");
+            QuestCompletePanelShouldBeActive(true);
+        }
+
+        [Test]
+        //部分怪物攻擊主堡, 主堡尚未破壞, 其餘怪物死亡, 顯示勝利畫面
+        public void some_monster_attack_fortress_and_other_monster_dead_then_show_quest_complete()
+        {
+            GivenTotalMonsterCount(3);
+
+            gameProcessModel.Bind(gameProcessView);
+            gameProcessModel.StartGame();
+
+            RemainMonsterHintShouldBe("3/3");
+            
+            IMonsterModel monsterModel1 = CreateMonsterModel(5);
+            IMonsterModel monsterModel2 = CreateMonsterModel(5);
+            IMonsterModel monsterModel3 = CreateMonsterModel(5);
+
+            CallSpawnMonster(monsterModel1);
+            CallSpawnMonster(monsterModel2);
+            CallSpawnMonster(monsterModel3);
+
+            CallDeadEvent(monsterModel1);
+            CallDeadEvent(monsterModel2);
+            CallArrivedGoalEvent(monsterModel3);
+
+            RemainMonsterHintShouldBe("0/3");
             QuestCompletePanelShouldBeActive(true);
         }
 
@@ -266,6 +294,11 @@ namespace GameCore.Tests.GameProcess
         private void GivenDeltaTime(int deltaTime)
         {
             timeManager.DeltaTime.Returns(deltaTime);
+        }
+
+        private void CallArrivedGoalEvent(IMonsterModel monsterModel)
+        {
+            monsterModel.OnArrivedGoal += Raise.Event<Action>();
         }
 
         private void CallDeadEvent(IMonsterModel monsterModel)

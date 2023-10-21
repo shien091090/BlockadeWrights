@@ -93,11 +93,14 @@ namespace GameCore
             monsterModel.Bind(monsterView);
             monsterModel.SetAttackTarget(fortressModel);
 
-            monsterModel.OnDead -= OnMonsterDead;
-            monsterModel.OnDead += OnMonsterDead;
+            monsterModel.OnDead -= OnSubtractRemainMonster;
+            monsterModel.OnDead += OnSubtractRemainMonster;
+            
+            monsterModel.OnArrivedGoal -= OnSubtractRemainMonster;
+            monsterModel.OnArrivedGoal += OnSubtractRemainMonster;
         }
 
-        private void OnMonsterDead()
+        private void OnSubtractRemainMonster()
         {
             currentRemainMonsterCount--;
             RefreshRemainMonsterCountHint();
