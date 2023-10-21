@@ -124,16 +124,18 @@ namespace GameCore.Tests.Monster
         }
 
         [Test]
-        [TestCase(1, 9.9f, -9.9f)]
-        [TestCase(2, 10.1f, -0.1f)]
+        [TestCase(1, 9.9f, 9.9f)]
+        [TestCase(1, 10f, 10f)]
+        [TestCase(1, 10.000001f, 10.000001f)]
+        [TestCase(2, 10.1f, 0.1f)]
         //抵達後轉向至下一個點
         public void move_to_next_point_when_arrived(int startIndex, float currentPosX, float currentPosY)
         {
             GivenInitModel(
                 DEFAULT_HP,
-                1.5f,
+                1,
                 new Vector2(0, 0),
-                new Vector2(10, -10),
+                new Vector2(10, 10),
                 new Vector2(10, 0),
                 new Vector2(50, 50));
 

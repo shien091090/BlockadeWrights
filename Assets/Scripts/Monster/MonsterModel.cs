@@ -110,6 +110,9 @@ namespace GameCore
 
         private bool IsArriveTarget(Vector2 currentPos, Vector2 end, Vector2 moveVector)
         {
+            if (Math.Abs(currentPos.x - end.x) <= 0.01f && Math.Abs(currentPos.y - end.y) <= 0.01f)
+                return true;
+            
             bool directionXIsRight = (end.x - currentPos.x) > 0;
             bool directionYIsUp = (end.y - currentPos.y) > 0;
 
