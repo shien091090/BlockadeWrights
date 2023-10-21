@@ -19,6 +19,7 @@ namespace GameCore.Tests.Monster
         private IHealthPointView healthPointView;
 
         private Action monsterDeadEvent;
+        private Action arrivedGoalEvent;
 
         [SetUp]
         public void Setup()
@@ -37,6 +38,7 @@ namespace GameCore.Tests.Monster
             fortressModel = Substitute.For<IFortressModel>();
 
             monsterDeadEvent = Substitute.For<Action>();
+            arrivedGoalEvent = Substitute.For<Action>();
         }
 
         [Test]
@@ -167,6 +169,7 @@ namespace GameCore.Tests.Monster
             ShouldDamageFortress(1);
             ShouldSetActive(false);
             ShouldTriggerDeadEvent(0);
+            ShouldTriggerArrivedGoalEvent(1);
         }
 
         [Test]
@@ -200,6 +203,7 @@ namespace GameCore.Tests.Monster
             MonsterStateShouldBe(EntityState.Dead);
             ShouldSetActive(false);
             ShouldTriggerDeadEvent(1);
+            ShouldTriggerArrivedGoalEvent(0);
         }
 
         [Test]
@@ -254,9 +258,18 @@ namespace GameCore.Tests.Monster
 
             monsterModel = new MonsterModel(path, monsterSetting, timeManager);
             monsterModel.OnDead += monsterDeadEvent;
+            monsterModel.OnArrivedGoal += arrivedGoalEvent;
 
             monsterModel.Bind(monsterView);
             monsterModel.SetAttackTarget(fortressModel);
+        }
+
+        private void ShouldTriggerArrivedGoalEvent(int triggerTimes)
+        {
+            if (triggerTimes == 0)
+                arrivedGoalEvent.DidNotReceive().Invoke();
+            else
+                arrivedGoalEvent.Received(triggerTimes).Invoke();
         }
 
         private void ShouldTriggerDeadEvent(int triggerTimes)

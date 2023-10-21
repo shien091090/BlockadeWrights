@@ -58,6 +58,7 @@ namespace GameCore
             GetBackSideSprite = setting.GetBackSideSprite;
         }
 
+        public event Action OnArrivedGoal;
         public event Action OnDead;
 
         public void Update()
@@ -112,7 +113,7 @@ namespace GameCore
         {
             if (Math.Abs(currentPos.x - end.x) <= 0.01f && Math.Abs(currentPos.y - end.y) <= 0.01f)
                 return true;
-            
+
             bool directionXIsRight = (end.x - currentPos.x) > 0;
             bool directionYIsUp = (end.y - currentPos.y) > 0;
 
@@ -145,6 +146,7 @@ namespace GameCore
             {
                 fortressModel?.Damage();
                 monsterView.SetActive(false);
+                OnArrivedGoal?.Invoke();
             }
 
             return moveVector;

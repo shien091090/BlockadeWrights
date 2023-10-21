@@ -6,6 +6,7 @@ namespace GameCore
     public interface IMonsterModel : IAttackTarget
     {
         event Action OnDead;
+        event Action OnArrivedGoal;
         Vector2 GetStartPoint { get; }
         float GetHp { get; }
         void Update();
